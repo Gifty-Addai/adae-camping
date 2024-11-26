@@ -13,7 +13,6 @@ dotenv.config();
 
 const app = express();
 
-const port = process.env.PORT || 3000;
 // Middleware and routes
 app.use(express.json());
 
@@ -25,7 +24,8 @@ app.use("/api/gallery", galleryRoute);
 app.use("/api/video", videoRoute);
 app.use("/api/testimony", testimonyRoute);
 
-app.listen(port, () => {
-    console.log(`Server started on port ${port}`);
-    connectDb();
-});
+// Connect to the database
+connectDb();
+
+// Export the app to work with Vercel's serverless functions
+export default app;
