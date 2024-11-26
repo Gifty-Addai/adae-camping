@@ -76,6 +76,9 @@ export interface YouTubeVideosResponse {
   items: YouTubeVideoDetails[];
 }
 
+export type ProviderType ={
+  children:any
+}
 export interface ProcessedVideo {
   id: string;
   title: string;

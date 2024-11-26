@@ -1,5 +1,4 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import LanguageSwitcher from '@/components/ui/language.switcher';
@@ -14,11 +13,11 @@ import { Button } from '@/components/ui/button';
 import { Page } from '@/components/ui/page';
 
 const StorePage: React.FC = () => {
-  const { t } = useTranslation();
+  // const { t } = useTranslation();
   const [filteredProducts, setFilteredProducts] = React.useState<Product[]>(productsData);
   const [filters, setFilters] = React.useState<string[]>([]);
   const [sortOption, setSortOption] = React.useState<string>('');
-  const [searchQuery, setSearchQuery] = React.useState('');
+  const [searchQuery] = React.useState('');
   const [selectedProduct, setSelectedProduct] = React.useState<Product | null>(null);
   const [isModalOpen, setIsModalOpen] = React.useState(false);
 

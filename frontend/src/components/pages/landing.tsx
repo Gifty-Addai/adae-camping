@@ -1,9 +1,7 @@
 import { Page } from "../ui/page";
 import { Button } from "../ui/button";
 import { motion } from "framer-motion";
-import { useState } from "react";
-import { Link, Navigate } from "react-router-dom";
-import SignInModal from "./signin.modal";
+import { Link } from "react-router-dom";
 import { Vid } from "@/assets/assets";
 
 const LandingPage = () => {

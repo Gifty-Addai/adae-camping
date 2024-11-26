@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ShoppingCartIcon, StarIcon, MinusIcon, PlusIcon, HeartIcon } from 'lucide-react';
+import {  MinusIcon, PlusIcon, HeartIcon } from 'lucide-react';
 import { Product } from '@/core/interfaces';
 import {
   Card,

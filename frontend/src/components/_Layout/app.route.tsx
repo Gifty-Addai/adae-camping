@@ -21,7 +21,7 @@ import { getUserSession } from "@/lib/utils";
 // Helper function to handle authentication state
 const checkAuthentication = () => {
   const user = getUserSession();
-  console.info('user',user)
+  console.info('user', user)
   return user ? true : false;
 };
 
@@ -53,7 +53,7 @@ export const AppRoute = () => {
   useEffect(() => {
     let userSession = getUserSession();
     console.log('First User Session Found:', userSession);
-    
+
     if (isDev) {
       // Mock user for development environment
       userSession = {
@@ -62,19 +62,19 @@ export const AppRoute = () => {
         name: "Mock User",
       };
     }
-  
+
     if (userSession) {
       console.log('Second User Session Found:', userSession);
       setIsAuthenticated(true);
-      dispatch(setUser(userSession)); 
+      dispatch(setUser(userSession));
       console.log('Third User Session Found:', getUserSession());
     } else {
       setIsAuthenticated(false);
     }
-  
+
     setIsLoading(false); // Stop loading once authentication check is complete
   }, [dispatch]);
-  
+
 
   // Render loading state during app initialization
   if (isLoading || appState.isLoading) {
@@ -96,8 +96,10 @@ export const AppRoute = () => {
   if (!isAuthenticated) {
     return (
       <Routes>
-        <Route path="/" element={<LandingPage />} />
-        <Route path="*" element={<PageNotFound />} />
+        <Route element={<VerifiedLayout auth={isAuthenticated} />}>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="*" element={<PageNotFound />} />
+        </Route>
       </Routes>
     );
   }

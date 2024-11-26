@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -11,7 +11,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useModal } from "@/context/signIn_modal_context";
 import { useDispatch } from "react-redux";
 import { setUser } from "@/core/store/slice/user_slice";
-import { getUserSession, postRequest, localStorageUtil } from "@/lib/utils";
+import { postRequest, localStorageUtil } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
 
 // Define Zod Schemas for Validation

@@ -13,11 +13,11 @@ interface GalleryImagesProps {
   onItemSelect: (item: any) => void;
 }
 
-const GalleryImages: React.FC<GalleryImagesProps> = ({ onItemSelect }) => {
+const GalleryImages: React.FC<GalleryImagesProps> = () => {
   return (
     <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
       {imageGallery.map((image) => (
-        <ImageCard key={image.id} image={image} onClick={() => onItemSelect(image)} />
+        <ImageCard key={image.id} image={image} />
       ))}
     </div>
   );

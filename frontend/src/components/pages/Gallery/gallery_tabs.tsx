@@ -1,6 +1,6 @@
 // src/components/Gallery/GalleryTabs.tsx
 
-import React, { useState } from 'react';
+import React from 'react';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import GalleryImages from './gallery_images';
 import GalleryVideos from './gallery_video';
@@ -10,7 +10,7 @@ interface GalleryTabsProps {
 }
 
 const GalleryTabs: React.FC<GalleryTabsProps> = ({ onItemSelect }) => {
-  const [selectedTab, setSelectedTab] = useState('images');
+  // const [selectedTab, setSelectedTab] = useState('images');
 
   return (
     <Tabs defaultValue="images" className="mt-8">

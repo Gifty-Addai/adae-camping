@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Tabs } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
 import { ChevronRight } from "lucide-react";
 import UserBookingsPage from "../Bookings/user_book_page";

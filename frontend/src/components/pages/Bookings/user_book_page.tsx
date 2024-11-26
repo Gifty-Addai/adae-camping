@@ -1,17 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { User, Clock, DollarSign, Calendar } from "lucide-react";
-import axios from "axios";
-import { DotLoader } from "@/components/ui/loader/_dot_loader";
 import { Booking } from "@/core/interfaces";
 import { Page } from "@/components/ui/page";
 
 
 const UserBookingsPage: React.FC = () => {
-  const [bookings, setBookings] = useState<Booking[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [bookings] = useState<Booking[]>([]);
+  // const [loading, setLoading] = useState<boolean>(true);
 
   // useEffect(() => {
   //   const fetchBookings = async () => {

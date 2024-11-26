@@ -2,17 +2,12 @@ import {
   NavigationMenu,
   NavigationMenuContent,
   NavigationMenuItem,
-  NavigationMenuLink,
   NavigationMenuList,
   NavigationMenuTrigger,
-  navigationMenuTriggerStyle,
 } from "../navigation-menu"
 import { Button } from "../button"
 import { Link } from "react-router-dom";
 import { ListItem } from "./menu_navigation";
-import { components } from "@/data/data.data";
-import SignInModal from "@/components/pages/signin.modal";
-import { useState } from "react";
 import { AuthType } from "@/core/interfaces";
 import { Avatar, AvatarFallback, AvatarImage } from "../avatar";
 import { useModal } from "@/context/signIn_modal_context";

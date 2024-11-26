@@ -1,5 +1,5 @@
 import React from "react";
-import { Dialog, DialogTrigger, DialogContent, DialogClose } from "@/components/ui/dialog";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { ProcessedVideo } from "@/core/interfaces";
 
 interface LightboxProps {

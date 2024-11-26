@@ -1,4 +1,4 @@
-import { CartItem, Product } from '@/core/interfaces';
+import { CartItem, Product, ProviderType } from '@/core/interfaces';
 import React, { createContext, useReducer } from 'react';
 
 interface CartState {
@@ -73,7 +73,7 @@ const cartReducer = (state: CartState, action: Action): CartState => {
   };
 };
 
-export const CartProvider: React.FC = ({ children }) => {
+export const CartProvider: React.FC<ProviderType> = ({ children }) => {
   const [state, dispatch] = useReducer(cartReducer, initialState);
 
   return <CartContext.Provider value={{ state, dispatch }}>{children}</CartContext.Provider>;

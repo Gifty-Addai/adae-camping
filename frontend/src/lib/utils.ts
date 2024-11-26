@@ -2,7 +2,7 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import moment from "moment";
-import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
+import axios, { AxiosInstance, AxiosResponse } from "axios";
 import { app_local_storage_key, API_BASE_URL, YOUTUBE_API_KEY, CHANNEL_ID } from "../core/constants";
 import { IUser, ProcessedVideo, YouTubePlaylistItem, YouTubePlaylistResponse, YouTubeVideosResponse } from "@/core/interfaces";
 

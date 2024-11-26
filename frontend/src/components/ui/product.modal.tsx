@@ -7,7 +7,6 @@ import {
   DialogHeader,
   DialogTitle,
   DialogDescription,
-  DialogClose,
 } from './modal';
 import { useTranslation } from 'react-i18next';
 import { XIcon } from 'lucide-react';
