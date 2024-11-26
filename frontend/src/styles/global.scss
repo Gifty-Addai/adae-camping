@@ -1,0 +1,82 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Base Colors */
+    --background: 0 0% 10%; /* Almost black background */
+    --foreground: 0 0% 95%; /* Near-white for primary text */
+    --card: 0 0% 14%; /* Very dark gray for cards */
+    --card-foreground: 0 0% 85%; /* Light gray for card content */
+    --popover: 0 0% 14%; /* Same as card for popovers */
+    --popover-foreground: 0 0% 85%; /* Light gray for popover text */
+    --primary: 0 0% 25%; /* Slightly brighter gray for primary buttons */
+    --primary-foreground: 0 0% 95%; /* Near-white for primary text */
+    --secondary: 0 0% 30%; /* Mid-gray for secondary elements */
+    --secondary-foreground: 0 0% 80%; /* Muted light gray for secondary text */
+    --muted: 0 0% 20%; /* Dark muted gray for inactive elements */
+    --muted-foreground: 0 0% 60%; /* Muted gray for text */
+    --accent: 0 80% 55%; /* Vivid red for accents (like YouTube red) */
+    --accent-foreground: 0 0% 95%; /* Near-white for accent text */
+    --destructive: 0 70% 50%; /* Bright red for destructive actions */
+    --destructive-foreground: 0 0% 95%; /* Near-white for destructive text */
+    --border: 0 0% 20%; /* Subtle gray for borders */
+    --input: 0 0% 16%; /* Slightly lighter gray for input fields */
+    --ring: 0 80% 50%; /* Bright red for focus rings */
+    --radius: 0.5rem; /* Subtle rounded corners */
+
+    /* Chart Colors */
+    --chart-1: 220 50% 50%; /* Bright blue for chart 1 */
+    --chart-2: 0 80% 55%; /* Vivid red for chart 2 */
+    --chart-3: 40 60% 50%; /* Golden yellow for chart 3 */
+    --chart-4: 120 40% 50%; /* Soft green for chart 4 */
+    --chart-5: 260 50% 60%; /* Calm purple for chart 5 */
+  }
+
+  // /* Dark Mode Color Palette */
+  // .dark {
+  //   --background: 120 25% 10%; /* Dark olive green background */
+  //   --foreground: 30 10% 60%; /* Dusty gray-brown text color */
+  //   --card: 85 10% 20%; /* Dark moss green for cards */
+  //   --card-foreground: 40 10% 65%; /* Soft grayish text inside cards */
+  //   --popover: 60 10% 25%; /* Dark olive for popover */
+  //   --popover-foreground: 40 25% 80%; /* Soft beige for popover text */
+  //   --primary: 120 15% 35%; /* Muted sage green for primary buttons */
+  //   --primary-foreground: 40 25% 90%; /* Off-white text over primary elements */
+  //   --secondary: 40 20% 70%; /* Warm taupe for secondary buttons */
+  //   --secondary-foreground: 60 15% 50%; /* Faded olive for secondary text */
+  //   --muted: 85 5% 75%; /* Light muted green for inactive elements */
+  //   --muted-foreground: 30 10% 60%; /* Light taupe for muted text */
+  //   --accent: 0 40% 55%; /* Soft terracotta for accent elements */
+  //   --accent-foreground: 40 25% 90%; /* Off-white text for accents */
+  //   --destructive: 0 45% 40%; /* Deep terracotta for destructive actions */
+  //   --destructive-foreground: 40 25% 90%; /* Soft beige for destructive text */
+  //   --border: 30 20% 45%; /* Deep taupe for dark borders */
+  //   --input: 80 10% 40%; /* Dark sage green for input fields */
+  //   --ring: 50 50% 45%; /* Muted golden yellow for focus ring */
+  // }
+}
+
+@layer base {
+  * {
+    @apply border-border text-black;
+    font-family: AdaeBrightnessMontserrat !important;
+    font-weight: lighter;
+  }
+
+  body {
+    @apply bg-background text-black;
+    overflow-x: hidden;
+    font-family: AdaeBrightnessMontserrat, sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 300;
+    font-style: normal;
+    font-size: 14.5px;
+    font-variation-settings: "slnt" 0;
+  }
+}
+
+@import "./fonts.scss";
+@import "./animate.scss";
+@import "./extend.scss";
