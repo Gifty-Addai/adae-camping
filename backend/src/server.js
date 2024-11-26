@@ -28,5 +28,4 @@ app.use("/api/testimony", testimonyRoute);
 app.listen(port, () => {
     console.log(`Server started on port ${port}`);
     connectDb();
-    app(req, res);
 });
