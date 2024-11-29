@@ -58,12 +58,12 @@ export const getUserSession = (): IUser | null => {
 // Axios instance with optional custom configuration and automatic token handling
 export const axiosInstance: AxiosInstance = axios.create({
   baseURL: API_BASE_URL,
-  timeout: 10000,
+  timeout: 30000,
   headers: {
     'Content-Type': 'application/json',
-    Accept: 'application/json',
+    Accept: '*',
   },
-  withCredentials: true, // Include cookies with requests
+  withCredentials: false,
 });
 
 // Interceptor to handle unauthorized requests and other global errors

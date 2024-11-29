@@ -5,13 +5,13 @@
 @layer base {
   :root {
     /* Base Colors */
-    --background: 0 0% 10%; /* Almost black background */
+    --background: 210 19% 10%; /* Almost black background */
     --foreground: 0 0% 95%; /* Near-white for primary text */
-    --card: 0 0% 14%; /* Very dark gray for cards */
+    --card: 210 16% 13%; /* Very dark gray for cards */
     --card-foreground: 0 0% 85%; /* Light gray for card content */
     --popover: 0 0% 14%; /* Same as card for popovers */
     --popover-foreground: 0 0% 85%; /* Light gray for popover text */
-    --primary: 0 0% 25%; /* Slightly brighter gray for primary buttons */
+    --primary: 120 61% 34%; /* Slightly brighter green for primary buttons */
     --primary-foreground: 0 0% 95%; /* Near-white for primary text */
     --secondary: 0 0% 30%; /* Mid-gray for secondary elements */
     --secondary-foreground: 0 0% 80%; /* Muted light gray for secondary text */
@@ -27,11 +27,17 @@
     --radius: 0.5rem; /* Subtle rounded corners */
 
     /* Chart Colors */
-    --chart-1: 220 50% 50%; /* Bright blue for chart 1 */
-    --chart-2: 0 80% 55%; /* Vivid red for chart 2 */
-    --chart-3: 40 60% 50%; /* Golden yellow for chart 3 */
-    --chart-4: 120 40% 50%; /* Soft green for chart 4 */
-    --chart-5: 260 50% 60%; /* Calm purple for chart 5 */
+    --chart-1: 200 30% 60%;
+    /* Gentle pale blue (clear sky) */
+    --chart-2: 120 40% 50%;
+    /* Soft muted green (like leaves in sunlight) */
+    --chart-3: 35 50% 40%;
+    /* Warm earthy brown (wood or soil) */
+    --chart-4: 80 50% 55%;
+    /* Fresh yellow-green (young grass or plants) */
+    --chart-5: 180 40% 60%;
+    /* Subtle oceanic teal (cool mountain streams) */
+
   }
 
   // /* Dark Mode Color Palette */

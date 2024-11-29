@@ -33,23 +33,20 @@ const productsData: Product[] = [
   {
     id: 1,
     name: 'Ultralight Backpacking Tent',
-    category: 'Tents',
+    category: 'camping',
     image: '/images/tent.jpg',
     price: 299.99,
     oldPrice: 349.99,
-    description: 'A lightweight tent perfect for backpacking trips.',
-    rating: 4.8,
-    badge: 'Best Seller',
+    description: 'A lightweight tent perfect for backpacking trips.'
   },
   {
     id: 2,
     name: 'Sleeping Bag -15°C',
-    category: 'Sleeping Bags',
+    category: 'camping',
     image: '/images/sleeping-bag.jpg',
     price: 129.99,
-    description: 'Stay warm even in the coldest nights with this sleeping bag.',
-    rating: 4.5,
-    badge: 'Limited Stock',
+    description: 'Stay warm even in the coldest nights with this sleeping bag.'
+
   },
   {
     id: 3,
@@ -57,8 +54,7 @@ const productsData: Product[] = [
     category: 'Cooking Gear',
     image: '/images/camping-stove.jpg',
     price: 59.99,
-    description: 'Compact stove for cooking meals on the go.',
-    rating: 4.2,
+    description: 'Compact stove for cooking meals on the go.'
   },
   // Add more camping products...
 ];

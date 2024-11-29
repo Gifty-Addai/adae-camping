@@ -5,7 +5,7 @@ export const isDev = process.env.NODE_ENV === 'development';
 
 
 export const app_local_storage_key = "adae-int";
-export const API_BASE_URL = "adae-int";
+export const API_BASE_URL = "http://localhost:5000/";
 
 export const dateFormat = 'yyyy-MM-DD'
 export const timeFormat= "HH:mm:ss";

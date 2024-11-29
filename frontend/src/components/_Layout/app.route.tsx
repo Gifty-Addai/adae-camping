@@ -7,9 +7,9 @@ import LandingPage from "../pages/landing";
 import StorePage from "../pages/product/products";
 import CartPage from "../pages/product/cart.page";
 import GalleryPage from "../pages/Gallery/gallery";
-import BookingPage from "../pages/bookings";
-import UserBookingsPage from "../pages/Bookings/user_book_page";
-import SettingsPage from "../pages/Settings/settings";
+// import BookingPage from "../pages/bookings";
+// import UserBookingsPage from "../pages/Bookings/user_book_page";
+// import SettingsPage from "../pages/Settings/settings";
 import { Spinner } from "../ui/loader/_spinner";
 import { cn } from "@/lib/utils";
 import { useDispatch, useSelector } from "react-redux";
@@ -17,66 +17,40 @@ import { RootState } from "@/core/store/store";
 import { setUser } from "@/core/store/slice/user_slice";
 import { isDev } from "@/core/constants";
 import { getUserSession } from "@/lib/utils";
-
-// Helper function to handle authentication state
-const checkAuthentication = () => {
-  const user = getUserSession();
-  console.info('user', user)
-  return user ? true : false;
-};
-
-// ProtectedRoute component to restrict access to authenticated routes
-const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
-  const isAuthenticated = checkAuthentication();
-  if (!isAuthenticated) {
-    return <Navigate to="/" replace />;
-  }
-  return children;
-};
-
-// AdminRoute component to restrict access to admin routes based on role
-const AdminRoute = ({ children }: { children: JSX.Element }) => {
-  const user = getUserSession();
-  if (!user || user.role !== "admin") {
-    return <Navigate to="/" replace />;
-  }
-  return children;
-};
+import SignInPage from "../pages/signin.page";
 
 export const AppRoute = () => {
   const dispatch = useDispatch();
   const appState = useSelector((state: RootState) => state.appSlice);
-  const userStore = useSelector((state: RootState) => state.userSlice);
+  // const userStore = useSelector((state: RootState) => state.userSlice);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [isAdmin, setIsAdmin] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
     let userSession = getUserSession();
-    console.log('First User Session Found:', userSession);
 
     if (isDev) {
       // Mock user for development environment
       userSession = {
         id: "mock-user-id",
-        role: "user",
+        role: "admin",
         name: "Mock User",
       };
     }
 
     if (userSession) {
-      console.log('Second User Session Found:', userSession);
       setIsAuthenticated(true);
+      setIsAdmin(userSession.role === "admin");
       dispatch(setUser(userSession));
-      console.log('Third User Session Found:', getUserSession());
     } else {
       setIsAuthenticated(false);
+      setIsAdmin(false);
     }
 
-    setIsLoading(false); // Stop loading once authentication check is complete
+    setIsLoading(false);
   }, [dispatch]);
 
-
-  // Render loading state during app initialization
   if (isLoading || appState.isLoading) {
     return (
       <div
@@ -92,117 +66,36 @@ export const AppRoute = () => {
     );
   }
 
-  // If no user is authenticated, render public routes
-  if (!isAuthenticated) {
-    return (
-      <Routes>
-        <Route element={<VerifiedLayout auth={isAuthenticated} />}>
-          <Route path="/" element={<LandingPage />} />
-          <Route path="*" element={<PageNotFound />} />
-        </Route>
-      </Routes>
-    );
-  }
-
-  // Render routes based on user role
   return (
     <Routes>
-      {/* User Routes */}
-      {userStore.user?.role === "user" ? (
-        <Route element={<VerifiedLayout auth={isAuthenticated} />}>
-          <Route
-            path="/products"
-            element={
-              <ProtectedRoute>
-                <StorePage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/booking/page"
-            element={
-              <ProtectedRoute>
-                <BookingPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/settings"
-            element={
-              <ProtectedRoute>
-                <SettingsPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/booking/user"
-            element={
-              <ProtectedRoute>
-                <UserBookingsPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/gallery"
-            element={
-              <ProtectedRoute>
-                <GalleryPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/cart"
-            element={
-              <ProtectedRoute>
-                <CartPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route path="*" element={<LandingPage />} />
-        </Route>
-      ) : null}
+      {/* Public Routes */}
+      <Route element={<VerifiedLayout auth={isAuthenticated} />}>
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/products" element={<StorePage />} />
+        <Route path="/gallery" element={<GalleryPage />} />
+        <Route path="/cart" element={<CartPage />} />
+        <Route path="*" element={<PageNotFound />} />
+      </Route>
 
       {/* Admin Routes */}
-      {userStore.user?.role === "admin" ? (
-        <Route element={<AdminLayout auth={isAuthenticated} />}>
-          <Route
-            path="/admin/"
-            element={
-              <AdminRoute>
-                <LandingPage />
-              </AdminRoute>
-            }
-          />
-          <Route
-            path="/admin/main"
-            element={
-              <AdminRoute>
-                <LandingPage />
-              </AdminRoute>
-            }
-          />
-          <Route
-            path="/admin/profile"
-            element={
-              <AdminRoute>
-                <LandingPage />
-              </AdminRoute>
-            }
-          />
-          <Route
-            path="/admin/other"
-            element={
-              <AdminRoute>
-                <LandingPage />
-              </AdminRoute>
-            }
-          />
-          <Route path="*" element={<PageNotFound />} />
-        </Route>
-      ) : null}
+      <Route
+        path="/admin/*"
+        element={
+          isAdmin ? (
+            <AdminLayout auth={isAuthenticated} />
+          ) : (
+            <Navigate to="/admin/signin" replace />
+          )
+        }
+      >
+        <Route path="main" element={<LandingPage />} />
+        <Route path="profile" element={<LandingPage />} />
+        <Route path="signin" element={<SignInPage />} />
+        <Route path="*" element={<PageNotFound />} />
+      </Route>
 
-      {/* Fallback Route */}
-      <Route path="*" element={<PageNotFound />} />
+      {/* Admin Sign-In */}
+      <Route path="/admin/signin" element={<SignInPage />} />
     </Routes>
   );
 };

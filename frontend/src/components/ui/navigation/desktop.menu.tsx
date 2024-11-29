@@ -68,7 +68,7 @@ const DesktopMenu: React.FC<AuthType> = ({ auth }) => {
           </NavigationMenu>
 
           {/* Sign In / Sign Up Section */}
-          <div className="flex space-x-4">
+          {/* <div className="flex space-x-4">
             {auth ? (
               <Link to="/settings">
                 <Avatar>
@@ -81,7 +81,7 @@ const DesktopMenu: React.FC<AuthType> = ({ auth }) => {
                 Sign In
               </Button>
             )}
-          </div>
+          </div> */}
         </div>
       </div>
     </>

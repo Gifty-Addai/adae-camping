@@ -87,7 +87,15 @@ export interface ProcessedVideo {
   views: string;
 }
 
-
+export interface SignInResponse {
+  message:string,
+  user :{
+    id:string,
+    name:string,
+    role:string
+  },
+  token:string
+}
 export interface Product {
   id: number;
   name: string;
@@ -96,8 +104,6 @@ export interface Product {
   price: number;
   oldPrice?: number; 
   description: string;
-  rating: number; 
-  badge?: string;
 }
 
 export type AuthType ={

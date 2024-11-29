@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import {  MinusIcon, PlusIcon, HeartIcon } from 'lucide-react';
+import { MinusIcon, PlusIcon, HeartIcon } from 'lucide-react';
 import { Product } from '@/core/interfaces';
 import {
   Card,
@@ -36,45 +36,37 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onOpenModal }) => {
 
   return (
     <Card
-    className="w-full h-[380px] rounded-lg shadow-md hover:shadow-lg transition-shadow cursor-pointer flex flex-col border border-gray-200 bg-white"
+      className="w-full h-[380px] rounded-lg shadow-md hover:shadow-lg transition-shadow cursor-pointer flex flex-col border border-gray-200 bg-card"
     >
       {/* Favorite Icon */}
       <HeartIcon className="absolute top-3 right-3 text-gray-400 hover:text-red-500 cursor-pointer" />
 
       {/* Product Image */}
-      <div className="relative h-28 pt-4" onClick={() => onOpenModal(product)}>
+      <div className="relative h-36 pt-4 px-4" onClick={() => onOpenModal(product)}>
         <img
           src={Images.Tent}
           alt={product.name}
-          className="w-full h-full object-contain"
+          className="w-full h-full object-fill"
         />
       </div>
 
-      <CardContent className="flex-grow flex flex-col justify-between px-4">
+      <CardContent className="px-4  flex flex-col justify-between">
         {/* Title and Description */}
-        <CardHeader>
-          <CardTitle className="text-sm font-semibold">{product.name}</CardTitle>
-          <CardDescription className="text-xs">
-            {product.description}
-          </CardDescription>
+        <CardHeader className='px-0'>
+          <CardTitle className="text-sm font-semibold text-card-foreground">{product.name}</CardTitle>
+          <CardDescription className="text-xs">{product.description}</CardDescription>
         </CardHeader>
 
-        {/* Price and Ratings */}
-        <div className="flex items-center justify-between">
-          <p className="text-sm font-bol">
-            GHS {product.price.toLocaleString()}
-          </p>
-          {/* <div className="flex items-center text-yellow-500">
-            <StarIcon className="h-4 w-4" />
-            <span className="ml-1 text-sm font-medium">{product.rating}</span>
-          </div> */}
-        </div>
+        {/* Price */}
+        <p className="text-sm font-bold text-card-foreground">
+          GHS {product.price.toLocaleString()}
+        </p>
 
         {/* Quantity Selector */}
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between mt-2">
           <div className="flex items-center">
             <Button
-              variant="outline"
+              variant="secondary"
               className="h-6 w-6 p-0 flex items-center justify-center"
               onClick={(e) => {
                 e.stopPropagation();
@@ -83,9 +75,9 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onOpenModal }) => {
             >
               <MinusIcon className="h-4 w-4" />
             </Button>
-            <p className="mx-3 text-sm font-medium">{quantity}</p>
+            <p className="mx-3 text-sm font-medium text-card-foreground">{quantity}</p>
             <Button
-              variant="outline"
+              variant="secondary"
               className="h-6 w-6 p-0 flex items-center justify-center"
               onClick={(e) => {
                 e.stopPropagation();
@@ -101,7 +93,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onOpenModal }) => {
       {/* Add to Cart Button */}
       <CardFooter className="p-4">
         <Button
-        variant="default"
+          variant="default"
           onClick={(e) => {
             e.stopPropagation();
             handleAddToCart();

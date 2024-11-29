@@ -1,7 +1,7 @@
 import { Outlet } from "react-router-dom";
 import React, { useState } from "react";
-import Sidebar from "../AdminDash/AdComponents/side_bar";
 import Header from "../AdminDash/AdComponents/header";
+import Sidebar from "../AdminDash/AdComponents/side_bar";
 
 type AdminLayout ={
   auth:boolean

@@ -9,10 +9,18 @@ import testimonyRoute from "./routes/testimony.route.js";
 import dotenv from "dotenv";
 import path from 'path';
 import { connectDb } from "./lib/db.js";
+import cors from 'cors';
+
 
 dotenv.config();
 
 const app = express();
+
+app.use(cors({
+    origin: process.env.FRONTEND_URL || 'http://localhost:5173', 
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
 
 const port = process.env.PORT || 3000;
 

@@ -11,6 +11,118 @@ export const Icons = {
       <path d="M22.675 0h-21.35C.58 0 0 .6 0 1.342v21.316C0 23.4.579 24 1.325 24H12.82V14.706h-3.32v-3.621h3.32V8.413c0-3.3 1.971-5.09 4.85-5.09 1.377 0 2.562.103 2.905.148v3.37l-1.994.001c-1.56 0-1.862.741-1.862 1.83v2.398h3.728l-.485 3.62h-3.244V24h6.357c.745 0 1.325-.6 1.325-1.342V1.342C24 .6 23.421 0 22.675 0z" />
     </svg>
   ),
+  dashboard: (props: React.SVGProps<SVGSVGElement>) => (
+    <svg
+      aria-hidden="true"
+      className="w-6 h-6 text-gray-500 transition duration-75 group-hover:text-gray-900"
+      fill="currentColor"
+      viewBox="0 0 20 20"
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}
+    >
+      <path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z"></path>
+      <path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z"></path>
+    </svg>
+  ),
+  
+  brand: (props: React.SVGProps<SVGSVGElement>) => (
+    <svg
+      aria-hidden="true"
+      className="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75  group-hover:text-gray-900"
+      fill="currentColor"
+      viewBox="0 0 20 20"
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}
+    >
+      <path d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path>
+    </svg>
+  ),
+  
+  category: (props: React.SVGProps<SVGSVGElement>) => (
+    <svg
+      aria-hidden="true"
+      className="w-6 h-6 text-gray-500 transition duration-75 group-hover:text-gray-900"
+      fill="currentColor"
+      viewBox="0 0 20 20"
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}
+    >
+      <path d="M2 5a2 2 0 012-2h12a2 2 0 012 2v12a2 2 0 01-2 2H4a2 2 0 01-2-2V5z"></path>
+    </svg>
+  ),
+
+  product: (props: React.SVGProps<SVGSVGElement>) => (
+    <svg
+      aria-hidden="true"
+      className="w-6 h-6 text-gray-500 transition duration-75 group-hover:text-gray-900"
+      fill="currentColor"
+      viewBox="0 0 20 20"
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}
+    >
+      <path d="M7 4a2 2 0 012-2h6a2 2 0 012 2v12a2 2 0 01-2 2H9a2 2 0 01-2-2V4z"></path>
+    </svg>
+  ),
+
+  cart: (props: React.SVGProps<SVGSVGElement>) => (
+    <svg
+      aria-hidden="true"
+      className="w-6 h-6 text-gray-500 transition duration-75 group-hover:text-gray-900"
+      fill="currentColor"
+      viewBox="0 0 20 20"
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}
+    >
+      <path d="M7 4a2 2 0 012-2h6a2 2 0 012 2v12a2 2 0 01-2 2H9a2 2 0 01-2-2V4z"></path>
+    </svg>
+  ),
+
+  chevron: (props: React.SVGProps<SVGSVGElement>) => (
+    <svg
+      aria-hidden="true"
+      className="w-6 h-6 text-gray-500 transition duration-75 group-hover:text-gray-900"
+      fill="currentColor"
+      viewBox="0 0 20 20"
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}
+    >
+      <path
+        fillRule="evenodd"
+        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+        clipRule="evenodd"
+      />
+    </svg>
+  ),
+
+  dualUser: (props: React.SVGProps<SVGSVGElement>) => (
+    <svg
+      aria-hidden="true"
+      className="w-6 h-6 text-gray-500 transition duration-75 group-hover:text-gray-900"
+      fill="currentColor"
+      viewBox="0 0 20 20"
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}
+    >
+      <path d="M5 3a2 2 0 012-2h6a2 2 0 012 2v2a2 2 0 01-2 2H7a2 2 0 01-2-2V3zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5z"></path>
+    </svg>
+  ),
+
+  signOut: (props: React.SVGProps<SVGSVGElement>) => (
+    <svg
+      aria-hidden="true"
+      className="w-6 h-6 text-gray-500 transition duration-75 group-hover:text-gray-900"
+      fill="currentColor"
+      viewBox="0 0 20 20"
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}
+    >
+      <path
+        fillRule="evenodd"
+        d="M13 3a1 1 0 01.707.293l4 4a1 1 0 010 1.414l-4 4A1 1 0 0113 11V7H6a1 1 0 110-2h7V3a1 1 0 011-1z"
+        clipRule="evenodd"
+      />
+    </svg>
+  ),
   twitter: (props: React.SVGProps<SVGSVGElement>) => (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -222,29 +334,6 @@ export const Icons = {
     </svg>
   ),
 
-  dualUser: (props: React.SVGProps<SVGSVGElement>) => (
-    <svg
-      className="fill-primary dark:fill-white"
-      width="22"
-      height="18"
-      viewBox="0 0 22 18"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      {...props}
-    >
-      <path
-        d="M7.18418 8.03751C9.31543 8.03751 11.0686 6.35313 11.0686 4.25626C11.0686 2.15938 9.31543 0.475006 7.18418 0.475006C5.05293 0.475006 3.2998 2.15938 3.2998 4.25626C3.2998 6.35313 5.05293 8.03751 7.18418 8.03751ZM7.18418 2.05626C8.45605 2.05626 9.52168 3.05313 9.52168 4.29063C9.52168 5.52813 8.49043 6.52501 7.18418 6.52501C5.87793 6.52501 4.84668 5.52813 4.84668 4.29063C4.84668 3.05313 5.9123 2.05626 7.18418 2.05626Z"
-        fill=""
-      />
-      <path
-        d="M15.8124 9.6875C17.6687 9.6875 19.1468 8.24375 19.1468 6.42188C19.1468 4.6 17.6343 3.15625 15.8124 3.15625C13.9905 3.15625 12.478 4.6 12.478 6.42188C12.478 8.24375 13.9905 9.6875 15.8124 9.6875ZM15.8124 4.7375C16.8093 4.7375 17.5999 5.49375 17.5999 6.45625C17.5999 7.41875 16.8093 8.175 15.8124 8.175C14.8155 8.175 14.0249 7.41875 14.0249 6.45625C14.0249 5.49375 14.8155 4.7375 15.8124 4.7375Z"
-        fill=""
-      />
-      <path
-        d="M15.9843 10.0313H15.6749C14.6437 10.0313 13.6468 10.3406 12.7874 10.8563C11.8593 9.61876 10.3812 8.79376 8.73115 8.79376H5.67178C2.85303 8.82814 0.618652 11.0625 0.618652 13.8469V16.3219C0.618652 16.975 1.13428 17.4906 1.7874 17.4906H20.2468C20.8999 17.4906 21.4499 16.9406 21.4499 16.2875V15.4625C21.4155 12.4719 18.9749 10.0313 15.9843 10.0313ZM2.16553 15.9438V13.8469C2.16553 11.9219 3.74678 10.3406 5.67178 10.3406H8.73115C10.6562 10.3406 12.2374 11.9219 12.2374 13.8469V15.9438H2.16553V15.9438ZM19.8687 15.9438H13.7499V13.8469C13.7499 13.2969 13.6468 12.7469 13.4749 12.2313C14.0937 11.7844 14.8499 11.5781 15.6405 11.5781H15.9499C18.0812 11.5781 19.8343 13.3313 19.8343 15.4625V15.9438H19.8687Z"
-        fill=""
-      />
-    </svg>
-  )
+ 
 
 };

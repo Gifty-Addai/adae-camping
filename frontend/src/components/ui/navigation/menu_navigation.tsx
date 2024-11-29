@@ -27,7 +27,7 @@ export const MenuBar: React.FC<AuthType> = ({auth}) => {
 
   return (
     <header className="h-16 mb-10 text-[15px] fixed inset-0 flex items-center bg-transparent z-50 px-4">
-      {isMobile ? <MobileMenu auth={auth} /> : <DesktopMenu auth={auth} />}
+      {isMobile ? <MobileMenu  /> : <DesktopMenu auth={auth} />}
       </header>
   )
 }
