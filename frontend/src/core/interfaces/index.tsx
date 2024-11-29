@@ -106,6 +106,7 @@ export interface Product {
   description: string;
 }
 
+
 export type AuthType ={
   auth: boolean
 }

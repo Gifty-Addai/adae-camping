@@ -52,7 +52,7 @@ const LandingPage = () => {
           className="z-0 flex flex-col items-center text-center px-4 mb-6"
         >
           <div className="flex flex-col sm:flex-row sm:space-x-24">
-            <Link to="/productse">
+            <Link to="/products">
               <Button variant="default" className="px-8 py-4 text-lg">
                 Shop Gears
               </Button>

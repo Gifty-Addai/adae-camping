@@ -1,45 +1,48 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import LanguageSwitcher from '@/components/ui/language.switcher';
-import DarkModeToggle from '@/components/ui/dark_mode_toggle';
 import ProductModal from '@/components/ui/product.modal';
-import Basket from '@/components/ui/basket';
 import Filters from '@/components/ui/filter';
 import ProductCard from './product.card';
-import productsData from '@/data/data.data';
 import { Product } from '@/core/interfaces';
 import { Button } from '@/components/ui/button';
 import { Page } from '@/components/ui/page';
+import { cn, postRequest } from '@/lib/utils';
+import { Spinner } from '@/components/ui/loader/_spinner';
+import { Icons } from '@/components/ui/icons';
+import { Link } from 'react-router-dom';
 
 const StorePage: React.FC = () => {
-  const [filteredProducts, setFilteredProducts] = React.useState<Product[]>(productsData);
-  const [categoryFilter, setCategoryFilter] = React.useState<string>('');  // Empty for "All" category
-  const [searchQuery, setSearchQuery] = React.useState<string>(''); // Search query
-  const [selectedProduct, setSelectedProduct] = React.useState<Product | null>(null);
-  const [isModalOpen, setIsModalOpen] = React.useState(false);
+  const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
+  const [categoryFilter, setCategoryFilter] = useState<string>(''); // Track category filter
+  const [searchQuery, setSearchQuery] = useState<string>(''); // Track search query
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
 
-  // Get categories from the products data
-  const categories = Array.from(new Set(productsData.map((p) => p.category)));
+  // Fetch products and categories from the server
+  useEffect(() => {
+    setLoading(true);
+    const fetchProducts = async () => {
+      try {
+        const params = {
+          name: searchQuery,
+          category: categoryFilter,
+        };
+        const response = await postRequest<Product[]>(
+          '/api/product/searchProducts',
+          params
+        );
+        setFilteredProducts(response);
+      } catch (error) {
+        console.error('Error fetching products:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  React.useEffect(() => {
-    let updatedProducts = [...productsData];
-
-    // Apply category filter if selected
-    if (categoryFilter && categoryFilter !== '') {
-      updatedProducts = updatedProducts.filter((product) => product.category === categoryFilter);
-    }
-
-    // Apply search query filter (if any)
-    if (searchQuery) {
-      updatedProducts = updatedProducts.filter((product) =>
-        product.name.toLowerCase().includes(searchQuery.toLowerCase())
-      );
-    }
-
-    // Update filtered products
-    setFilteredProducts(updatedProducts);
-  }, [categoryFilter, searchQuery]);
+    fetchProducts();
+  }, [categoryFilter, searchQuery]); // Re-fetch when category or search query changes
 
   const openModal = (product: Product) => {
     setSelectedProduct(product);
@@ -52,12 +55,44 @@ const StorePage: React.FC = () => {
   };
 
   const handleCategoryFilterChange = (category: string) => {
-    setCategoryFilter(category); 
+    setCategoryFilter(category); // Update category filter
   };
 
   const handleSearchChange = (query: string) => {
-    setSearchQuery(query); 
+    setSearchQuery(query); // Update search query
   };
+
+  const handleResetFilters = () => {
+    // Reset both category filter and search query to initial states
+    setCategoryFilter('');
+    setSearchQuery('');
+  };
+
+  const noProductsFoundMessage = searchQuery || categoryFilter ? (
+    <div className="flex justify-center items-center flex-col text-center p-8">
+      <h3 className="text-xl font-semibold text-gray-700 mb-2">
+        Oops, no products found! 🏕️
+      </h3>
+      <p className="text-gray-500 mb-4">
+        We couldn’t find anything matching your search or filter. Try something different!
+      </p>
+      <Button className="mt-4" onClick={handleResetFilters}>
+        Reset Filters 🔄
+      </Button>
+    </div>
+  ) : (
+    <div className="flex justify-center items-center flex-col text-center p-8">
+      <h3 className="text-xl font-semibold text-gray-700 mb-2">
+        Oops, looks like we’re out of stock! 🏕️
+      </h3>
+      <p className="text-gray-500 mb-4">
+        We might be out on a camping trip ourselves! But don’t worry, we’ll be back soon with fresh stock. 🌲
+      </p>
+      <Button className="mt-4" onClick={handleResetFilters}>
+        Reset Filters 🔄
+      </Button>
+    </div>
+  );
 
   return (
     <>
@@ -85,14 +120,17 @@ const StorePage: React.FC = () => {
             {/* Filters */}
             <div className="flex items-center justify-between mb-6">
               <Filters
-                categories={categories}
+                categories={filteredProducts}
                 onFilterChange={handleCategoryFilterChange}
                 onSearchChange={handleSearchChange}
+                categoryValue={categoryFilter}
+                searchQuery={searchQuery}
               />
               <div className="flex items-center space-x-4">
-                {/* <LanguageSwitcher />
-                <DarkModeToggle /> */}
-                <Basket />
+                <Link to={"/cart"}>
+                  <Icons.cart />
+
+                </Link>
               </div>
             </div>
 
@@ -100,15 +138,31 @@ const StorePage: React.FC = () => {
             <h2 className="text-2xl font-bold text-card-foreground mb-4">
               Explore Our Products!
             </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-x-6 gap-y-8">
-              {filteredProducts.map((product) => (
-                <ProductCard
-                  key={product.id}
-                  product={product}
-                  onOpenModal={openModal}
-                />
-              ))}
-            </div>
+
+            {loading ? (
+              <div
+                className={cn(
+                  "fixed top-0 left-0 w-full h-full flex items-center bg-primary justify-center z-50",
+                  loading && "bg-primary/50"
+                )}
+              >
+                <div className="text-center flex relative flex-col">
+                  <Spinner size={"xl"} />
+                </div>
+              </div>
+            ) : filteredProducts.length === 0 ? (
+              noProductsFoundMessage
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-x-6 gap-y-8">
+                {filteredProducts.map((product) => (
+                  <ProductCard
+                    key={product.id}
+                    product={product}
+                    onOpenModal={openModal}
+                  />
+                ))}
+              </div>
+            )}
 
             {/* Modal */}
             <ToastContainer />

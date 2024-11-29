@@ -1,19 +1,13 @@
 import {
   NavigationMenu,
-  NavigationMenuContent,
   NavigationMenuItem,
   NavigationMenuList,
-  NavigationMenuTrigger,
 } from "../navigation-menu"
 import { Button } from "../button"
 import { Link } from "react-router-dom";
-import { ListItem } from "./menu_navigation";
-import { AuthType } from "@/core/interfaces";
-import { Avatar, AvatarFallback, AvatarImage } from "../avatar";
-import { useModal } from "@/context/signIn_modal_context";
 
-const DesktopMenu: React.FC<AuthType> = ({ auth }) => {
-  const { setSignIn } = useModal();
+
+const DesktopMenu: React.FC = () => {
 
   return (
     <>
@@ -31,7 +25,7 @@ const DesktopMenu: React.FC<AuthType> = ({ auth }) => {
 
 
         <div className="flex items-center space-x-4 ml-auto">
-          <NavigationMenu>
+          {/* <NavigationMenu>
             <NavigationMenuList>
               <NavigationMenuItem>
                 <NavigationMenuTrigger>Camping Guides</NavigationMenuTrigger>
@@ -47,7 +41,7 @@ const DesktopMenu: React.FC<AuthType> = ({ auth }) => {
                 </NavigationMenuContent>
               </NavigationMenuItem>
             </NavigationMenuList>
-          </NavigationMenu>
+          </NavigationMenu> */}
           <NavigationMenu>
             <NavigationMenuList>
               <NavigationMenuItem>

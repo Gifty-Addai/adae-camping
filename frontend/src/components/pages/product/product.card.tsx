@@ -1,20 +1,14 @@
 import React, { useState } from 'react';
 import { MinusIcon, PlusIcon, HeartIcon } from 'lucide-react';
+import { useDispatch } from 'react-redux';
 import { Product } from '@/core/interfaces';
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardFooter,
-  CardTitle,
-  CardDescription,
-} from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardFooter, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useTranslation } from 'react-i18next';
-import CartContext from '@/context/cart.context';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Images } from '@/assets/assets';
+import { addToCart } from '@/core/store/slice/cart.slice';
 
 interface ProductCardProps {
   product: Product;
@@ -23,11 +17,12 @@ interface ProductCardProps {
 
 const ProductCard: React.FC<ProductCardProps> = ({ product, onOpenModal }) => {
   const { t } = useTranslation();
-  const { dispatch } = React.useContext(CartContext);
+  const dispatch = useDispatch();
+
   const [quantity, setQuantity] = useState(1);
 
   const handleAddToCart = () => {
-    dispatch({ type: 'ADD_TO_CART', product, quantity });
+    dispatch(addToCart({ product, quantity }));
     toast.success(`${product.name} ${t('added to cart!')}`);
   };
 
@@ -44,15 +39,15 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onOpenModal }) => {
       {/* Product Image */}
       <div className="relative h-36 pt-4 px-4" onClick={() => onOpenModal(product)}>
         <img
-          src={Images.Tent}
+          src={Images.Tent} // Assuming placeholder image, you can replace with product.imageUrl
           alt={product.name}
           className="w-full h-full object-fill"
         />
       </div>
 
-      <CardContent className="px-4  flex flex-col justify-between">
+      <CardContent className="px-4 flex flex-col justify-between">
         {/* Title and Description */}
-        <CardHeader className='px-0'>
+        <CardHeader className="px-0">
           <CardTitle className="text-sm font-semibold text-card-foreground">{product.name}</CardTitle>
           <CardDescription className="text-xs">{product.description}</CardDescription>
         </CardHeader>

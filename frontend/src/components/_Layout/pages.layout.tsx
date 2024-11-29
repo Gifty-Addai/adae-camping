@@ -7,11 +7,11 @@ type VerifiedLayout ={
   auth:boolean
 }
 
-export const VerifiedLayout : React.FC<VerifiedLayout> = ({auth}) => {
+export const VerifiedLayout : React.FC<VerifiedLayout> = () => {
   return (
     <>
       {/* Navigation Menu */}
-      <MenuBar auth={auth}/>
+      <MenuBar/>
       
       {/* Main Content Area */}
       <div>

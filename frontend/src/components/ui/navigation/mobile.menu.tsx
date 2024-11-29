@@ -1,25 +1,23 @@
 import React, { useState } from "react";
-import { Link, Navigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Menu, X } from "lucide-react"; // Icons for hamburger and close
 import { Button } from "../button";
 import {
   NavigationMenu,
-  NavigationMenuContent,
   NavigationMenuItem,
   NavigationMenuList,
-  NavigationMenuTrigger,
 } from "../navigation-menu";
 
 const MobileMenu: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   const handleLinkClick = () => {
-    setIsOpen(false); // Close the menu on navigation
+    setIsOpen(false);
   };
 
   return (
     <div className="flex justify-between w-full">
-      <div className="flex items-center space-x-4">
+      <div className="flex items-center space-x-4 z-20">
         <img
           // src={Images.AcsLogo}
           alt="Logo"
@@ -50,47 +48,23 @@ const MobileMenu: React.FC = () => {
             <X className="h-3 w-3" />
           </Button>
 
-          <div className="flex flex-col items-center space-y-6 p-6 text-lg">
+          <div className="flex flex-col space-y-6 p-6 text-lg">
+            {/* Navigation Menu */}
             <NavigationMenu>
-              <NavigationMenuList>
+              <NavigationMenuList className="flex flex-col space-y-4">
                 <NavigationMenuItem>
                   <Link to="/gallery" onClick={handleLinkClick}>
-                    <Button>
+                    <Button className="w-full sm:w-auto">
                       Gallery
                     </Button>
                   </Link>
                 </NavigationMenuItem>
-                <Link to="/products" onClick={handleLinkClick}>
-                  <Button>
-                    Shop Gears
-                  </Button>
-                </Link>
-              </NavigationMenuList>
-              
-            </NavigationMenu>
-            <NavigationMenu>
-              <NavigationMenuList>
                 <NavigationMenuItem>
-                  <NavigationMenuTrigger>Camping Guides</NavigationMenuTrigger>
-                  <NavigationMenuContent>
-                    <ul className="grid gap-3 p-4">
-                      <li>
-                        <Link to="/docs" className="hover:text-gray-400" onClick={handleLinkClick}>
-                          Introduction
-                        </Link>
-                      </li>
-                      <li>
-                        <Link to="/docs/locations" className="hover:text-gray-400" onClick={handleLinkClick}>
-                          Locations
-                        </Link>
-                      </li>
-                      <li>
-                        <Link to="/docs/gear-checklist" className="hover:text-gray-400" onClick={handleLinkClick}>
-                          Gear Checklist
-                        </Link>
-                      </li>
-                    </ul>
-                  </NavigationMenuContent>
+                  <Link to="/products" onClick={handleLinkClick}>
+                    <Button className="w-full sm:w-auto">
+                      Shop Gears
+                    </Button>
+                  </Link>
                 </NavigationMenuItem>
               </NavigationMenuList>
             </NavigationMenu>

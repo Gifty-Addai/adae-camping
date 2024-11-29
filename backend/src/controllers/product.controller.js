@@ -2,7 +2,7 @@ import Product from "../models/product.model.js";
 
 export const createProduct = async (req, res, next) => {
 
-    const { name, description, price, category, image, stock, isAvailable } = req.Body;
+    const { name, description, price, category, image, stock, isAvailable } = req.body;
 
     if (!name || !description || !price) {
 
@@ -67,18 +67,29 @@ export const getProductById = async (req, res, next) => {
 };
 
 export const searchProducts = async (req, res, next) => {
-    const { name, category, minPrice, maxPrice, isAvailable } = req.query;
+    const { name, category, minPrice, maxPrice, isAvailable } = req.body;
 
     try {
         const filters = {};
 
-        if (name) filters.name = { $regex: name, $options: 'i' }; // Case-insensitive search
-        if (category) filters.category = category;
+        // Case-insensitive search for 'name'
+        if (name) {
+            filters.name = { $regex: new RegExp(name, 'i') }; // Using RegExp constructor for better handling
+        }
+
+        // No case-insensitivity needed for 'category' (unless you want to)
+        if (category) filters.category = { $regex: new RegExp(category, 'i') }; // Optional case-insensitive category search
+
+        // Filter by price range if provided
         if (minPrice) filters.price = { ...filters.price, $gte: Number(minPrice) };
         if (maxPrice) filters.price = { ...filters.price, $lte: Number(maxPrice) };
+
+        // Filter availability (boolean check)
         if (isAvailable !== undefined) filters.isAvailable = isAvailable === 'true';
 
+        // Query the database
         const products = await Product.find(filters);
+
         res.status(200).json(products);
     } catch (error) {
         next(error);

@@ -5,7 +5,6 @@ import { AdminLayout } from "./admin.layout";
 import { PageNotFound } from "../pages/not_found.page";
 import LandingPage from "../pages/landing";
 import StorePage from "../pages/product/products";
-import CartPage from "../pages/product/cart.page";
 import GalleryPage from "../pages/Gallery/gallery";
 // import BookingPage from "../pages/bookings";
 // import UserBookingsPage from "../pages/Bookings/user_book_page";
@@ -18,6 +17,7 @@ import { setUser } from "@/core/store/slice/user_slice";
 import { isDev } from "@/core/constants";
 import { getUserSession } from "@/lib/utils";
 import SignInPage from "../pages/signin.page";
+import CartPage from "../pages/Cart/cart.page";
 
 export const AppRoute = () => {
   const dispatch = useDispatch();

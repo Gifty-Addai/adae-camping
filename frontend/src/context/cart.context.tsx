@@ -1,5 +1,13 @@
-import { CartItem, Product, ProviderType } from '@/core/interfaces';
-import React, { createContext, useReducer } from 'react';
+import React, { createContext, useReducer, ReactNode } from 'react';
+
+// Define initial state for the cart
+interface CartItem {
+  id: string;
+  name: string;
+  price: number;
+  quantity: number;
+  image: string;
+}
 
 interface CartState {
   items: CartItem[];
@@ -7,76 +15,76 @@ interface CartState {
   totalPrice: number;
 }
 
-type Action =
-  | { type: 'ADD_TO_CART'; product: Product; quantity: number } // Modified to include `quantity`
-  | { type: 'REMOVE_FROM_CART'; productId: number }
-  | { type: 'INCREASE_QUANTITY'; productId: number }
-  | { type: 'DECREASE_QUANTITY'; productId: number }
-  | { type: 'CLEAR_CART' };
-
 const initialState: CartState = {
   items: [],
   totalItems: 0,
   totalPrice: 0,
 };
 
-const CartContext = createContext<{
-  state: CartState;
-  dispatch: React.Dispatch<Action>;
-}>({ state: initialState, dispatch: () => null });
+// Define action types
+type CartAction =
+  | { type: 'ADD_TO_CART'; product: CartItem; quantity: number }
+  | { type: 'REMOVE_ITEM'; id: string }
+  | { type: 'UPDATE_ITEM_QUANTITY'; id: string; quantity: number };
 
-const cartReducer = (state: CartState, action: Action): CartState => {
-  let updatedItems = [...state.items];
+// Reducer to handle cart actions
+const cartReducer = (state: CartState, action: CartAction): CartState => {
   switch (action.type) {
-    case 'ADD_TO_CART':
-      const existingItem = updatedItems.find((item) => item.id === action.product.id);
-      if (existingItem) {
-        existingItem.quantity += action.quantity; // Increment quantity
+    case 'ADD_TO_CART': {
+      const { product, quantity } = action;
+      const existingItemIndex = state.items.findIndex(item => item.id === product.id);
+      if (existingItemIndex > -1) {
+        const updatedItems = [...state.items];
+        updatedItems[existingItemIndex].quantity += quantity;
+        return calculateCartTotals(updatedItems);
       } else {
-        updatedItems.push({ ...action.product, quantity: action.quantity }); // Add new item with specified quantity
+        const updatedItems = [...state.items, { ...product, quantity }];
+        return calculateCartTotals(updatedItems);
       }
-      break;
-
-    case 'REMOVE_FROM_CART':
-      updatedItems = updatedItems.filter((item) => item.id !== action.productId);
-      break;
-
-    case 'INCREASE_QUANTITY':
-      updatedItems = updatedItems.map((item) =>
-        item.id === action.productId ? { ...item, quantity: item.quantity + 1 } : item
+    }
+    case 'REMOVE_ITEM': {
+      const updatedItems = state.items.filter(item => item.id !== action.id);
+      return calculateCartTotals(updatedItems);
+    }
+    case 'UPDATE_ITEM_QUANTITY': {
+      const updatedItems = state.items.map(item =>
+        item.id === action.id ? { ...item, quantity: action.quantity } : item
       );
-      break;
-
-    case 'DECREASE_QUANTITY':
-      updatedItems = updatedItems.map((item) =>
-        item.id === action.productId && item.quantity > 1
-          ? { ...item, quantity: item.quantity - 1 }
-          : item
-      );
-      break;
-
-    case 'CLEAR_CART':
-      updatedItems = [];
-      break;
-
+      return calculateCartTotals(updatedItems);
+    }
     default:
       return state;
   }
-
-  const totalItems = updatedItems.reduce((sum, item) => sum + item.quantity, 0);
-  const totalPrice = updatedItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
-
-  return {
-    items: updatedItems,
-    totalItems,
-    totalPrice,
-  };
 };
 
-export const CartProvider: React.FC<ProviderType> = ({ children }) => {
+// Helper function to calculate totals
+const calculateCartTotals = (items: CartItem[]): CartState => {
+  const totalItems = items.reduce((total, item) => total + item.quantity, 0);
+  const totalPrice = items.reduce((total, item) => total + item.price * item.quantity, 0);
+  return { items, totalItems, totalPrice };
+};
+
+// Create CartContext with proper types
+interface CartContextType {
+  state: CartState;
+  dispatch: React.Dispatch<CartAction>;
+}
+
+const CartContext = createContext<CartContextType | undefined>(undefined); // Using undefined to avoid accessing context outside provider
+
+interface CartProviderProps {
+  children: ReactNode;
+}
+
+const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
   const [state, dispatch] = useReducer(cartReducer, initialState);
-
-  return <CartContext.Provider value={{ state, dispatch }}>{children}</CartContext.Provider>;
+  return (
+    <CartContext.Provider value={{ state, dispatch }}>
+      {children}
+    </CartContext.Provider>
+  );
 };
 
-export default CartContext;
+// Export CartContext and CartContextType
+export { CartContext, CartProvider };
+export type { CartContextType };
