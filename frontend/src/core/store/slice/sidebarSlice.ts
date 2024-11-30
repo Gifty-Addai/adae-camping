@@ -1,6 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const initialState = {
+interface SidebarState {
+  sidebarMenu: boolean;
+}
+
+const initialState: SidebarState = {
   sidebarMenu: false,
 };
 
@@ -8,7 +12,7 @@ const sidebarSlice = createSlice({
   name: "sidebarMenu",
   initialState,
   reducers: {
-    isActive: (state) => {
+    isActive: (state: SidebarState) => { 
       state.sidebarMenu = !state.sidebarMenu;
     },
   },
