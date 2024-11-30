@@ -11,13 +11,17 @@ import path from 'path';
 import { connectDb } from "./src/lib/db.js";
 import cors from 'cors';
 
-
 dotenv.config();
 
 const app = express();
 
+// Set CORS based on the environment
+const allowedOrigins = process.env.NODE_ENV === 'production'
+    ? [process.env.FRONTEND_URL] // Production frontend URL
+    : ['http://localhost:5173']; // Development frontend URL
+
 app.use(cors({
-    origin: process.env.FRONTEND_URL, 
+    origin: allowedOrigins,
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization']
 }));
@@ -36,7 +40,9 @@ app.use("/api/gallery", galleryRoute);
 app.use("/api/video", videoRoute);
 app.use("/api/testimony", testimonyRoute);
 
-// if(process.env.NODE_ENV === 'production'){
+// Serve static files in production
+// Uncomment the following code if you're serving static assets
+// if (process.env.NODE_ENV === 'production') {
 //     app.use(express.static(path.join(__dirname, "./frontend/dist")));
 //     app.get("*", (req, res) => {
 //         res.sendFile(path.resolve(__dirname, "./frontend/dist", "index.html"));
