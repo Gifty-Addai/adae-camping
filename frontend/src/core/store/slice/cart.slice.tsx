@@ -2,7 +2,6 @@
 import { Product } from '@/core/interfaces';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-// Define the CartItem type to extend Product and include quantity
 interface CartItem extends Product {
   quantity: number;
 }
