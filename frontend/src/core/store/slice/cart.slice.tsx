@@ -2,28 +2,32 @@
 import { Product } from '@/core/interfaces';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
+// Define the CartItem type to extend Product and include quantity
 interface CartItem extends Product {
   quantity: number;
 }
 
+// Define the CartState type for the cart's state
 interface CartState {
   items: CartItem[];
   totalItems: number;
   totalPrice: number;
 }
 
+// Initial state for the cart
 const initialState: CartState = {
   items: [],
   totalItems: 0,
   totalPrice: 0,
 };
 
+// Create the cart slice with the necessary reducers
 const cartSlice = createSlice({
   name: 'cart',
   initialState,
   reducers: {
     // Add a product to the cart with the specified quantity
-    addToCart: (state, action: PayloadAction<{ product: Product; quantity: number }>) => {
+    addToCart: (state: CartState, action: PayloadAction<{ product: Product; quantity: number }>) => {
       const { product, quantity } = action.payload;
       const existingItemIndex = state.items.findIndex(item => item.id === product.id);
       
@@ -41,7 +45,7 @@ const cartSlice = createSlice({
     },
     
     // Remove an item from the cart by its ID
-    removeItem: (state, action: PayloadAction<number>) => {
+    removeItem: (state: CartState, action: PayloadAction<number>) => {
       state.items = state.items.filter(item => item.id !== action.payload);
       
       // Recalculate totals
@@ -50,7 +54,7 @@ const cartSlice = createSlice({
     },
     
     // Update the quantity of a specific item in the cart
-    updateItemQuantity: (state, action: PayloadAction<{ id: number; quantity: number }>) => {
+    updateItemQuantity: (state: CartState, action: PayloadAction<{ id: number; quantity: number }>) => {
       const { id, quantity } = action.payload;
       const item = state.items.find(item => item.id === id);
       
@@ -64,7 +68,7 @@ const cartSlice = createSlice({
     },
     
     // Clear the cart
-    clearCart: (state) => {
+    clearCart: (state: CartState) => {
       state.items = [];
       state.totalItems = 0;
       state.totalPrice = 0;
