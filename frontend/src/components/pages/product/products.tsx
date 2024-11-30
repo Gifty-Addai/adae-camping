@@ -30,7 +30,7 @@ const StorePage: React.FC = () => {
         //   category: categoryFilter,
         // };
         const response = await getRequest<Product[]>(
-          `/api/product/searchProducts?name=${searchQuery}&category=${categoryFilter}`
+          `/api/product/getAllProducts`
         );
         setFilteredProducts(response);
       } catch (error) {
