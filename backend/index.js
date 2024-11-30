@@ -1,14 +1,14 @@
 import express from "express";
-import authRoutes from "./routes/auth.route.js";
-import productRouter from "./routes/product.route.js";
-import bookinRoute from "./routes/booking.route.js";
-import galleryRoute from "./routes/gallery.route.js";
-import userRoute from "./routes/user.route.js";
-import videoRoute from "./routes/video.route.js";
-import testimonyRoute from "./routes/testimony.route.js";
+import authRoutes from "./src/routes/auth.route.js";
+import productRouter from "./src/routes/product.route.js";
+import bookinRoute from "./src/routes/booking.route.js";
+import galleryRoute from "./src/routes/gallery.route.js";
+import userRoute from "./src/routes/user.route.js";
+import videoRoute from "./src/routes/video.route.js";
+import testimonyRoute from "./src/routes/testimony.route.js";
 import dotenv from "dotenv";
 import path from 'path';
-import { connectDb } from "./lib/db.js";
+import { connectDb } from "./src/lib/db.js";
 import cors from 'cors';
 
 
