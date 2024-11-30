@@ -61,11 +61,7 @@ export const axiosInstance: AxiosInstance = axios.create({
   baseURL: API_BASE_URL,
   timeout: 30000,
   headers: {
-    'Content-Type': 'application/json',
-    'Accept': '*',
-    'Cache-Control': 'no-cache', 
-    'Pragma': 'no-cache',     
-    'Expires': '0',
+    'Content-Type': 'application/json',  
   },
 });
 
