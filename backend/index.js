@@ -36,12 +36,12 @@ app.use("/api/gallery", galleryRoute);
 app.use("/api/video", videoRoute);
 app.use("/api/testimony", testimonyRoute);
 
-if(process.env.NODE_ENV === 'production'){
-    app.use(express.static(path.join(__dirname, "./frontend/dist")));
-    app.get("*", (req, res) => {
-        res.sendFile(path.resolve(__dirname, "./frontend/dist", "index.html"));
-    });
-}
+// if(process.env.NODE_ENV === 'production'){
+//     app.use(express.static(path.join(__dirname, "./frontend/dist")));
+//     app.get("*", (req, res) => {
+//         res.sendFile(path.resolve(__dirname, "./frontend/dist", "index.html"));
+//     });
+// }
 
 app.listen(port, () => {
     console.log(`Server started on port ${port}, ${process.env.FRONTEND_URL}`);
