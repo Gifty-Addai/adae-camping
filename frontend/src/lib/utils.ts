@@ -62,9 +62,11 @@ export const axiosInstance: AxiosInstance = axios.create({
   timeout: 30000,
   headers: {
     'Content-Type': 'application/json',
-    Accept: '*',
+    'Accept': '*',
+    'Cache-Control': 'no-cache', 
+    'Pragma': 'no-cache',     
+    'Expires': '0',
   },
-  withCredentials: false,
 });
 
 // Interceptor to handle unauthorized requests and other global errors
