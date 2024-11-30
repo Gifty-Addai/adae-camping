@@ -5,11 +5,11 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useDispatch } from "react-redux";
-import { setUser } from "@/core/store/slice/user_slice";
 import { postRequest, localStorageUtil } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
 import { SignInResponse } from "@/core/interfaces";
 import { Page } from "../ui/page";
+import { setUser } from "@/core/store/slice/user_slice";
 
 const signInSchema = z.object({
   email: z.string().email("Invalid email address"),

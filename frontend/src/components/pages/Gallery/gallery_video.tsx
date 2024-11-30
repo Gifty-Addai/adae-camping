@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import VideoCard from './video_card';
-import { fetchAllChannelVideos } from '@/lib/utils';
 import { ProcessedVideo } from '@/core/interfaces';
 import { Spinner } from '@/components/ui/loader/_spinner';
+import fetchAllChannelVideos from '@/lib/utils';
 
 interface GalleryVideosProps {
   onItemSelect: (item: any) => void;

@@ -13,11 +13,11 @@ import { Spinner } from "../ui/loader/_spinner";
 import { cn } from "@/lib/utils";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/core/store/store";
-import { setUser } from "@/core/store/slice/user_slice";
 import { isDev } from "@/core/constants";
 import { getUserSession } from "@/lib/utils";
 import SignInPage from "../pages/signin.page";
 import CartPage from "../pages/Cart/cart.page";
+import { setUser } from "@/core/store/slice/user_slice";
 
 export const AppRoute = () => {
   const dispatch = useDispatch();
