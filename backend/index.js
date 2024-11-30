@@ -15,23 +15,21 @@ dotenv.config();
 
 const app = express();
 
-// Set CORS based on the environment
-const allowedOrigins = process.env.NODE_ENV === 'production'
-    ? [process.env.FRONTEND_URL] // Production frontend URL
-    : ['http://localhost:5173']; // Development frontend URL
-
+// CORS configuration
 app.use(cors({
-    origin: allowedOrigins,
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    allowedHeaders: ['Content-Type', 'Authorization']
+    origin: process.env.FRONTEND_URL,  // Frontend URL from .env or Vercel environment variable
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],  // Allowed methods
+    allowedHeaders: ['Content-Type', 'Authorization'],  // Allowed headers
 }));
 
 const port = process.env.PORT || 3000;
 
 const __dirname = path.resolve();
-// Middleware and routes
+
+// Middleware to parse JSON requests
 app.use(express.json());
 
+// API routes
 app.use("/api/auth", authRoutes);
 app.use("/api/product", productRouter);
 app.use("/api/booking", bookinRoute);
@@ -40,8 +38,10 @@ app.use("/api/gallery", galleryRoute);
 app.use("/api/video", videoRoute);
 app.use("/api/testimony", testimonyRoute);
 
-// Serve static files in production
-// Uncomment the following code if you're serving static assets
+// Handle preflight OPTIONS requests for CORS
+app.options('*', cors()); // Allow preflight requests for all routes
+
+// Uncomment and configure if you want to serve the frontend from the backend in production
 // if (process.env.NODE_ENV === 'production') {
 //     app.use(express.static(path.join(__dirname, "./frontend/dist")));
 //     app.get("*", (req, res) => {
@@ -49,7 +49,8 @@ app.use("/api/testimony", testimonyRoute);
 //     });
 // }
 
+// Start the server and connect to the database
 app.listen(port, () => {
     console.log(`Server started on port ${port}, ${process.env.FRONTEND_URL}`);
-    connectDb();
+    connectDb(); // Make sure the DB connection happens when the app starts
 });
