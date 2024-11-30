@@ -7,7 +7,7 @@ import ProductCard from './product.card';
 import { Product } from '@/core/interfaces';
 import { Button } from '@/components/ui/button';
 import { Page } from '@/components/ui/page';
-import { cn, postRequest } from '@/lib/utils';
+import { cn, getRequest } from '@/lib/utils';
 import { Spinner } from '@/components/ui/loader/_spinner';
 import { Icons } from '@/components/ui/icons';
 import { Link } from 'react-router-dom';
@@ -25,13 +25,12 @@ const StorePage: React.FC = () => {
     setLoading(true);
     const fetchProducts = async () => {
       try {
-        const params = {
-          name: searchQuery,
-          category: categoryFilter,
-        };
-        const response = await postRequest<Product[]>(
-          '/api/product/searchProducts',
-          params
+        // const params = {
+        //   name: searchQuery,
+        //   category: categoryFilter,
+        // };
+        const response = await getRequest<Product[]>(
+          `/api/product/searchProducts?name=${searchQuery}&category=${categoryFilter}`
         );
         setFilteredProducts(response);
       } catch (error) {

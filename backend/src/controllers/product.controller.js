@@ -67,7 +67,7 @@ export const getProductById = async (req, res, next) => {
 };
 
 export const searchProducts = async (req, res, next) => {
-    const { name, category, minPrice, maxPrice, isAvailable } = req.body;
+    const { name, category, minPrice, maxPrice, isAvailable } = req.query;  // Use req.query instead of req.body
 
     try {
         const filters = {};
@@ -77,8 +77,8 @@ export const searchProducts = async (req, res, next) => {
             filters.name = { $regex: new RegExp(name, 'i') }; // Using RegExp constructor for better handling
         }
 
-        // No case-insensitivity needed for 'category' (unless you want to)
-        if (category) filters.category = { $regex: new RegExp(category, 'i') }; // Optional case-insensitive category search
+        // Optional case-insensitive category search
+        if (category) filters.category = { $regex: new RegExp(category, 'i') };
 
         // Filter by price range if provided
         if (minPrice) filters.price = { ...filters.price, $gte: Number(minPrice) };
