@@ -131,7 +131,7 @@ const StorePage: React.FC = () => {
               Explore Our Products!
             </h2>
 
-            {loading ? (
+            {loading && (
               <div
                 className={cn(
                   "fixed top-0 left-0 w-full h-full flex items-center bg-primary justify-center z-50",
@@ -143,8 +143,8 @@ const StorePage: React.FC = () => {
                 </div>
               </div>
             ) 
-            : 
-            filteredProducts.length === 0 ? (
+          } 
+           { !loading && filteredProducts.length === 0 ? (
               noProductsFoundMessage
             ) 
             : (
