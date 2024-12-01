@@ -8,10 +8,10 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { bookingSchema } from '@/core/interfaces/zod';
-import { BookingFormValues, PaymentInitializationResponse } from '@/core/interfaces';
+import { BookingFormValues, PaymentInitializationResponse, PaymentVerifyResponse } from '@/core/interfaces';
 import { Input } from '@/components/ui/input';
 import PaymentModal from './payment_instruction_modal';
-import { postRequest } from '@/lib/utils';
+import { getRequest, postRequest } from '@/lib/utils';
 import PaystackPop from '@paystack/inline-js'
 
 
@@ -35,15 +35,38 @@ const CartPage: React.FC = () => {
         handleCheckout(data);
     };
 
+    const verifyPayment = async (reference: string) => {
+        try {
+            const response = await getRequest<PaymentVerifyResponse>(`/api/auth/verifypayment/${ reference }` );
+
+            if (response.status) {
+                return { success: true };
+            } else {
+                return { success: false };
+            }
+        } catch (error) {
+            console.error('Error verifying payment:', error);
+            return { success: false };
+        }
+    };
+
     const handleCheckout = async (data: BookingFormValues) => {
         try {
             const response = await postRequest<PaymentInitializationResponse>('/api/auth/payment', { ...data, amount: Math.round(cart.totalPrice) });
 
             if (response.success) {
-                const popup = new PaystackPop()
+                const popup = new PaystackPop();
                 // @ts-ignore
-                popup.resumeTransaction(response.access_code.accessCode)
-               
+                popup.resumeTransaction(response.access_code.accessCode);
+
+
+                const verificationResponse = await verifyPayment(response.reference);
+                if (verificationResponse.success) {
+                    alert('Payment successful!')
+                } else {
+                    alert('Payment verification failed!');
+                }
+
             } else {
                 alert('Payment initialization failed!');
             }
@@ -52,6 +75,7 @@ const CartPage: React.FC = () => {
             alert('Payment initialization failed!');
         }
     };
+
 
     if (cart.totalItems === 0) {
         return (

@@ -36,19 +36,19 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onOpenModal }) => {
       <HeartIcon className="absolute top-3 right-3 text-gray-400 hover:text-red-500 cursor-pointer" />
 
       {/* Product Image */}
-      <div className="relative h-36 pt-4 px-4" onClick={() => onOpenModal(product)}>
+      <div className="relative h-40 pt-4 px-4" onClick={() => onOpenModal(product)}>
         <img
-          src={Images.Tent} // Assuming placeholder image, you can replace with product.imageUrl
+          src={product.imageUrl}
           alt={product.name}
-          className="w-full h-full object-fill"
+          className="w-full h-full object-contain"
         />
       </div>
 
       <CardContent className="px-4 flex flex-col justify-between">
         {/* Title and Description */}
-        <CardHeader className="px-0">
+        <CardHeader className="px-0 py-1">
           <CardTitle className="text-sm font-semibold text-card-foreground">{product.name}</CardTitle>
-          <CardDescription className="text-xs">{product.description}</CardDescription>
+          <CardDescription className="text-xs line-clamp-2">{product.description}</CardDescription>
         </CardHeader>
 
         {/* Price */}

@@ -12,6 +12,12 @@ export interface PaymentInitializationResponse {
   access_code:{ accessCode: string; }
 }
 
+export interface PaymentVerifyResponse {
+  status: boolean;
+  message: string;
+  // data: PaymentData;
+}
+
 export interface IUser {
     role:string,
     id:string,
