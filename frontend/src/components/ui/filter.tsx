@@ -1,5 +1,6 @@
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from './select';
 import { Input } from './input';
+import { Button } from './button';  // Make sure to import Button
 import { Product } from '@/core/interfaces';
 
 interface FilterProps {
@@ -8,9 +9,10 @@ interface FilterProps {
   onSearchChange: (query: string) => void;
   categoryValue: string; 
   searchQuery: string;   
+  onSearch: () => void;  // Add an onSearch prop for handling the search button click
 }
 
-const Filters: React.FC<FilterProps> = ({ onFilterChange, onSearchChange, categoryValue, searchQuery }) => {
+const Filters: React.FC<FilterProps> = ({ onFilterChange, onSearchChange, categoryValue, searchQuery, onSearch }) => {
 
   const handleCategoryChange = (value: string) => {
     if (value === 'all') {
@@ -48,20 +50,18 @@ const Filters: React.FC<FilterProps> = ({ onFilterChange, onSearchChange, catego
       </Select>
 
       {/* Search Input */}
-      <Input
-        type="text"
-        className="p-2 rounded-md border border-gray-300 w-full sm:w-[250px]"
-        placeholder="Search products"
-        value={searchQuery}
-        onChange={handleSearchChange}
-      />
-
-      {/* Reset Button */}
-      <button 
-        className="mt-4 sm:mt-0 p-2 bg-gray-200 text-sm font-semibold text-gray-700 rounded-md hover:bg-gray-300"
-        onClick={resetFilters}>
-        Reset Filters
-      </button>
+      <div className="flex items-center space-x-2 w-full sm:w-[250px]">
+        <Input
+          type="text"
+          className="p-2 rounded-md border border-gray-300 w-full"
+          placeholder="Search products"
+          value={searchQuery}
+          onChange={handleSearchChange}
+        />
+        <Button onClick={onSearch} className="p-2 bg-blue-600 text-white rounded-md">
+          Search
+        </Button>
+      </div>
     </div>
   );
 };

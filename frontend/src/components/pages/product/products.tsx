@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import ProductModal from '@/components/ui/product.modal';
@@ -9,7 +9,6 @@ import { Button } from '@/components/ui/button';
 import { Page } from '@/components/ui/page';
 import { cn, postRequest } from '@/lib/utils';
 import { Spinner } from '@/components/ui/loader/_spinner';
-import { debounce } from 'lodash';
 
 const StorePage: React.FC = () => {
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
@@ -18,34 +17,41 @@ const StorePage: React.FC = () => {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState<boolean>(false);
+  const [fetchError, setFetchError] = useState<boolean>(false);
 
-  filteredProducts.map((prod)=>console.log("filterproducts" , prod._id))
-  
+  // Function to fetch products based on search and category filter
+  const fetchProducts = async (searchQuery: string, categoryFilter: string) => {
+    setLoading(true);
+    setFetchError(false);  // Reset the error state before fetching
+    try {
+      const params = {
+        name: searchQuery,
+        category: categoryFilter,
+      };
+      const response = await postRequest<Product[]>('/api/product/searchProducts', params);
 
-  // Debounced search query
-  const debouncedSearch = useRef(
-    debounce(async (searchQuery: string, categoryFilter: string) => {
-      setLoading(true);
-      try {
-        const params = {
-          name: searchQuery,
-          category: categoryFilter,
-        };
-        const response = await postRequest<Product[]>('/api/product/searchProducts', params);
-        setFilteredProducts(response);
-      } catch (error) {
-        console.error('Error fetching products:', error);
-      } finally {
-        setLoading(false);
+      if (response.length === 0) {
+        setFetchError(true);  // No products found
       }
-    }, 2000)
-  ).current;
 
+      setFilteredProducts(response);
+    } catch (error) {
+      console.error('Error fetching products:', error);
+      setFetchError(true);  // Set error state if fetch fails
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Call fetchProducts on initial load with no filters
   useEffect(() => {
+    fetchProducts(searchQuery, categoryFilter);
+  }, []); // Initial load (no filters)
 
-    debouncedSearch(searchQuery, categoryFilter);
-
-  }, [searchQuery, categoryFilter]);
+  // Handle manual search
+  const handleSearch = async () => {
+    fetchProducts(searchQuery, categoryFilter);
+  };
 
   const openModal = (product: Product) => {
     setSelectedProduct(product);
@@ -64,27 +70,17 @@ const StorePage: React.FC = () => {
   const handleResetFilters = () => {
     setCategoryFilter('');
     setSearchQuery('');
+    setFilteredProducts([]);  // Clear filtered products
+    fetchProducts('', '');  // Re-fetch with no filters
   };
 
-  const noProductsFoundMessage = searchQuery || categoryFilter ? (
+  const noProductsFoundMessage = (
     <div className="flex justify-center items-center flex-col text-center p-8">
       <h3 className="text-xl font-semibold text-gray-700 mb-2">
         Oops, no products found! 🏕️
       </h3>
       <p className="text-gray-500 mb-4">
         We couldn’t find anything matching your search or filter. Try something different!
-      </p>
-      <Button className="mt-4" onClick={handleResetFilters}>
-        Reset Filters 🔄
-      </Button>
-    </div>
-  ) : (
-    <div className="flex justify-center items-center flex-col text-center p-8">
-      <h3 className="text-xl font-semibold text-gray-700 mb-2">
-        Oops, looks like we’re out of stock! 🏕️
-      </h3>
-      <p className="text-gray-500 mb-4">
-        We might be out on a camping trip ourselves! But don’t worry, we’ll be back soon with fresh stock. 🌲
       </p>
       <Button className="mt-4" onClick={handleResetFilters}>
         Reset Filters 🔄
@@ -123,7 +119,8 @@ const StorePage: React.FC = () => {
                 onSearchChange={setSearchQuery}
                 categoryValue={categoryFilter}
                 searchQuery={searchQuery}
-              />
+                onSearch={handleSearch}              />
+
             </div>
 
             {/* Product Grid */}
@@ -134,20 +131,20 @@ const StorePage: React.FC = () => {
             {loading && (
               <div
                 className={cn(
-                  "fixed top-0 left-0 w-full h-full flex items-center bg-primary justify-center z-50",
-                  loading && "bg-primary/50"
+                  'fixed top-0 left-0 w-full h-full flex items-center bg-primary justify-center z-50',
+                  loading && 'bg-primary/50'
                 )}
               >
                 <div className="text-center flex relative flex-col">
-                  <Spinner size={"xl"} />
+                  <Spinner size={'xl'} />
                 </div>
               </div>
-            ) 
-          } 
-           { !loading && filteredProducts.length === 0 ? (
+            )}
+
+            {/* Show no products found message or product grid */}
+            {fetchError || filteredProducts.length === 0 ? (
               noProductsFoundMessage
-            ) 
-            : (
+            ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-x-6 gap-y-8">
                 {filteredProducts.map((product) => (
                   <ProductCard

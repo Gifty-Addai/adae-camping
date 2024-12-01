@@ -204,7 +204,8 @@ const CartPage: React.FC = () => {
                             />
 
                             <Button type="submit" >
-                                GHS {cart.totalPrice.toFixed(2)} Proceed to Checkout
+                                GHS {cart.totalPrice.toFixed(2)} 
+                                Proceed to Checkout
                             </Button>
                         </form>
                     </Form>

@@ -15,12 +15,12 @@ const DesktopMenu: React.FC = () => {
       <div className="flex justify-between w-full">
         <Link to="/">
           <div className="flex items-center space-x-4">
-            <img
+            {/* <img
               // src={Images.AcsLogo}
               alt="Logo"
               className="h-8 w-8"
-            />
-            <div className="text-lg font-bold text-white">Adae Camping</div>
+            /> */}
+            <div className="text-lg font-bold text-white">FieNeFie</div>
           </div>
         </Link>
 
