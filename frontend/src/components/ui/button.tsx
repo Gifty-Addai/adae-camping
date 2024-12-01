@@ -26,7 +26,7 @@ const buttonVariants = cva(
         default: "h-10 px-6 py-2",
         sm: "h-9 rounded-full px-3",
         lg: "h-11 rounded-full px-8",
-        icon: "h-6 w-6",
+        icon: "h-9 w-9",
       },
       state:{
         disabled: "disabled:pointer-events-none bg-gray-300  text-secondary-foreground/50 hover:bg-gray-300",

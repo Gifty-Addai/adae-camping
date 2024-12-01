@@ -29,6 +29,15 @@ const MobileMenu: React.FC = () => {
       </div>
 
       <div className="flex items-center space-x-4 ml-auto">
+        <Link to={"/cart"}>
+          <Button
+            onClick={() => setIsOpen(false)}
+            size={"icon"}
+            className="bg-gray-400"
+          >
+            <ShoppingCart size={12} />
+          </Button>
+        </Link>
         <Button
           className="text-white focus:outline-none"
           onClick={() => setIsOpen(true)}

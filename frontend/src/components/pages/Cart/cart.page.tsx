@@ -153,7 +153,7 @@ const CartPage: React.FC = () => {
                                         <FormLabel className='text-card-foreground'>Email</FormLabel>
                                         <FormControl>
                                             <Input
-                                                placeholder="Enter your email (optional)"
+                                                placeholder="Enter your email"
                                                 {...field}
                                             />
                                         </FormControl>
