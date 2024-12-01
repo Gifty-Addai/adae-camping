@@ -41,6 +41,7 @@ const CartPage: React.FC = () => {
 
             if (response.success) {
                 const popup = new PaystackPop()
+                // @ts-ignore
                 popup.resumeTransaction(response.access_code.accessCode)
                
             } else {
