@@ -27,25 +27,33 @@ const cartSlice = createSlice({
   reducers: {
     // Add a product to the cart with the specified quantity
     addToCart: (state: CartState, action: PayloadAction<{ product: Product; quantity: number }>) => {
+      console.info("product adding in slice", action.payload);
+    
       const { product, quantity } = action.payload;
-      const existingItemIndex = state.items.findIndex(item => item.id === product.id);
-      
+    
+      console.log("state id ", state.items)
+      // Find the index of the existing product
+      const existingItemIndex = state.items.findIndex(item => item._id === product._id);
+      console.info("existingItemIndex", existingItemIndex);
+    
       // If the product is already in the cart, increase its quantity
-      if (existingItemIndex > -1) {
+      if (existingItemIndex !== -1) {
         state.items[existingItemIndex].quantity += quantity;
       } else {
+        console.info("pushing", action.payload);
         // If the product is not in the cart, add it
         state.items.push({ ...product, quantity });
       }
-      
+    
       // Recalculate totals
       state.totalItems = state.items.reduce((total, item) => total + item.quantity, 0);
       state.totalPrice = state.items.reduce((total, item) => total + item.price * item.quantity, 0);
     },
     
+    
     // Remove an item from the cart by its ID
     removeItem: (state: CartState, action: PayloadAction<number>) => {
-      state.items = state.items.filter(item => item.id !== action.payload);
+      state.items = state.items.filter(item => item._id !== action.payload);
       
       // Recalculate totals
       state.totalItems = state.items.reduce((total, item) => total + item.quantity, 0);
@@ -55,7 +63,7 @@ const cartSlice = createSlice({
     // Update the quantity of a specific item in the cart
     updateItemQuantity: (state: CartState, action: PayloadAction<{ id: number; quantity: number }>) => {
       const { id, quantity } = action.payload;
-      const item = state.items.find(item => item.id === id);
+      const item = state.items.find(item => item._id === id);
       
       if (item) {
         item.quantity = quantity;

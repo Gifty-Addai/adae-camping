@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import ProductModal from '@/components/ui/product.modal';
@@ -7,41 +7,45 @@ import ProductCard from './product.card';
 import { Product } from '@/core/interfaces';
 import { Button } from '@/components/ui/button';
 import { Page } from '@/components/ui/page';
-import { cn, getRequest } from '@/lib/utils';
+import { cn, postRequest } from '@/lib/utils';
 import { Spinner } from '@/components/ui/loader/_spinner';
-import { Icons } from '@/components/ui/icons';
-import { Link } from 'react-router-dom';
+import { debounce } from 'lodash';
 
 const StorePage: React.FC = () => {
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
-  const [categoryFilter, setCategoryFilter] = useState<string>(''); // Track category filter
-  const [searchQuery, setSearchQuery] = useState<string>(''); // Track search query
+  const [categoryFilter, setCategoryFilter] = useState<string>('');
+  const [searchQuery, setSearchQuery] = useState<string>('');
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState<boolean>(false);
 
-  // Fetch products and categories from the server
-  useEffect(() => {
-    setLoading(true);
-    const fetchProducts = async () => {
+  filteredProducts.map((prod)=>console.log("filterproducts" , prod._id))
+  
+
+  // Debounced search query
+  const debouncedSearch = useRef(
+    debounce(async (searchQuery: string, categoryFilter: string) => {
+      setLoading(true);
       try {
-        // const params = {
-        //   name: searchQuery,
-        //   category: categoryFilter,
-        // };
-        const response = await getRequest<Product[]>(
-          `/api/product/getAllProducts`
-        );
+        const params = {
+          name: searchQuery,
+          category: categoryFilter,
+        };
+        const response = await postRequest<Product[]>('/api/product/searchProducts', params);
         setFilteredProducts(response);
       } catch (error) {
         console.error('Error fetching products:', error);
       } finally {
         setLoading(false);
       }
-    };
+    }, 2000)
+  ).current;
 
-    fetchProducts();
-  }, [categoryFilter, searchQuery]); // Re-fetch when category or search query changes
+  useEffect(() => {
+
+    debouncedSearch(searchQuery, categoryFilter);
+
+  }, [searchQuery, categoryFilter]);
 
   const openModal = (product: Product) => {
     setSelectedProduct(product);
@@ -54,15 +58,10 @@ const StorePage: React.FC = () => {
   };
 
   const handleCategoryFilterChange = (category: string) => {
-    setCategoryFilter(category); // Update category filter
-  };
-
-  const handleSearchChange = (query: string) => {
-    setSearchQuery(query); // Update search query
+    setCategoryFilter(category);
   };
 
   const handleResetFilters = () => {
-    // Reset both category filter and search query to initial states
     setCategoryFilter('');
     setSearchQuery('');
   };
@@ -121,16 +120,10 @@ const StorePage: React.FC = () => {
               <Filters
                 categories={filteredProducts}
                 onFilterChange={handleCategoryFilterChange}
-                onSearchChange={handleSearchChange}
+                onSearchChange={setSearchQuery}
                 categoryValue={categoryFilter}
                 searchQuery={searchQuery}
               />
-              <div className="flex items-center space-x-4">
-                <Link to={"/cart"}>
-                  <Icons.cart />
-
-                </Link>
-              </div>
             </div>
 
             {/* Product Grid */}
@@ -155,7 +148,7 @@ const StorePage: React.FC = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-x-6 gap-y-8">
                 {filteredProducts.map((product) => (
                   <ProductCard
-                    key={product.id}
+                    key={product._id}
                     product={product}
                     onOpenModal={openModal}
                   />

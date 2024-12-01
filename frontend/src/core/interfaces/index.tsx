@@ -1,4 +1,16 @@
+import { bookingSchema } from "./zod";
+import { z } from "zod";
 
+
+export type BookingFormValues = z.infer<typeof bookingSchema>;
+
+export interface PaymentInitializationResponse {
+  success: boolean;
+  message: string;
+  authorizationUrl: string;
+  reference: string;
+  access_code:{ accessCode: string; }
+}
 
 export interface IUser {
     role:string,
@@ -97,10 +109,10 @@ export interface SignInResponse {
   token:string
 }
 export interface Product {
-  id: number;
+  _id: number;
   name: string;
   category: string;
-  image: string;
+  imageUrl: string;
   price: number;
   oldPrice?: number; 
   description: string;

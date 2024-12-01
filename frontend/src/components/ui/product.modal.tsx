@@ -44,7 +44,7 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, isOpen, onClose })
           </DialogHeader>
           <div className="mt-4">
             <img
-              src={product.image}
+              src={product.imageUrl}
               alt={product.name}
               className="w-full h-64 object-cover rounded-md"
             />

@@ -6,31 +6,28 @@ interface FilterProps {
   categories: Product[];
   onFilterChange: (selectedCategory: string) => void;
   onSearchChange: (query: string) => void;
-  categoryValue: string;   // Category value passed as prop
-  searchQuery: string;     // Search query passed as prop
+  categoryValue: string; 
+  searchQuery: string;   
 }
 
 const Filters: React.FC<FilterProps> = ({ onFilterChange, onSearchChange, categoryValue, searchQuery }) => {
 
-  // Handle category change
   const handleCategoryChange = (value: string) => {
     if (value === 'all') {
-      onFilterChange('');  // Pass empty string to fetch all products when 'all' is selected
+      onFilterChange('');  
     } else {
-      onFilterChange(value);  // Apply the selected category filter
+      onFilterChange(value);  
     }
   };
 
-  // Handle search change
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const query = e.target.value;
-    onSearchChange(query);  // Pass the search query to the parent component
+    onSearchChange(e.target.value);  // Directly call onSearchChange with the value
   };
 
   // Reset filters function
   const resetFilters = () => {
-    onFilterChange(''); // Reset category filter to all
-    onSearchChange(''); // Clear the search input
+    onFilterChange(''); 
+    onSearchChange(''); 
   };
 
   return (
@@ -43,7 +40,7 @@ const Filters: React.FC<FilterProps> = ({ onFilterChange, onSearchChange, catego
         <SelectContent>
           <SelectGroup>
             <SelectLabel>Categories</SelectLabel>
-            <SelectItem value="all">All</SelectItem>  {/* 'all' as a value */}
+            <SelectItem value="all">All</SelectItem>
             <SelectItem value="camping">Camping Gears</SelectItem>
             <SelectItem value="others">Other</SelectItem>
           </SelectGroup>

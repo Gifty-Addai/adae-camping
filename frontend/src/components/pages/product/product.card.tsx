@@ -4,7 +4,6 @@ import { useDispatch } from 'react-redux';
 import { Product } from '@/core/interfaces';
 import { Card, CardContent, CardHeader, CardFooter, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Images } from '@/assets/assets';
@@ -16,14 +15,14 @@ interface ProductCardProps {
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({ product, onOpenModal }) => {
-  const { t } = useTranslation();
   const dispatch = useDispatch();
 
   const [quantity, setQuantity] = useState(1);
 
   const handleAddToCart = () => {
+    console.info("product adding", product)
     dispatch(addToCart({ product, quantity }));
-    toast.success(`${product.name} ${t('added to cart!')}`);
+    toast.success(`${product.name} added to cart!`);
   };
 
   const incrementQuantity = () => setQuantity((prev) => prev + 1);
@@ -95,7 +94,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onOpenModal }) => {
           }}
           className="w-full text-sm"
         >
-          {t('Add to Cart')}
+          Add to Cart
         </Button>
       </CardFooter>
     </Card>

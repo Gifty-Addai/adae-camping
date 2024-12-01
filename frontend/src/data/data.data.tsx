@@ -31,28 +31,28 @@ export const components: { title: string; href: string; description: string }[] 
 
 const productsData: Product[] = [
   {
-    id: 1,
+    _id: 1,
     name: 'Ultralight Backpacking Tent',
     category: 'camping',
-    image: '/images/tent.jpg',
+    imageUrl: '/images/tent.jpg',
     price: 299.99,
     oldPrice: 349.99,
     description: 'A lightweight tent perfect for backpacking trips.'
   },
   {
-    id: 2,
+    _id: 2,
     name: 'Sleeping Bag -15°C',
     category: 'camping',
-    image: '/images/sleeping-bag.jpg',
+    imageUrl: '/images/sleeping-bag.jpg',
     price: 129.99,
     description: 'Stay warm even in the coldest nights with this sleeping bag.'
 
   },
   {
-    id: 3,
+    _id: 3,
     name: 'Portable Camping Stove',
     category: 'Cooking Gear',
-    image: '/images/camping-stove.jpg',
+    imageUrl: '/images/camping-stove.jpg',
     price: 59.99,
     description: 'Compact stove for cooking meals on the go.'
   },

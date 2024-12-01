@@ -1,22 +1,60 @@
-// src/pages/CartPage.tsx
-import React from 'react';
-import {  useSelector } from 'react-redux';
+import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import CartItem from './cart_item';
 import { RootState } from '@/core/store/store';
 import { Button } from '@/components/ui/button';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { bookingSchema } from '@/core/interfaces/zod';
+import { BookingFormValues, PaymentInitializationResponse } from '@/core/interfaces';
+import { Input } from '@/components/ui/input';
+import PaymentModal from './payment_instruction_modal';
+import { postRequest } from '@/lib/utils';
+import PaystackPop from '@paystack/inline-js'
+
 
 const CartPage: React.FC = () => {
-    // const dispatch = useDispatch();
-    const cart = useSelector((state: RootState) => state.cart);
+    const form = useForm<BookingFormValues>({
+        resolver: zodResolver(bookingSchema),
+        defaultValues: {
+            name: "",
+            email: "",
+            phone: "",
+            address: "",
+            preferences: "",
+        },
+    });
 
-    const handleCheckout = () => {
-        alert('Proceeding to checkout...');
+    const cart = useSelector((state: RootState) => state.cart);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const onSubmit = (data: BookingFormValues) => {
+        // This will be triggered only if the form is valid
+        handleCheckout(data);
+    };
+
+    const handleCheckout = async (data: BookingFormValues) => {
+        try {
+            const response = await postRequest<PaymentInitializationResponse>('/api/auth/payment', { ...data, amount: Math.round(cart.totalPrice) });
+
+            if (response.success) {
+                const popup = new PaystackPop()
+                popup.resumeTransaction(response.access_code.accessCode)
+               
+            } else {
+                alert('Payment initialization failed!');
+            }
+        } catch (error) {
+            console.error(error);
+            alert('Payment initialization failed!');
+        }
     };
 
     if (cart.totalItems === 0) {
         return (
-            <div className="flex justify-center items-center flex-col text-center p-8 mt-24">
+            <div className="flex justify-center items-center flex-col text-center p-8 mt-24 h-screen">
                 <h3 className="text-xl font-semibold text-gray-700 mb-2">
                     Your Cart is Empty! 🛒
                 </h3>
@@ -25,41 +63,135 @@ const CartPage: React.FC = () => {
                 </p>
 
                 <Link to="/products">
-                    <Button >
+                    <Button>
                         Continue Shopping
                     </Button>
                 </Link>
-
             </div>
         );
     }
 
     return (
-        <div className="mt-24 p-6">
-            <h2 className="text-2xl font-semibold mb-6">Your Cart</h2>
+        <div className="container mx-auto p-6 mt-16">
+            <h2 className="text-2xl font-semibold text-card-foreground mb-6 text-center">Your Cart</h2>
+            {/* Booking Section */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-8">
+                {/* Package Details */}
+                <div className="col-span-2 rounded-lg shadow-lg p-6">
+                    {cart.items.map((item) => (
+                        <CartItem key={item._id} item={item} />
+                    ))}
+                    <div className="flex justify-between items-center mt-6 p-4 bg-gray-100 rounded-lg">
+                        <div className="font-semibold text-lg">Total: </div>
+                        <div className="text-xl font-semibold text-gray-700">
+                            GHS {cart.totalPrice.toFixed(2)}
+                        </div>
+                    </div>
+                </div>
 
-            {/* Cart Items */}
-            <div className="space-y-4">
-                {cart.items.map((item) => (
-                    <CartItem key={item.id} item={item} />
-                ))}
-            </div>
+                {/* Booking Form */}
+                <div className="col-span-1 bg-card rounded-lg shadow-lg p-6">
+                    <h3 className="text-xl text-white font-bold mb-4">One step away to have your gears</h3>
+                    <Form {...form}>
+                        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                            <FormField
+                                control={form.control}
+                                name="name"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel className='text-card-foreground'>Full Name</FormLabel>
+                                        <FormControl>
+                                            <Input
+                                                placeholder="Enter your name"
+                                                {...field}
+                                            />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name="address"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel className='text-card-foreground'>Address</FormLabel>
+                                        <FormControl>
+                                            <Input
+                                                placeholder="Enter specific address"
+                                                {...field}
+                                            />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
 
-            {/* Cart Summary */}
-            <div className="flex justify-between items-center mt-6 p-4 bg-gray-100 rounded-lg">
-                <div className="font-semibold text-lg">Total: </div>
-                <div className="text-xl font-semibold text-gray-700">
-                    ${cart.totalPrice.toFixed(2)}
+                            <FormField
+                                control={form.control}
+                                name="phone"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel className='text-card-foreground'>Phone</FormLabel>
+                                        <FormControl>
+                                            <Input
+                                                placeholder="Enter your phone number"
+                                                {...field}
+                                            />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+
+                            <FormField
+                                control={form.control}
+                                name="email"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel className='text-card-foreground'>Email</FormLabel>
+                                        <FormControl>
+                                            <Input
+                                                placeholder="Enter your email (optional)"
+                                                {...field}
+                                            />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+
+                            <FormField
+                                control={form.control}
+                                name="preferences"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel className='text-card-foreground'>Note(s)</FormLabel>
+                                        <FormControl>
+                                            <Input
+                                                placeholder="Enter preferences (optional)"
+                                                {...field}
+                                            />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+
+                            <Button type="submit" >
+                                GHS {cart.totalPrice.toFixed(2)} Proceed to Checkout
+                            </Button>
+                        </form>
+                    </Form>
                 </div>
             </div>
 
-            {/* Checkout Button */}
-            <div className="mt-6">
-                <Button onClick={handleCheckout} >
-                    Proceed to Checkout
-                </Button>
-
-            </div>
+            {/* Payment Modal */}
+            <PaymentModal
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                totalPrice={cart.totalPrice}
+            />
         </div>
     );
 };

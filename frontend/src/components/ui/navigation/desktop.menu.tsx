@@ -5,6 +5,7 @@ import {
 } from "../navigation-menu"
 import { Button } from "../button"
 import { Link } from "react-router-dom";
+import { ShoppingCart } from "lucide-react"
 
 
 const DesktopMenu: React.FC = () => {
@@ -52,12 +53,20 @@ const DesktopMenu: React.FC = () => {
                 </Link>
 
               </NavigationMenuItem>
-               <Link to="/products">
-                  <Button >
-                    Products
-                  </Button>
-                </Link>
-              
+              <Link to="/products">
+                <Button >
+                  Products
+                </Button>
+              </Link>
+
+              <Link to={"/cart"}>
+                <Button
+                  className="bg-gray-400 "
+                >
+                  <ShoppingCart size={24} />
+                </Button>
+              </Link>
+
             </NavigationMenuList>
           </NavigationMenu>
 

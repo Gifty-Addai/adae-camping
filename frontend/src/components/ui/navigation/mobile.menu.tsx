@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { Menu, X } from "lucide-react"; // Icons for hamburger and close
+import { Menu, ShoppingCart, X } from "lucide-react"; // Icons for hamburger and close
 import { Button } from "../button";
 import {
   NavigationMenu,
@@ -40,6 +40,18 @@ const MobileMenu: React.FC = () => {
 
       {isOpen && (
         <div className="fixed inset-0 bg-card bg-opacity-95 z-50 text-white flex justify-center items-center">
+          {/* Cart Icon on the top-left */}
+          <Link to={"/cart"}>
+            <Button
+              onClick={() => setIsOpen(false)}
+
+              className="absolute bg-gray-400 top-4 left-4 p-2 "
+            >
+              <ShoppingCart size={24} />
+            </Button>
+          </Link>
+
+          {/* Close Button on the top-right */}
           <Button
             className="absolute top-4 right-4 focus:outline-none"
             onClick={() => setIsOpen(false)}
