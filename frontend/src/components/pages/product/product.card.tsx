@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { MinusIcon, PlusIcon, HeartIcon } from 'lucide-react';
+import { MinusIcon, PlusIcon } from 'lucide-react';
 import { useDispatch } from 'react-redux';
 import { Product } from '@/core/interfaces';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
