@@ -6,7 +6,6 @@ import { Card, CardContent, CardHeader, CardFooter, CardTitle, CardDescription }
 import { Button } from '@/components/ui/button';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { Images } from '@/assets/assets';
 import { addToCart } from '@/core/store/slice/cart.slice';
 
 interface ProductCardProps {
