@@ -7,7 +7,6 @@ import {
   DialogDescription,
 } from './modal';
 import { useTranslation } from 'react-i18next';
-import { XIcon } from 'lucide-react';
 import { Product } from '@/core/interfaces';
 import { Button } from './button';
 
