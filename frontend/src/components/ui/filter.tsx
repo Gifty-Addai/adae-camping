@@ -26,12 +26,6 @@ const Filters: React.FC<FilterProps> = ({ onFilterChange, onSearchChange, catego
     onSearchChange(e.target.value);  // Directly call onSearchChange with the value
   };
 
-  // Reset filters function
-  const resetFilters = () => {
-    onFilterChange(''); 
-    onSearchChange(''); 
-  };
-
   return (
     <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4 p-4 space-y-4 sm:space-y-0">
       {/* Category Filter */}
