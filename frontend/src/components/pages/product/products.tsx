@@ -22,7 +22,7 @@ const StorePage: React.FC = () => {
   // Function to fetch products based on search and category filter
   const fetchProducts = async (searchQuery: string, categoryFilter: string) => {
     setLoading(true);
-    setFetchError(false);  // Reset the error state before fetching
+    setFetchError(false);
     try {
       const params = {
         name: searchQuery,
@@ -31,13 +31,13 @@ const StorePage: React.FC = () => {
       const response = await postRequest<Product[]>('/api/product/searchProducts', params);
 
       if (response.length === 0) {
-        setFetchError(true);  // No products found
+        setFetchError(true); 
       }
 
       setFilteredProducts(response);
     } catch (error) {
       console.error('Error fetching products:', error);
-      setFetchError(true);  // Set error state if fetch fails
+      setFetchError(true);  
     } finally {
       setLoading(false);
     }
@@ -46,7 +46,7 @@ const StorePage: React.FC = () => {
   // Call fetchProducts on initial load with no filters
   useEffect(() => {
     fetchProducts(searchQuery, categoryFilter);
-  }, []); // Initial load (no filters)
+  }, []);
 
   // Handle manual search
   const handleSearch = async () => {
@@ -128,7 +128,7 @@ const StorePage: React.FC = () => {
               Explore Our Products!
             </h2>
 
-            {loading && (
+            {loading ? (
               <div
                 className={cn(
                   'fixed top-0 left-0 w-full h-full flex items-center bg-primary justify-center z-50',
@@ -139,10 +139,7 @@ const StorePage: React.FC = () => {
                   <Spinner size={'xl'} />
                 </div>
               </div>
-            )}
-
-            {/* Show no products found message or product grid */}
-            {fetchError || filteredProducts.length === 0 ? (
+            ) : filteredProducts.length === 0 ? (
               noProductsFoundMessage
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-x-6 gap-y-8">

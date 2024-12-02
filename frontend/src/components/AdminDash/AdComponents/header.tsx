@@ -13,7 +13,7 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({ sidebarOpen, setSidebarOpen }) => {
   return (
-    <header className="sticky top-0 z-50 flex w-full bg-white shadow dark:bg-boxdark">
+    <header className="sticky top-0 z-50 flex w-full bg-card shadow dark:bg-boxdark">
       <div className="flex w-full items-center justify-between px-4 py-4 md:px-6 xl:px-8">
         {/* Left Section */}
         <div className="flex items-center gap-4">
@@ -43,13 +43,13 @@ const Header: React.FC<HeaderProps> = ({ sidebarOpen, setSidebarOpen }) => {
           </Button>
 
           {/* Logo */}
-          <Link to="/" className="block lg:hidden">
+          {/* <Link to="/" className="block lg:hidden">
             <img src={Images.AcsLogo} alt="Logo" className="h-8 w-auto" />
-          </Link>
+          </Link> */}
         </div>
 
         {/* Search Bar */}
-        <div className="hidden sm:flex items-center flex-grow">
+        {/* <div className="hidden sm:flex items-center flex-grow">
           <form className="w-full">
             <div className="relative">
               <Input
@@ -75,27 +75,10 @@ const Header: React.FC<HeaderProps> = ({ sidebarOpen, setSidebarOpen }) => {
               </span>
             </div>
           </form>
-        </div>
+        </div> */}
 
         {/* Right Section */}
         <div className="flex items-center gap-4">
-          <ul className="flex items-center gap-4">
-            {/* Dark Mode Toggle */}
-            <li>
-              <DarkModeToggle />
-            </li>
-
-            {/* Notifications */}
-            {/* <li>
-              <DropdownNotification />
-            </li> */}
-
-            {/* Messages */}
-            {/* <li>
-              <DropdownMessage />
-            </li> */}
-          </ul>
-
           {/* User Dropdown */}
           <DropdownUser />
         </div>

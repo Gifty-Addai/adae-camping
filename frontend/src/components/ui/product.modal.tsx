@@ -6,7 +6,6 @@ import {
   DialogTitle,
   DialogDescription,
 } from './modal';
-import { useTranslation } from 'react-i18next';
 import { Product } from '@/core/interfaces';
 import { Button } from './button';
 
@@ -17,7 +16,6 @@ interface ProductModalProps {
 }
 
 const ProductModal: React.FC<ProductModalProps> = ({ product, isOpen, onClose }) => {
-  const { t } = useTranslation();
 
   if (!product) return null;
 
@@ -43,11 +41,11 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, isOpen, onClose })
           {product.description}
         </DialogDescription>
         <p className="text-xl mt-1 font-bold text-green-500">
-          ${product.price.toFixed(2)}
+          GHS {product.price.toFixed(2)}
         </p>
         <div className="flex justify-end">
           <Button onClick={onClose} className="px-4 py-2">
-            {t('Okay')}
+            Okay
           </Button>
         </div>
       </DialogContent>

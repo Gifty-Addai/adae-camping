@@ -1,62 +1,33 @@
+// AppRoute.tsx
+
 import { Routes, Route, Navigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { RootState } from "@/core/store/store";
 import { VerifiedLayout } from "./pages.layout";
 import { AdminLayout } from "./admin.layout";
 import { PageNotFound } from "../pages/not_found.page";
 import LandingPage from "../pages/landing";
 import StorePage from "../pages/product/products";
 import GalleryPage from "../pages/Gallery/gallery";
-// import BookingPage from "../pages/bookings";
-// import UserBookingsPage from "../pages/Bookings/user_book_page";
-// import SettingsPage from "../pages/Settings/settings";
-import { Spinner } from "../ui/loader/_spinner";
-import { cn } from "@/lib/utils";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "@/core/store/store";
-import { isDev } from "@/core/constants";
-import { getUserSession } from "@/lib/utils";
 import SignInPage from "../pages/signin.page";
 import CartPage from "../pages/Cart/cart.page";
-import { setUser } from "@/core/store/slice/user_slice";
+import AdminProductDash from "../AdminDash/pages/Dashboard/productDash";
+import { Spinner } from "../ui/loader/_spinner";
+import { cn } from "@/lib/utils";
 
 export const AppRoute = () => {
-  const dispatch = useDispatch();
-  const appState = useSelector((state: RootState) => state.appSlice);
-  // const userStore = useSelector((state: RootState) => state.userSlice);
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-  const [isAdmin, setIsAdmin] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const { user, isLoading: userLoading } = useSelector((state: RootState) => state.userSlice);
+  const { isLoading: appLoading } = useSelector((state: RootState) => state.appSlice);
 
-  useEffect(() => {
-    let userSession = getUserSession();
+  const isAuthenticated = !!user;
+  const isAdmin = user?.role === "admin";
 
-    if (isDev) {
-      // Mock user for development environment
-      userSession = {
-        id: "mock-user-id",
-        role: "admin",
-        name: "Mock User",
-      };
-    }
-
-    if (userSession) {
-      setIsAuthenticated(true);
-      setIsAdmin(userSession.role === "admin");
-      dispatch(setUser(userSession));
-    } else {
-      setIsAuthenticated(false);
-      setIsAdmin(false);
-    }
-
-    setIsLoading(false);
-  }, [dispatch]);
-
-  if (isLoading || appState.isLoading) {
+  if (userLoading || appLoading) {
     return (
       <div
         className={cn(
           "fixed top-0 left-0 w-full h-full flex items-center bg-primary justify-center z-50",
-          appState.isLoading && "bg-primary/50"
+          appLoading && "bg-primary/50"
         )}
       >
         <div className="text-center flex relative flex-col">
@@ -88,7 +59,7 @@ export const AppRoute = () => {
           )
         }
       >
-        <Route path="main" element={<LandingPage />} />
+        <Route path="productDash" element={<AdminProductDash />} />
         <Route path="profile" element={<LandingPage />} />
         <Route path="signin" element={<SignInPage />} />
         <Route path="*" element={<PageNotFound />} />

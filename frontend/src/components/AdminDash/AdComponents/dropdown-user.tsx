@@ -9,18 +9,7 @@ const DropdownUser = () => {
   return (
     <ClickOutside onClick={() => setDropdownOpen(false)}>
       <li className="relative">
-        <button
-          onClick={() => setDropdownOpen(!dropdownOpen)}
-          className="flex items-center space-x-3"
-        >
-          <span className="hidden lg:block">
-            <span className="block text-sm font-medium text-gray-700 dark:text-white">
-              Jane Doe
-            </span>
-            <span className="block text-xs text-gray-500">Administrator</span>
-          </span>
-          <Icons.profile className="h-8 w-8 rounded-full text-gray-400 dark:text-gray-500" />
-        </button>
+        
 
         {dropdownOpen && (
           <div className="absolute right-0 mt-2 w-48 bg-white shadow-md rounded-md dark:bg-gray-700">

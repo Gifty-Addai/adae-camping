@@ -4,6 +4,38 @@ import { z } from "zod";
 
 export type BookingFormValues = z.infer<typeof bookingSchema>;
 
+export interface ProductFormData {
+  name: string;
+  description: string;
+  price: number;
+  image: string,
+  category: string;
+  stock: number;
+  isAvailable: boolean;
+}
+
+export interface UseProductAPI {
+  products: Product[];
+  loading: boolean;
+  apiError: string | null;
+  addProduct: (productData: ProductFormData) => void;
+  editProduct: (id: string, productData: ProductFormData) => void;
+  removeProduct: (id: string) => void;
+  searchProduct: (filters: Record<string, any>) => void;
+}
+
+export interface ProductModalProps {
+  product: Product | null;
+  onClose: () => void;
+  onSave: (data: ProductFormData) => void;
+}
+
+export interface ProductTableProps {
+  products: Product[];
+  onEdit: (product: Product) => void;
+  onDelete: (id: string) => void;
+}
+
 export interface PaymentInitializationResponse {
   success: boolean;
   message: string;
@@ -19,15 +51,16 @@ export interface PaymentVerifyResponse {
 }
 
 export interface IUser {
-    role:string,
+    role:'admin',
     id:string,
     name:string
 }
 
-export type IUserState = {
-  user?: IUser | null
+export interface IUserState {
+  user: IUser | null;
+  isLoading: boolean;
+  error: string | null;
 }
-
 export interface IAppState {
     appName:string,
     isLoading:boolean,
@@ -107,21 +140,19 @@ export interface ProcessedVideo {
 
 export interface SignInResponse {
   message:string,
-  user :{
-    id:string,
-    name:string,
-    role:string
-  },
+  user :IUser,
   token:string
 }
 export interface Product {
-  _id: number;
+  _id: string;
   name: string;
   category: string;
   imageUrl: string;
   price: number;
   oldPrice?: number; 
   description: string;
+  stock: number;
+  isAvailable: boolean;
 }
 
 

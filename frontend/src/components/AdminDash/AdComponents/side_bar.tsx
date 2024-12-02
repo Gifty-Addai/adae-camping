@@ -59,7 +59,7 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen }) => {
   return (
     <aside
       ref={sidebar}
-      className={`absolute left-0 top-0 z-50 flex h-screen w-72 flex-col bg-primary-foreground text-white transition-transform duration-300 ease-in-out lg:static lg:translate-x-0 ${
+      className={`absolute left-0 top-0 z-50 flex h-screen w-72 flex-col bg-card text-white transition-transform duration-300 ease-in-out lg:static lg:translate-x-0 ${
         sidebarOpen ? "translate-x-0" : "-translate-x-full"
       }`}
     >
@@ -78,7 +78,7 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen }) => {
             setExpanded={setSidebarExpanded}
             links={[
               { to: "/dashboard/overview", label: "Overview" },
-              { to: "/dashboard/analytics", label: "Analytics" },
+              { to: "/admin/productDash", label: "Products" },
             ]}
           />
           <SidebarItem
@@ -89,25 +89,6 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen }) => {
           />
         </SidebarSection>
 
-        <SidebarSection title="OTHERS">
-          <SidebarItemGroup
-            title="Authentication"
-            icon={<Icons.profile className="h-5 w-5" />}
-            active={pathname.includes("auth")}
-            expanded={sidebarExpanded}
-            setExpanded={setSidebarExpanded}
-            links={[
-              { to: "/auth/signin", label: "Sign In" },
-              { to: "/auth/signup", label: "Sign Up" },
-            ]}
-          />
-          <SidebarItem
-            to="/chart"
-            icon={<Icons.profile className="h-5 w-5" />}
-            label="Chart"
-            active={pathname.includes("chart")}
-          />
-        </SidebarSection>
       </div>
     </aside>
   );
@@ -122,9 +103,8 @@ const SidebarHeader: React.FC<{
   trigger: React.RefObject<HTMLButtonElement>;
 }> = ({ sidebarOpen, setSidebarOpen, trigger }) => (
   <div className="flex items-center justify-between px-6 py-5">
-    <Link to="/" className="flex items-center no-underline">
-      <Icons.mapPin className="h-6 w-6 text-white" />
-      <span className="ml-3 text-lg font-semibold">Brand</span>
+    <Link to="/admin/productDash" className="flex items-center no-underline">
+      <span className="ml-3 text-lg text-card-foreground font-semibold">FieNeFie</span>
     </Link>
     <Button
       ref={trigger}
@@ -133,7 +113,6 @@ const SidebarHeader: React.FC<{
       aria-controls="sidebar"
       aria-expanded={sidebarOpen}
     >
-      <Icons.bell className="h-6 w-6 text-white" />
     </Button>
   </div>
 );
@@ -144,8 +123,8 @@ const SidebarSection: React.FC<{ title: string; children: React.ReactNode }> = (
   children,
 }) => (
   <div>
-    <h3 className="my-4 ml-4 text-2xl font-semibol">{title}</h3>
-    <ul className="space-y-2 text-white">{children}</ul>
+    <h3 className="my-4 ml-4 text-2xl font-semibol text-card-foreground">{title}</h3>
+    <ul className="space-y-2 text-card-foreground ">{children}</ul>
   </div>
 );
 
@@ -166,7 +145,7 @@ const SidebarItemGroup: React.FC<{
       }`}
     >
       <div className="flex items-center gap-2">
-        {icon} <Label className="text-lg font-semibold">{title}</Label>
+        {icon} <Label className="text-lg font-semibold no-underline text-card-foreground" >{title}</Label>
         {/* <span>{title}</span> */}
       </div>
       {expanded ? (
@@ -181,7 +160,7 @@ const SidebarItemGroup: React.FC<{
           <li key={link.to}>
             <Link
               to={link.to}
-              className="hover:text-white transition-colors"
+              className="text-gray-400 no-underline"
             >
               {link.label}
             </Link>

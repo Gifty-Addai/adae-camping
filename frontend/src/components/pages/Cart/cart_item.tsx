@@ -5,11 +5,13 @@ import { useDispatch } from 'react-redux';
 
 interface CartItemProps {
   item: {
-    _id: number;
+    _id: string;
     name: string;
     price: number;
     quantity: number;
     imageUrl: string;
+    stock: number;
+    isAvailable: boolean;
   };
 }
 
