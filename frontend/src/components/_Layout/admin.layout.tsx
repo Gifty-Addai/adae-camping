@@ -40,20 +40,7 @@ export const AdminLayout : React.FC<AdminLayout> = ({ }) => {
       </div>
       {/* <!-- ===== Page Wrapper End ===== --> */}
     </div>
-    
-      {/* Navigation Menu */}
-      {/* <MenuBar auth={auth}/> */}
-      
-      {/* Main Content Area */}
-      {/* <div>
-       
-      </div> */}
-
-      {/* Footer */}
-      {/* <Footer />
-
-      <SignInModal /> */}
-
+  
     </>
   );
 };
