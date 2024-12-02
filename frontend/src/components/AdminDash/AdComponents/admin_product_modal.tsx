@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { Product, ProductFormData } from "@/core/interfaces";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useForm } from "react-hook-form";
@@ -11,12 +10,20 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 
 // ShadCN Dialog import
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import Textarea from "@/components/ui/textarea";
 
 // Define Zod validation schema for product
 const productSchema = z.object({
     name: z.string().min(1, "Product name is required"),
     description: z.string().min(1, "Product description is required"),
-    price: z.number().min(0, "Price must be greater than 0"),
+    price: z.preprocess((val) => {
+        // Convert empty strings to undefined to trigger validation
+        if (typeof val === "string" && val.trim() === "") {
+            return undefined;
+        }
+        return Number(val);
+    }, z.number().positive("Price must be greater than 0")),
     category: z.string().min(1, "Category is required"),
     stock: z.number().min(0, "Stock must be greater than or equal to 0"),
     image: z.string().url("Image URL must be a valid URL").optional(),
@@ -38,7 +45,7 @@ const AdminProductModal: React.FC<AdminProductModalProps> = ({ product, onOpen, 
         defaultValues: {
             name: "",
             description: "",
-            price: 0,
+            price: undefined, // Changed from 0 to undefined
             category: "camping",
             stock: 0,
             image: "",
@@ -60,9 +67,17 @@ const AdminProductModal: React.FC<AdminProductModalProps> = ({ product, onOpen, 
                 image: product.imageUrl || "",
                 isAvailable: product.isAvailable,
             });
-            console.info("Data to edit", product)
+            console.info("Data to edit", product);
         } else {
-            form.reset();
+            form.reset({
+                name: "",
+                description: "",
+                price: undefined, // Ensure default is undefined
+                category: "camping",
+                stock: 0,
+                image: "",
+                isAvailable: false,
+            });
         }
     }, [product, form]);
 
@@ -94,9 +109,9 @@ const AdminProductModal: React.FC<AdminProductModalProps> = ({ product, onOpen, 
 
     return (
         <Dialog open={onOpen} onOpenChange={(open) => { if (!open) onClose(); }}>
-            <DialogContent>
+            <DialogContent className="w-full max-w-3xl mx-2 sm:mx-auto max-h-[90vh] overflow-y-auto"> {/* Responsive width and scrollable content */}
                 <DialogHeader>
-                    <DialogTitle>{product ? "Edit Product" : "Add Product"}</DialogTitle>
+                    <DialogTitle className="text-card-foreground">{product ? "Edit Product" : "Add Product"}</DialogTitle>
                     <DialogDescription>
                         {product ? "Update the details of the product" : "Fill out the details of the new product"}
                     </DialogDescription>
@@ -104,31 +119,39 @@ const AdminProductModal: React.FC<AdminProductModalProps> = ({ product, onOpen, 
 
                 {/* Form Layout */}
                 <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
-                        {/* Name input */}
+                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                        {/* Name input (Textarea) */}
                         <FormField control={form.control} name="name" render={({ field }) => (
                             <FormItem>
                                 <FormLabel className="text-card-foreground">Product Name</FormLabel>
                                 <FormControl>
-                                    <Input placeholder="Enter product name" {...field} />
+                                    <Textarea 
+                                        placeholder="Enter product name" 
+                                        {...field} 
+                                        className="resize-none h-16"
+                                    />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
                         )} />
 
-                        {/* Description input */}
+                        {/* Description input (Textarea) */}
                         <FormField control={form.control} name="description" render={({ field }) => (
                             <FormItem>
                                 <FormLabel className="text-card-foreground">Description</FormLabel>
                                 <FormControl>
-                                    <Input placeholder="Enter product description" {...field} />
+                                    <Textarea 
+                                        placeholder="Enter product description" 
+                                        {...field} 
+                                        className="resize-none h-24"
+                                    />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
                         )} />
 
                         {/* Price and Stock in Row */}
-                        <div className="flex space-x-4">
+                        <div className="flex flex-col sm:flex-row sm:space-x-4 space-y-4 sm:space-y-0">
                             <FormField control={form.control} name="price" render={({ field }) => (
                                 <FormItem className="flex-1">
                                     <FormLabel className="text-card-foreground">Price</FormLabel>
@@ -136,8 +159,15 @@ const AdminProductModal: React.FC<AdminProductModalProps> = ({ product, onOpen, 
                                         <Input
                                             type="number"
                                             placeholder="Enter price"
-                                            value={field.value === 0 ? "" : field.value}
-                                            onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                                            value={field.value || ""}
+                                            onChange={(e) => {
+                                                const value = e.target.value;
+                                                // If the input is empty, set the value to undefined
+                                                // Otherwise, parse it to a float
+                                                field.onChange(value === "" ? undefined : parseFloat(value));
+                                            }}
+                                            min="0"
+                                            step="0.01"
                                         />
                                     </FormControl>
                                     <FormMessage />
@@ -153,6 +183,7 @@ const AdminProductModal: React.FC<AdminProductModalProps> = ({ product, onOpen, 
                                             placeholder="Enter stock"
                                             value={field.value === 0 ? "" : field.value}
                                             onChange={(e) => field.onChange(parseInt(e.target.value, 10) || 0)}
+                                            min="0"
                                         />
                                     </FormControl>
                                     <FormMessage />
@@ -177,11 +208,16 @@ const AdminProductModal: React.FC<AdminProductModalProps> = ({ product, onOpen, 
                             </FormItem>
                         )} />
 
+                        {/* Image URL input (Textarea) */}
                         <FormField control={form.control} name="image" render={({ field }) => (
                             <FormItem>
-                                <FormLabel className="text-card-foreground">Image Url</FormLabel>
+                                <FormLabel className="text-card-foreground">Image URL</FormLabel>
                                 <FormControl>
-                                    <Input placeholder="Provide image Url" {...field} />
+                                    <Textarea 
+                                        placeholder="Provide image URL" 
+                                        {...field} 
+                                        className="resize-none h-16"
+                                    />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -231,7 +267,7 @@ const AdminProductModal: React.FC<AdminProductModalProps> = ({ product, onOpen, 
                 {/* Delete Confirmation Dialog */}
                 {showConfirmDialog && (
                     <Dialog open={showConfirmDialog} onOpenChange={(open) => { if (!open) closeConfirmDialog(); }}>
-                        <DialogContent>
+                        <DialogContent className="w-full max-w-sm mx-auto">
                             <DialogHeader>
                                 <DialogTitle>Confirm Deletion</DialogTitle>
                                 <DialogDescription>
