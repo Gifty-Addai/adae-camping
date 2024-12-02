@@ -20,8 +20,8 @@ const StorePage: React.FC = () => {
 
   // Function to fetch products based on search and category filter
   const fetchProducts = async (searchQuery: string, categoryFilter: string) => {
-      
-      searchProduct({ name: searchQuery, category:categoryFilter });
+
+    searchProduct({ name: searchQuery, category: categoryFilter });
   };
 
   // Call fetchProducts on initial load with no filters
@@ -51,7 +51,7 @@ const StorePage: React.FC = () => {
   const handleResetFilters = () => {
     setCategoryFilter('');
     setSearchQuery('');
-    fetchProducts('', ''); 
+    fetchProducts('', '');
   };
 
   const noProductsFoundMessage = (
@@ -99,7 +99,7 @@ const StorePage: React.FC = () => {
                 onSearchChange={setSearchQuery}
                 categoryValue={categoryFilter}
                 searchQuery={searchQuery}
-                onSearch={handleSearch}              />
+                onSearch={handleSearch} />
 
             </div>
 
@@ -119,22 +119,18 @@ const StorePage: React.FC = () => {
                   <Spinner size={'xl'} />
                 </div>
               </div>
-            ) : (
-              <>
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-x-6 gap-y-8">
-                {products.map((product) => (
-                  <ProductCard
-                    key={product._id}
-                    product={product}
-                    onOpenModal={openModal}
-                  />
-                ))}
-                
-              </div>
-              {
-                products.length == 0 && (noProductsFoundMessage)
-              }
-              </>
+            ) : products.length == 0 ? (noProductsFoundMessage) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-x-6 gap-y-8">
+                  {products.map((product) => (
+                    <ProductCard
+                      key={product._id}
+                      product={product}
+                      onOpenModal={openModal}
+                    />
+                  ))}
+
+                </div>
+               
             )}
 
             {/* Modal */}
