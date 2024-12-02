@@ -54,7 +54,7 @@ export const useProductAPI = (): UseProductAPI => {
     try {
       const result = await searchProducts(filters);
       setProducts(result);
-      toast.success("Products searched successfully!"); 
+      // toast.success("Products searched successfully!"); 
     } catch (error) {
      toast.error("Failed to search products"); 
     } finally {
