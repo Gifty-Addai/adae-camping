@@ -17,12 +17,10 @@ const StorePage: React.FC = () => {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState<boolean>(false);
-  const [fetchError, setFetchError] = useState<boolean>(false);
 
   // Function to fetch products based on search and category filter
   const fetchProducts = async (searchQuery: string, categoryFilter: string) => {
     setLoading(true);
-    setFetchError(false);
     try {
       const params = {
         name: searchQuery,
@@ -30,14 +28,11 @@ const StorePage: React.FC = () => {
       };
       const response = await postRequest<Product[]>('/api/product/searchProducts', params);
 
-      if (response.length === 0) {
-        setFetchError(true); 
-      }
+
 
       setFilteredProducts(response);
     } catch (error) {
       console.error('Error fetching products:', error);
-      setFetchError(true);  
     } finally {
       setLoading(false);
     }

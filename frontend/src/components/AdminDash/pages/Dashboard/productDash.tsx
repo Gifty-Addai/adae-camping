@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import AdminProductCard from "../../AdComponents/admin_product_card";
 
 const AdminProductDash: React.FC = () => {
-  const { products, loading, addProduct, editProduct, removeProduct, searchProduct, apiError } = useProductAPI();
+  const { products, loading, addProduct, editProduct, removeProduct, searchProduct } = useProductAPI();
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [showModal, setShowModal] = useState<boolean>(false);
   const [productToEdit, setProductToEdit] = useState<Product | null>(null);

@@ -1,10 +1,6 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import DarkModeToggle from '@/components/ui/dark_mode_toggle';
 import DropdownUser from './dropdown-user';
-import { Images } from '@/assets/assets';
 
 interface HeaderProps {
   sidebarOpen: boolean;

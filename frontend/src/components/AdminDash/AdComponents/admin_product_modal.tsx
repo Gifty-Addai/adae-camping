@@ -26,13 +26,13 @@ const productSchema = z.object({
 export interface AdminProductModalProps {
     product: Product | null;
     onOpen: boolean;
-    onClose: () => void; // Added onClose
+    onClose: () => void; 
     onSave: (data: ProductFormData) => void;
     onDelete: (id: string) => void;
-    action: "add" | "update" | null;  // Action passed from the parent
+    action: "add" | "update" | null;  
 }
 
-const AdminProductModal: React.FC<AdminProductModalProps> = ({ product, onOpen, onClose, onSave, onDelete, action }) => {
+const AdminProductModal: React.FC<AdminProductModalProps> = ({ product, onOpen, onClose, onSave, onDelete }) => {
     const form = useForm<ProductFormData>({
         resolver: zodResolver(productSchema),
         defaultValues: {
