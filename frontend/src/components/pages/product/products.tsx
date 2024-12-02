@@ -7,35 +7,21 @@ import ProductCard from './product.card';
 import { Product } from '@/core/interfaces';
 import { Button } from '@/components/ui/button';
 import { Page } from '@/components/ui/page';
-import { cn, postRequest } from '@/lib/utils';
+import { cn } from '@/lib/utils';
 import { Spinner } from '@/components/ui/loader/_spinner';
+import { useProductAPI } from '@/hooks/api.hook';
 
 const StorePage: React.FC = () => {
-  const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [categoryFilter, setCategoryFilter] = useState<string>('');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [loading, setLoading] = useState<boolean>(false);
+  const { products, loading, searchProduct } = useProductAPI();
 
   // Function to fetch products based on search and category filter
   const fetchProducts = async (searchQuery: string, categoryFilter: string) => {
-    setLoading(true);
-    try {
-      const params = {
-        name: searchQuery,
-        category: categoryFilter,
-      };
-      const response = await postRequest<Product[]>('/api/product/searchProducts', params);
-
-
-
-      setFilteredProducts(response);
-    } catch (error) {
-      console.error('Error fetching products:', error);
-    } finally {
-      setLoading(false);
-    }
+      
+      searchProduct({ name: searchQuery, category:categoryFilter });
   };
 
   // Call fetchProducts on initial load with no filters
@@ -65,8 +51,7 @@ const StorePage: React.FC = () => {
   const handleResetFilters = () => {
     setCategoryFilter('');
     setSearchQuery('');
-    setFilteredProducts([]);  // Clear filtered products
-    fetchProducts('', '');  // Re-fetch with no filters
+    fetchProducts('', ''); 
   };
 
   const noProductsFoundMessage = (
@@ -109,7 +94,7 @@ const StorePage: React.FC = () => {
             {/* Filters */}
             <div className="flex items-center justify-between mb-6">
               <Filters
-                categories={filteredProducts}
+                categories={products}
                 onFilterChange={handleCategoryFilterChange}
                 onSearchChange={setSearchQuery}
                 categoryValue={categoryFilter}
@@ -134,18 +119,22 @@ const StorePage: React.FC = () => {
                   <Spinner size={'xl'} />
                 </div>
               </div>
-            ) : filteredProducts.length === 0 ? (
-              noProductsFoundMessage
             ) : (
+              <>
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-x-6 gap-y-8">
-                {filteredProducts.map((product) => (
+                {products.map((product) => (
                   <ProductCard
                     key={product._id}
                     product={product}
                     onOpenModal={openModal}
                   />
                 ))}
+                
               </div>
+              {
+                products.length == 0 && (noProductsFoundMessage)
+              }
+              </>
             )}
 
             {/* Modal */}

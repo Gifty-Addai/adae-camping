@@ -17,7 +17,6 @@ export interface ProductFormData {
 export interface UseProductAPI {
   products: Product[];
   loading: boolean;
-  apiError: string | null;
   addProduct: (productData: ProductFormData) => void;
   editProduct: (id: string, productData: ProductFormData) => void;
   removeProduct: (id: string) => void;

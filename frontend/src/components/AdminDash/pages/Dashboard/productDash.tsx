@@ -5,6 +5,8 @@ import React, { useState } from "react";
 import AdminProductModal from "../../AdComponents/admin_product_modal";
 import { Button } from "@/components/ui/button";
 import AdminProductCard from "../../AdComponents/admin_product_card";
+import { cn } from "@/lib/utils";
+import { Spinner } from "@/components/ui/loader/_spinner";
 
 const AdminProductDash: React.FC = () => {
   const { products, loading, addProduct, editProduct, removeProduct, searchProduct } = useProductAPI();
@@ -75,7 +77,15 @@ const AdminProductDash: React.FC = () => {
       </div>
 
       {loading ? (
-        <div>Loading...</div>
+        <div
+        className={cn(
+          'fixed top-0 left-0  flex items-center justify-center bg-primary/50'
+        )}
+      >
+        <div className="text-center flex relative flex-col">
+          <Spinner size={'xl'} />
+        </div>
+      </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
           {products.map((product: Product) => (
