@@ -6,6 +6,7 @@ import {
 import { Button } from "../button"
 import { Link } from "react-router-dom";
 import { ShoppingCart } from "lucide-react"
+import { Label } from "../label";
 
 
 const DesktopMenu: React.FC = () => {
@@ -13,14 +14,16 @@ const DesktopMenu: React.FC = () => {
   return (
     <>
       <div className="flex justify-between w-full">
-        <Link to="/">
-          <div className="flex items-center space-x-4">
+        <Link to="/" className="no-underline items-center">
+          <div className="flex justify-center items-center rounded-lg bg-yellow-300">
             {/* <img
-              // src={Images.AcsLogo}
-              alt="Logo"
-              className="h-8 w-8"
-            /> */}
-            <div className="text-lg font-bold text-white">FieNeFie</div>
+      // src={Images.AcsLogo}
+      alt="Logo"
+      className="h-8 w-8"
+    /> */}
+            <Label className="text-lg w-28 font-bold text-black text-center">
+              FieNeFie
+            </Label>
           </div>
         </Link>
 

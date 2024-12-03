@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import ProductModal from '@/components/ui/product.modal';
@@ -18,21 +18,11 @@ const StorePage: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { products, loading, searchProduct } = useProductAPI();
 
-  // Function to fetch products based on search and category filter
-  const fetchProducts = async (searchQuery: string, categoryFilter: string) => {
-
+  const handleSearch = () : void =>{
+    console.log("fetch")
     searchProduct({ name: searchQuery, category: categoryFilter });
-  };
+  }
 
-  // Call fetchProducts on initial load with no filters
-  useEffect(() => {
-    fetchProducts(searchQuery, categoryFilter);
-  }, []);
-
-  // Handle manual search
-  const handleSearch = async () => {
-    fetchProducts(searchQuery, categoryFilter);
-  };
 
   const openModal = (product: Product) => {
     setSelectedProduct(product);
@@ -51,7 +41,6 @@ const StorePage: React.FC = () => {
   const handleResetFilters = () => {
     setCategoryFilter('');
     setSearchQuery('');
-    fetchProducts('', '');
   };
 
   const noProductsFoundMessage = (

@@ -58,21 +58,21 @@ const LandingPage = () => {
               </Button>
             </Link>
 
-            <Link to="/booking/page">
+            {/* <Link to="/booking/page">
               <Button variant="default" className="px-8 py-4 mt-5 sm:mt-0 text-lg">
                 Reserve a Spot
               </Button>
-            </Link>
+            </Link> */}
           </div>
 
-          <motion.p
+          {/* <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 1, delay: 2 }}
             className="mt-4 text-sm text-white"
           >
             Starts at GHS 299 / night
-          </motion.p>
+          </motion.p> */}
         </motion.div>
 
 

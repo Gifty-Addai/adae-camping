@@ -1,19 +1,29 @@
+// src/pages/CartPage.tsx
+
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import CartItem from './cart_item';
 import { RootState } from '@/core/store/store';
 import { Button } from '@/components/ui/button';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import {
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
+} from '@/components/ui/form';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { bookingSchema } from '@/core/interfaces/zod';
-import { BookingFormValues, PaymentInitializationResponse, PaymentVerifyResponse } from '@/core/interfaces';
+import { BookingFormValues, PaymentInitializationResponse, VerifyPaymentResponse } from '@/core/interfaces';
 import { Input } from '@/components/ui/input';
-import PaymentModal from './payment_instruction_modal';
+import { toast } from 'react-toastify';
+import PaystackPop from '@paystack/inline-js';
 import { getRequest, postRequest } from '@/lib/utils';
-import PaystackPop from '@paystack/inline-js'
-
+import InvoiceModal from './payment_instruction_modal';
+import TransactionModal from './transaction.modal';
 
 const CartPage: React.FC = () => {
     const form = useForm<BookingFormValues>({
@@ -29,53 +39,92 @@ const CartPage: React.FC = () => {
 
     const cart = useSelector((state: RootState) => state.cart);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isVerify, setIsVerifyModal] = useState(false);
+    const [isSucces, setIsSuccess] = useState(false);
+    const [formData, setFormData] = useState<BookingFormValues | null>(null);
 
     const onSubmit = (data: BookingFormValues) => {
-        // This will be triggered only if the form is valid
-        handleCheckout(data);
+        // Save form data and open the modal
+        setFormData(data);
+        setIsModalOpen(true);
     };
 
-    const verifyPayment = async (reference: string) => {
-        try {
-            const response = await getRequest<PaymentVerifyResponse>(`/api/auth/verifypayment/${ reference }` );
+    // const verifyPayment = async (reference: string) => {
+    //     try {
+    //         const response = await getRequest<PaymentVerifyResponse>(`/api/auth/verifypayment/${reference}`);
 
-            if (response.status) {
-                return { success: true };
-            } else {
-                return { success: false };
-            }
-        } catch (error) {
-            console.error('Error verifying payment:', error);
-            return { success: false };
-        }
-    };
+    //         if (response.status) {
+    //             return { success: true };
+    //         } else {
+    //             return { success: false };
+    //         }
+    //     } catch (error) {
+    //         console.error('Error verifying payment:', error);
+    //         return { success: false };
+    //     }
+    // };
 
-    const handleCheckout = async (data: BookingFormValues) => {
+    const handleCheckout = async (formData: BookingFormValues) => {
         try {
-            const response = await postRequest<PaymentInitializationResponse>('/api/auth/payment', { ...data, amount: Math.round(cart.totalPrice) });
+            const response = await postRequest<PaymentInitializationResponse>('/api/auth/payment', {
+                ...formData,
+                amount: Math.round(cart.totalPrice),
+            });
 
             if (response.success) {
                 const popup = new PaystackPop();
-                // @ts-ignore
-                popup.resumeTransaction(response.access_code.accessCode);
 
+                const transactionOptions = {
+                    key: 'pk_live_c8527e2f21c94ad8cbb07b2e10a881f556fc025c',
+                    email: formData.email,
+                    amount: response.amount,
+                    reference: response.reference,
+                    onSuccess: async (tranx: any) => {
+                        await handleTransactionSuccess(tranx, response.reference);
+                    },
+                    onCancel: () => {
+                        toast.error("Transaction was cancelled");
+                    },
+                    onError: (error: any) => {
+                        console.error("Transaction failed:", error);
+                        toast.error("Transaction failed");
+                    },
+                };
 
-                const verificationResponse = await verifyPayment(response.reference);
-                if (verificationResponse.success) {
-                    alert('Payment successful!')
-                } else {
-                    alert('Payment verification failed!');
-                }
+                // Use checkout which is asynchronous
+                const transaction = await popup.checkout(transactionOptions);
 
+                // Handle additional logic here after the checkout is initiated (if necessary)
+                console.log("Checkout started for transaction:", transaction);
             } else {
-                alert('Payment initialization failed!');
+                toast.error('Payment initialization failed!');
             }
         } catch (error) {
             console.error(error);
-            alert('Payment initialization failed!');
+            toast.error('Payment initialization failed!');
         }
     };
 
+
+    const handleTransactionSuccess = async (tranx: any, reference: string) => {
+        try {
+            console.log("Transaction Successful:", tranx);
+
+            const verifyResponse = await getRequest<VerifyPaymentResponse>(`/api/auth/verifypayment/${reference}`);
+
+            if (verifyResponse.success) {
+                setIsVerifyModal(true);
+                setIsSuccess(true);
+            } else {
+                setIsVerifyModal(true);
+                setIsSuccess(false);
+            }
+        } catch (error) {
+            console.error("Verification failed:", error);
+            setIsVerifyModal(true);
+            setIsSuccess(false);
+        }
+    };
 
     if (cart.totalItems === 0) {
         return (
@@ -99,7 +148,7 @@ const CartPage: React.FC = () => {
     return (
         <div className="container mx-auto p-6 mt-16">
             <h2 className="text-2xl font-semibold text-card-foreground mb-6 text-center">Your Cart</h2>
-            {/* Booking Section */}
+            {/* Cart Items and Invoice Section */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-8">
                 {/* Package Details */}
                 <div className="col-span-2 rounded-lg shadow-lg p-6">
@@ -203,23 +252,33 @@ const CartPage: React.FC = () => {
                                 )}
                             />
 
-                            <Button type="submit" >
-                                GHS {cart.totalPrice.toFixed(2)} 
-                                Proceed to Checkout
+                            <Button type="submit" className="w-full">
+                                View Invoice
                             </Button>
                         </form>
                     </Form>
                 </div>
             </div>
 
-            {/* Payment Modal */}
-            <PaymentModal
-                isOpen={isModalOpen}
-                onClose={() => setIsModalOpen(false)}
-                totalPrice={cart.totalPrice}
+            {/* Invoice Modal */}
+            {formData && (
+                <InvoiceModal
+                    isOpen={isModalOpen}
+                    onClose={() => setIsModalOpen(false)}
+                    totalPrice={cart.totalPrice}
+                    formData={formData}
+                    handleCheckout={handleCheckout}
+                />
+            )}
+            <TransactionModal
+                isOpen={isVerify}
+                onClose={() => setIsVerifyModal(false)}
+                isSuccess={isSucces}
+            
             />
         </div>
     );
+
 };
 
 export default CartPage;

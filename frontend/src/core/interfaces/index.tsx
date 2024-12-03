@@ -38,6 +38,7 @@ export interface ProductTableProps {
 export interface PaymentInitializationResponse {
   success: boolean;
   message: string;
+  amount:number;
   authorizationUrl: string;
   reference: string;
   access_code:{ accessCode: string; }
@@ -137,6 +138,10 @@ export interface ProcessedVideo {
   views: string;
 }
 
+export interface VerifyPaymentResponse {
+  success:boolean,
+  message: string
+}
 export interface SignInResponse {
   message:string,
   user :IUser,

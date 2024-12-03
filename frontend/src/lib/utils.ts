@@ -2,7 +2,6 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import moment from "moment";
-import { toast } from 'react-toastify'; 
 import axios, { AxiosInstance, AxiosResponse } from "axios";
 import { app_local_storage_key, API_BASE_URL, YOUTUBE_API_KEY, CHANNEL_ID } from "../core/constants";
 import { IUser, ProcessedVideo, YouTubePlaylistItem, YouTubePlaylistResponse, YouTubeVideosResponse } from "@/core/interfaces";
@@ -71,25 +70,25 @@ axiosInstance.interceptors.response.use(
     // Success: Return the response directly
     return response;
   },
-  async (error) => {
-    if (error.response) {
-      const { status } = error.response;
-      if (status === 401) {
-        // Token might have expired, redirect to login
-        window.location.href = '/login';
-        toast.error('Session expired. Redirecting to login...', { autoClose: 3000 });
-      } else if (status === 403) {
-        toast.error('You do not have permission to perform this action.', { autoClose: 3000 });
-      } else if (status >= 500) {
-        toast.error('An error occurred on the server. Please try again later.', { autoClose: 3000 });
-      }
-    } else if (error.request) {
-      toast.error('No response received from the server. Please check your network connection.', { autoClose: 3000 });
-    } else {
-      toast.error('An error occurred while setting up the request.', { autoClose: 3000 });
-    }
-    return Promise.reject(error);
-  }
+  // async (error) => {
+  //   if (error.response) {
+  //     const { status } = error.response;
+  //     if (status === 401) {
+  //       // Token might have expired, redirect to login
+  //       window.location.href = '/login';
+  //       toast.error('Session expired. Redirecting to login...', { autoClose: 3000 });
+  //     } else if (status === 403) {
+  //       toast.error('You do not have permission to perform this action.', { autoClose: 3000 });
+  //     } else if (status >= 500) {
+  //       toast.error('An error occurred on the server. Please try again later.', { autoClose: 3000 });
+  //     }
+  //   } else if (error.request) {
+  //     toast.error('No response received from the server. Please check your network connection.', { autoClose: 3000 });
+  //   } else {
+  //     toast.error('An error occurred while setting up the request.', { autoClose: 3000 });
+  //   }
+  //   return Promise.reject(error);
+  // }
 );
 // Utility to get request with cache
 export const getCachedRequest = async <T = any>(

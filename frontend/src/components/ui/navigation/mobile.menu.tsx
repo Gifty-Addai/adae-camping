@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { Menu, ShoppingCart, X } from "lucide-react"; // Icons for hamburger and close
+import { Menu, ShoppingCart, X } from "lucide-react";
 import { Button } from "../button";
 import {
   NavigationMenu,
   NavigationMenuItem,
   NavigationMenuList,
 } from "../navigation-menu";
+import { Label } from "../label";
 
 const MobileMenu: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -17,16 +18,18 @@ const MobileMenu: React.FC = () => {
 
   return (
     <div className="flex justify-between w-full">
-      <div className="flex items-center space-x-4 z-20">
-        {/* <img
-          // src={Images.AcsLogo}
-          alt="Logo"
-          className="h-8 w-8"
-        /> */}
-        <Link to={"/"}>
-          <div className="text-lg font-bold text-white">FieNeFie</div>
-        </Link>
-      </div>
+      <Link to="/" className="no-underline items-center">
+        <div className="flex justify-center items-center rounded-lg bg-yellow-300">
+          {/* <img
+      // src={Images.AcsLogo}
+      alt="Logo"
+      className="h-8 w-8"
+    /> */}
+          <Label className="text-lg w-28 font-bold text-black text-center">
+            FieNeFie
+          </Label>
+        </div>
+      </Link>
 
       <div className="flex items-center space-x-4 ml-auto">
         <Link to={"/cart"}>

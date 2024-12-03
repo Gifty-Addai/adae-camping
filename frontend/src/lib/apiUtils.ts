@@ -1,5 +1,11 @@
-import { Product, ProductFormData, SignInResponse } from "@/core/interfaces";
+import { Product, ProductFormData, SignInResponse, VerifyPaymentResponse } from "@/core/interfaces";
 import { deleteRequest, postRequest } from "./utils";
+
+export const verifyPayment = async (param: {reference_id:string}) : Promise<VerifyPaymentResponse> =>{
+
+  const data = await postRequest<VerifyPaymentResponse>(`/api/auth/verifypayment/${param.reference_id}`);
+  return data;
+}
 
 export const sigin = async (params:{email:string,password:string}): Promise<SignInResponse> => {
   const data = await postRequest<SignInResponse>('/api/auth/login', params);
