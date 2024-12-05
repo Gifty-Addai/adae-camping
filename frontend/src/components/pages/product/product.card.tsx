@@ -67,8 +67,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onOpenModal }) => {
           </Button>
           <p className="mx-3 text-sm font-medium text-card-foreground">{quantity}</p>
           <Button
-            variant="secondary"
-            className="h-6 w-6 p-0 flex items-center justify-center"
+            className="h-6 w-6 bg-yellow-400 p-0 flex items-center justify-center"
             onClick={(e) => {
               e.stopPropagation();
               incrementQuantity();

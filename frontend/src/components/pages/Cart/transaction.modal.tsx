@@ -18,7 +18,7 @@ const TransactionModal: React.FC<TransactionModalProps> = ({ isOpen, onClose, is
                 <DialogDescription className="text-card-foreground mb-4">
                     {(isSuccess
                         ? 'Your camping gear is on its way! Time to set up your tent and get ready for the adventure of a lifetime. 🏕️'
-                        : 'Looks like we hit a small snag! Don’t worry, we’ll have you back on track faster than you can say "campfire marshmallows"! 🔥')}
+                        : 'Looks like we hit a small snag! Don’t worry, we’ll have you back on track faster than you can say "Fie ne Fie"!')}
                 </DialogDescription>
                 <Button
                     onClick={onClose}

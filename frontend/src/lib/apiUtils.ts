@@ -13,8 +13,8 @@ export const sigin = async (params:{email:string,password:string}): Promise<Sign
 };
 
 // Fetch all products
-export const fetchProducts = async (): Promise<Product[]> => {
-  const data = await postRequest<Product[]>('/api/product/searchProducts');
+export const fetchProducts = async (page: number, limit: number): Promise<{ products: Product[], totalPages: number, currentPage:number, totalProducts:number, isSuggestion:boolean }> => {
+  const data = await postRequest<{ products: Product[], totalPages: number, currentPage:number, totalProducts:number, isSuggestion:boolean }>('/api/product/searchProducts', { page, limit });
   return data;
 };
 
@@ -35,7 +35,8 @@ export const deleteProduct = async (id: string): Promise<void> => {
 };
 
 // Search products by filters
-export const searchProducts = async (filters: Record<string, any>): Promise<Product[]> => {
-  const data = await postRequest<Product[]>('/api/product/searchProducts', filters);
+export const searchProducts = async (filters: Record<string, any>, page: number, limit: number): Promise<{ products: Product[], totalPages: number, currentPage:number, totalProducts:number, isSuggestion:boolean }> => {
+  const data = await postRequest<{ products: Product[], totalPages: number, currentPage:number, totalProducts:number, isSuggestion:boolean }>('/api/product/searchProducts', { ...filters, page, limit });
+  console.log("product search", data)
   return data;
 };

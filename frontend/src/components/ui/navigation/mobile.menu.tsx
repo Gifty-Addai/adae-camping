@@ -32,7 +32,7 @@ const MobileMenu: React.FC = () => {
       </Link>
 
       <div className="flex items-center space-x-4 ml-auto">
-        <Link to={"/cart"}>
+        {/* <Link to={"/cart"}>
           <Button
             onClick={() => setIsOpen(false)}
             size={"icon"}
@@ -40,7 +40,7 @@ const MobileMenu: React.FC = () => {
           >
             <ShoppingCart size={12} />
           </Button>
-        </Link>
+        </Link> */}
         <Button
           className="text-white focus:outline-none"
           onClick={() => setIsOpen(true)}

@@ -21,6 +21,10 @@ export interface UseProductAPI {
   editProduct: (id: string, productData: ProductFormData) => void;
   removeProduct: (id: string) => void;
   searchProduct: (filters: Record<string, any>) => void;
+  currentPage: number,
+  totalPages: number,
+  isSuggestion:boolean,
+  goToPage: (page: number) => void;
 }
 
 export interface ProductModalProps {
@@ -38,10 +42,10 @@ export interface ProductTableProps {
 export interface PaymentInitializationResponse {
   success: boolean;
   message: string;
-  amount:number;
+  amount: number;
   authorizationUrl: string;
   reference: string;
-  access_code:{ accessCode: string; }
+  access_code: { accessCode: string; }
 }
 
 export interface PaymentVerifyResponse {
@@ -51,9 +55,9 @@ export interface PaymentVerifyResponse {
 }
 
 export interface IUser {
-    role:'admin',
-    id:string,
-    name:string
+  role: 'admin',
+  id: string,
+  name: string
 }
 
 export interface IUserState {
@@ -62,9 +66,9 @@ export interface IUserState {
   error: string | null;
 }
 export interface IAppState {
-    appName:string,
-    isLoading:boolean,
-    error:boolean
+  appName: string,
+  isLoading: boolean,
+  error: boolean
 }
 
 export interface YouTubeThumbnail {
@@ -127,8 +131,8 @@ export interface YouTubeVideosResponse {
   items: YouTubeVideoDetails[];
 }
 
-export type ProviderType ={
-  children:any
+export type ProviderType = {
+  children: any
 }
 export interface ProcessedVideo {
   id: string;
@@ -139,13 +143,13 @@ export interface ProcessedVideo {
 }
 
 export interface VerifyPaymentResponse {
-  success:boolean,
+  success: boolean,
   message: string
 }
 export interface SignInResponse {
-  message:string,
-  user :IUser,
-  token:string
+  message: string,
+  user: IUser,
+  token: string
 }
 export interface Product {
   _id: string;
@@ -153,14 +157,14 @@ export interface Product {
   category: string;
   imageUrl: string;
   price: number;
-  oldPrice?: number; 
+  oldPrice?: number;
   description: string;
   stock: number;
   isAvailable: boolean;
 }
 
 
-export type AuthType ={
+export type AuthType = {
   auth: boolean
 }
 
@@ -179,16 +183,16 @@ export interface CartItem extends Product {
   quantity: number;
 }
 
-  
-  export type ProductCardProps = {
-    product: Product;
-  };
 
-  export type ProductGridProps = {
-    products: Product[];
-  };
+export type ProductCardProps = {
+  product: Product;
+};
 
-  export type FilterSidebarProps = {
-    categories: string[];
-    onFilterChange: (category: string) => void;
-  };
+export type ProductGridProps = {
+  products: Product[];
+};
+
+export type FilterSidebarProps = {
+  categories: string[];
+  onFilterChange: (category: string) => void;
+};

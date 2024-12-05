@@ -1,19 +1,26 @@
 import { Product, ProductFormData, UseProductAPI } from "@/core/interfaces";
 import { createProduct, deleteProduct, fetchProducts, searchProducts, updateProduct } from "@/lib/apiUtils";
 import { useState, useEffect } from "react";
-import { toast } from "react-toastify"; 
+import { toast } from "react-toastify";
 
 export const useProductAPI = (): UseProductAPI => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
+  const [currentPage, setCurrentPage] = useState<number>(1); 
+  const [totalPages, setTotalPages] = useState<number>(1); 
+  const [isSuggestion, setIsSuggestion] = useState<boolean>(false); 
 
-  const getProducts = async (): Promise<void> => {
+  const limit = 10; 
+
+  const getProducts = async (page: number = currentPage): Promise<void> => {
     setLoading(true);
     try {
-      const data = await fetchProducts();
-      setProducts(data);
+      const data = await fetchProducts(page, limit);
+      setProducts(data.products);
+      setTotalPages(data.totalPages);
+      setIsSuggestion(data.isSuggestion);
     } catch (error) {
-      toast.error("Failed to load products"); 
+      toast.error("Failed to load products");
     } finally {
       setLoading(false);
     }
@@ -42,28 +49,37 @@ export const useProductAPI = (): UseProductAPI => {
   const removeProduct = async (id: string): Promise<void> => {
     try {
       await deleteProduct(id);
-      await getProducts();
-      toast.success("Product deleted successfully!"); 
+      await getProducts(); 
+      toast.success("Product deleted successfully!");
     } catch (error) {
       toast.error("Failed to delete product");
     }
   };
 
-  const searchProduct = async (filters: Record<string, any>): Promise<void> => {
+  const searchProduct = async (filters: Record<string, any>, page: number = currentPage): Promise<void> => {
     setLoading(true);
     try {
-      const result = await searchProducts(filters);
-      setProducts(result);
-      // toast.success("Products searched successfully!"); 
+      const result = await searchProducts(filters, page, limit);
+      setProducts(result.products);
+      setTotalPages(result.totalPages);
+      setIsSuggestion(result.isSuggestion); 
     } catch (error) {
-     toast.error("Failed to search products"); 
+      toast.error("Failed to search products");
     } finally {
       setLoading(false);
     }
   };
 
+
+  const goToPage = (page: number): void => {
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page);
+      getProducts(page);
+    }
+  };
+
   useEffect(() => {
-    getProducts();
+    getProducts(); 
   }, []);
 
   return {
@@ -73,5 +89,9 @@ export const useProductAPI = (): UseProductAPI => {
     editProduct,
     removeProduct,
     searchProduct,
+    currentPage,
+    totalPages,
+    isSuggestion,
+    goToPage, 
   };
 };

@@ -1,6 +1,6 @@
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from './select';
 import { Input } from './input';
-import { Button } from './button';  // Make sure to import Button
+import { Button } from './button'; 
 import { Product } from '@/core/interfaces';
 
 interface FilterProps {
@@ -9,7 +9,7 @@ interface FilterProps {
   onSearchChange: (query: string) => void;
   categoryValue: string; 
   searchQuery: string;   
-  onSearch: () => void;  // Add an onSearch prop for handling the search button click
+  onSearch: () => void;
 }
 
 const Filters: React.FC<FilterProps> = ({ onFilterChange, onSearchChange, categoryValue, searchQuery, onSearch }) => {
@@ -52,7 +52,7 @@ const Filters: React.FC<FilterProps> = ({ onFilterChange, onSearchChange, catego
           value={searchQuery}
           onChange={handleSearchChange}
         />
-        <Button onClick={onSearch} className="p-2 bg-blue-600 text-white rounded-md">
+        <Button onClick={onSearch} className="p-2 bg-yellow-400 text-black rounded-md">
           Search
         </Button>
       </div>

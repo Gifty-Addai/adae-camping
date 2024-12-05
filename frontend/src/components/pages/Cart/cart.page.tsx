@@ -17,11 +17,11 @@ import {
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { bookingSchema } from '@/core/interfaces/zod';
-import { BookingFormValues, PaymentInitializationResponse, VerifyPaymentResponse } from '@/core/interfaces';
+import { BookingFormValues, PaymentInitializationResponse } from '@/core/interfaces';
 import { Input } from '@/components/ui/input';
 import { toast } from 'react-toastify';
 import PaystackPop from '@paystack/inline-js';
-import { getRequest, postRequest } from '@/lib/utils';
+import { postRequest } from '@/lib/utils';
 import InvoiceModal from './payment_instruction_modal';
 import TransactionModal from './transaction.modal';
 
@@ -44,7 +44,6 @@ const CartPage: React.FC = () => {
     const [formData, setFormData] = useState<BookingFormValues | null>(null);
 
     const onSubmit = (data: BookingFormValues) => {
-        // Save form data and open the modal
         setFormData(data);
         setIsModalOpen(true);
     };
@@ -79,52 +78,52 @@ const CartPage: React.FC = () => {
                     email: formData.email,
                     amount: response.amount,
                     reference: response.reference,
-                    onSuccess: async (tranx: any) => {
-                        await handleTransactionSuccess(tranx, response.reference);
+                    onSuccess: () => {
+                        // await handleTransactionSuccess(tranx, response.reference);
+
+                        setIsVerifyModal(true);
+                        setIsSuccess(true);
+
                     },
                     onCancel: () => {
                         toast.error("Transaction was cancelled");
                     },
-                    onError: (error: any) => {
-                        console.error("Transaction failed:", error);
-                        toast.error("Transaction failed");
+                    onError:() => {
+                        // await handleTransactionSuccess(error, response.reference);
+                        setIsVerifyModal(true);
+                        setIsSuccess(false);
                     },
                 };
-
-                // Use checkout which is asynchronous
-                const transaction = await popup.checkout(transactionOptions);
-
-                // Handle additional logic here after the checkout is initiated (if necessary)
-                console.log("Checkout started for transaction:", transaction);
+                popup.newTransaction(transactionOptions);
             } else {
                 toast.error('Payment initialization failed!');
             }
         } catch (error) {
             console.error(error);
-            toast.error('Payment initialization failed!');
+            toast.error('Payment initialization failed! Check Internet and Retry');
         }
     };
 
 
-    const handleTransactionSuccess = async (tranx: any, reference: string) => {
-        try {
-            console.log("Transaction Successful:", tranx);
+    // const handleTransactionSuccess = async (tranx: any, reference: string) => {
+    //     try {
+    //         console.log("Transaction Successful:", tranx);
 
-            const verifyResponse = await getRequest<VerifyPaymentResponse>(`/api/auth/verifypayment/${reference}`);
+    //         const verifyResponse = await getRequest<VerifyPaymentResponse>(`/api/auth/verifypayment/${reference}`);
 
-            if (verifyResponse.success) {
-                setIsVerifyModal(true);
-                setIsSuccess(true);
-            } else {
-                setIsVerifyModal(true);
-                setIsSuccess(false);
-            }
-        } catch (error) {
-            console.error("Verification failed:", error);
-            setIsVerifyModal(true);
-            setIsSuccess(false);
-        }
-    };
+    //         if (verifyResponse.success) {
+    //             setIsVerifyModal(true);
+    //             setIsSuccess(true);
+    //         } else {
+    //             setIsVerifyModal(true);
+    //             setIsSuccess(false);
+    //         }
+    //     } catch (error) {
+    //         console.error("Verification failed:", error);
+    //         setIsVerifyModal(true);
+    //         setIsSuccess(false);
+    //     }
+    // };
 
     if (cart.totalItems === 0) {
         return (
@@ -274,7 +273,7 @@ const CartPage: React.FC = () => {
                 isOpen={isVerify}
                 onClose={() => setIsVerifyModal(false)}
                 isSuccess={isSucces}
-            
+
             />
         </div>
     );
