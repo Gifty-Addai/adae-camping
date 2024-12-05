@@ -107,7 +107,7 @@ const StorePage: React.FC = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-x-6 gap-y-8">
                 {/* Placeholder skeletons for products */}
                 {[...Array(10)].map((_, index) => (
-                  <div key={index} className="bg-gray-300 rounded-lg animate-pulse h-56"></div>
+                  <div key={index} className="bg-gray-500 rounded-lg animate-pulse h-56"></div>
                 ))}
               </div>
             ) : isSuggestion ? (
