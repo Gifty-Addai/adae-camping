@@ -20,7 +20,7 @@ interface ProductModalProps {
 
 const ProductModal: React.FC<ProductModalProps> = ({ product, isOpen, onClose }) => {
   const dispatch = useDispatch();
-  const [quantity, setQuantity] = useState(1);
+  const [quantity] = useState(1);
 
   const handleAddToCart = () => {
     if (product !== null) {

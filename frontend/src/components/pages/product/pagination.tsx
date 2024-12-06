@@ -4,7 +4,7 @@ const Pagination: React.FC<{ currentPage: number, totalPages: number, goToPage: 
   // Function to generate the page numbers with a limit of three page numbers at a time
   const generatePageNumbers = (): number[] => {
     const pageNumbers: number[] = [];
-    const maxPagesToShow = 3;
+    // const maxPagesToShow = 3;
 
     let startPage = Math.max(currentPage - 1, 1);  // Show one page before
     let endPage = Math.min(currentPage + 1, totalPages);  // Show one page after
