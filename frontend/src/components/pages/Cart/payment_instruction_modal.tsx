@@ -75,7 +75,7 @@ const InvoiceModal: React.FC<InvoiceModalProps> = ({ isOpen, onClose, totalPrice
                         {isProcessing ? (
                             <>
                                 <svg
-                                    className="animate-spin h-5 w-5 mr-3 border-t-2 border-b-2 border-white rounded-full"
+                                    className="animate-spin h-5 w-5 mr-3 border-t-2 text-black border-b-2 border-white rounded-full"
                                     viewBox="0 0 24 24"
                                 />
                                 Processing...

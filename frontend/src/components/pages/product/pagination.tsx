@@ -1,23 +1,27 @@
 import { Button } from '@/components/ui/button';
 
 const Pagination: React.FC<{ currentPage: number, totalPages: number, goToPage: (page: number) => void }> = ({ currentPage, totalPages, goToPage }) => {
-  
+  // Function to generate the page numbers with a limit of three page numbers at a time
   const generatePageNumbers = (): number[] => {
     const pageNumbers: number[] = [];
-    const maxPagesToShow = 5;
-    const halfRange = Math.floor(maxPagesToShow / 2);
-    
-    let startPage = Math.max(currentPage - halfRange, 1);
-    let endPage = Math.min(currentPage + halfRange, totalPages);
+    const maxPagesToShow = 3;
 
-    if (endPage - startPage < maxPagesToShow - 1) {
-      startPage = Math.max(endPage - maxPagesToShow + 1, 1);
+    let startPage = Math.max(currentPage - 1, 1);  // Show one page before
+    let endPage = Math.min(currentPage + 1, totalPages);  // Show one page after
+
+    // Ensure the range is always 3 pages at most, with ellipses if necessary
+    if (currentPage <= 2) {
+      startPage = 1;
+      endPage = Math.min(3, totalPages);  // Show the first 3 pages
+    } else if (currentPage >= totalPages - 1) {
+      startPage = Math.max(totalPages - 2, 1);  // Show the last 3 pages
+      endPage = totalPages;
     }
 
     for (let i = startPage; i <= endPage; i++) {
       pageNumbers.push(i);
     }
-    
+
     return pageNumbers;
   };
 
@@ -35,9 +39,20 @@ const Pagination: React.FC<{ currentPage: number, totalPages: number, goToPage: 
 
       {/* Page numbers */}
       <div className="flex items-center space-x-2">
-        {currentPage > 1 && <span onClick={() => goToPage(1)} className="cursor-pointer text-card-foreground text-sm">1</span>}
-        {currentPage > 3 && <span className="text-sm text-card-foreground">...</span>}
+        {/* Show '1' if not in page numbers */}
+        {pageNumbers[0] !== 1 && (
+          <>
+            <span 
+              onClick={() => goToPage(1)} 
+              className="cursor-pointer text-card-foreground text-sm"
+            >
+              1
+            </span>
+            {pageNumbers[0] > 2 && <span className="text-sm text-card-foreground">...</span>}
+          </>
+        )}
 
+        {/* Middle page numbers */}
         {pageNumbers.map(page => (
           <span 
             key={page} 
@@ -48,8 +63,18 @@ const Pagination: React.FC<{ currentPage: number, totalPages: number, goToPage: 
           </span>
         ))}
 
-        {currentPage < totalPages - 2 && <span className="text-sm text-card-foreground">...</span>}
-        {currentPage < totalPages && <span onClick={() => goToPage(totalPages)} className="text-card-foreground cursor-pointer text-sm">{totalPages}</span>}
+        {/* Show last page if not in page numbers */}
+        {pageNumbers[pageNumbers.length - 1] !== totalPages && (
+          <>
+            {pageNumbers[pageNumbers.length - 1] < totalPages - 1 && <span className="text-sm text-card-foreground">...</span>}
+            <span 
+              onClick={() => goToPage(totalPages)} 
+              className="cursor-pointer text-card-foreground text-sm"
+            >
+              {totalPages}
+            </span>
+          </>
+        )}
       </div>
 
       {/* Next button */}

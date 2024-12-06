@@ -77,6 +77,7 @@ const CartPage: React.FC = () => {
                     key: 'pk_live_c8527e2f21c94ad8cbb07b2e10a881f556fc025c',
                     email: formData.email,
                     amount: response.amount,
+                    phone :formData.phone,
                     reference: response.reference,
                     onSuccess: () => {
                         // await handleTransactionSuccess(tranx, response.reference);
@@ -87,6 +88,8 @@ const CartPage: React.FC = () => {
                     },
                     onCancel: () => {
                         toast.error("Transaction was cancelled");
+                        setIsVerifyModal(true);
+                        setIsSuccess(false);
                     },
                     onError:() => {
                         // await handleTransactionSuccess(error, response.reference);
