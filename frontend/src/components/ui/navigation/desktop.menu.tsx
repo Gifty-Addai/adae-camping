@@ -7,9 +7,13 @@ import { Button } from "../button"
 import { Link } from "react-router-dom";
 import { ShoppingCart } from "lucide-react"
 import { Label } from "../label";
+import { useSelector } from "react-redux";
+import { RootState } from "@/core/store/store";
 
 
 const DesktopMenu: React.FC = () => {
+  const totalItems = useSelector((state: RootState) => state.cart.totalItems);
+
 
   return (
     <>
@@ -67,6 +71,11 @@ const DesktopMenu: React.FC = () => {
                   className="bg-gray-400 "
                 >
                   <ShoppingCart size={24} />
+                  {totalItems > 0 && (
+                    <span className="absolute top-0 right-0 bg-accent text-white text-xs rounded-full w-5 h-5 flex items-center justify-center -mt-1 -mr-1">
+                      {totalItems}
+                    </span>
+                  )}
                 </Button>
               </Link>
 

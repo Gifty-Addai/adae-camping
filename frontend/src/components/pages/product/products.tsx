@@ -13,6 +13,7 @@ import { ShoppingCart } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/core/store/store';
+import { Images } from '@/assets/assets';
 
 const StorePage: React.FC = () => {
   const [categoryFilter, setCategoryFilter] = useState<string>('');
@@ -67,24 +68,23 @@ const StorePage: React.FC = () => {
     <>
       <Page
         renderBody={() => (
-          <div className="mt-24">
+          <div className="mt-12">
             {/* Banner */}
-            <section className="mb-8 bg-gray-700 rounded-lg flex items-center justify-between p-6">
-              <div>
-                <h1 className="text-3xl font-bold text-gray-100">
-                  Prepare your gears for the adventure ahead!
-                </h1>
-                <p className="mt-2 text-gray-300">
-                  Discover the best deals for your next adventure.
-                </p>
-                {/* <Button className="mt-4">Shop Now</Button> */}
-              </div>
+            <section className="mb-4 relative w-full">
               <img
-                src="/images/banner.jpg"
-                alt="Promotional Banner"
-                className="h-48 object-cover rounded-lg"
+                src={Images.Banner}
+                alt="Banner"
+                className="w-full object-fill rounded-lg"
+                style={{
+                  maxHeight: '70vh',
+                }}
               />
             </section>
+
+
+
+
+
 
             {/* Filters */}
             <div className="flex items-center justify-between mb-6">

@@ -6,6 +6,7 @@
 import AcsLogo from "@/assets/logo.png";
 import LandingPage from "@/assets/landpage.jpg";
 import Tent from "@/assets/images/tent.jpg";
+import Banner from "@/assets/images/banner.jpg";
 import LandingGif from "@/assets/animation/1126.mp4";
 // import ThreeDots from "@/assets/icons/three-dot-menu.svg?react";
 
@@ -23,7 +24,8 @@ import LandingGif from "@/assets/animation/1126.mp4";
 export const Images ={
     AcsLogo,
     LandingPage,
-    Tent
+    Tent,
+    Banner
 }
 
 export const Vid = {
