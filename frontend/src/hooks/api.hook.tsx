@@ -3,6 +3,12 @@ import { createProduct, deleteProduct, fetchProducts, searchProducts, updateProd
 import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 
+const CACHE_EXPIRATION_TIME = 15 * 60 * 1000; 
+const CACHE_KEY_PREFIX = "productsCachePage_";
+
+const getCacheKeyForPage = (page: number) => `${CACHE_KEY_PREFIX}${page}`;
+
+
 export const useProductAPI = (): UseProductAPI => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
@@ -10,15 +16,43 @@ export const useProductAPI = (): UseProductAPI => {
   const [totalPages, setTotalPages] = useState<number>(1); 
   const [isSuggestion, setIsSuggestion] = useState<boolean>(false); 
 
-  const limit = 10; 
+  const limit = 12; 
+
+  const isCacheExpired = (timestamp: number): boolean => {
+    return Date.now() - timestamp > CACHE_EXPIRATION_TIME;
+  };
 
   const getProducts = async (page: number = currentPage): Promise<void> => {
     setLoading(true);
+
+    const cacheKey = getCacheKeyForPage(page);
+    const cachedData = localStorage.getItem(cacheKey);
+
+
+    if (cachedData) {
+      const parsedData = JSON.parse(cachedData);
+      const { products, totalPages, timestamp } = parsedData;
+
+      if (!isCacheExpired(timestamp)) {
+        setProducts(products);
+        setTotalPages(totalPages);
+        setLoading(false);
+        return;
+      } else {
+        localStorage.removeItem(cacheKey);
+      }
+    }
+
     try {
       const data = await fetchProducts(page, limit);
       setProducts(data.products);
       setTotalPages(data.totalPages);
       setIsSuggestion(data.isSuggestion);
+      localStorage.setItem(cacheKey, JSON.stringify({
+        products: data.products,
+        totalPages: data.totalPages,
+        timestamp: Date.now(), 
+      }));
     } catch (error) {
       toast.error("Failed to load products");
     } finally {
@@ -30,6 +64,7 @@ export const useProductAPI = (): UseProductAPI => {
     try {
       await createProduct(productData);
       await getProducts();
+      
       toast.success("Product added successfully!");
     } catch (error) {
       toast.error("Failed to add product");
@@ -56,10 +91,10 @@ export const useProductAPI = (): UseProductAPI => {
     }
   };
 
-  const searchProduct = async (filters: Record<string, any>, page: number = currentPage): Promise<void> => {
+  const searchProduct = async (filters: Record<string, any>, isAvailable:boolean|undefined, page: number = currentPage): Promise<void> => {
     setLoading(true);
     try {
-      const result = await searchProducts(filters, page, limit);
+      const result = await searchProducts(filters, page, limit, isAvailable);
       setProducts(result.products);
       setTotalPages(result.totalPages);
       setIsSuggestion(result.isSuggestion); 

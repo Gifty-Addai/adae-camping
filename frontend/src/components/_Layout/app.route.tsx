@@ -43,7 +43,7 @@ export const AppRoute = () => {
       <Route element={<VerifiedLayout auth={isAuthenticated} />}>
         <Route path="/" element={<LandingPage />} />
         <Route path="/products" element={<StorePage />} />
-        <Route path="/gallery" element={<GalleryPage />} />
+        {/* <Route path="/gallery" element={<GalleryPage />} /> */}
         <Route path="/cart" element={<CartPage />} />
         <Route path="*" element={<PageNotFound />} />
       </Route>

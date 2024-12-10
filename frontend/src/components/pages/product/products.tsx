@@ -25,7 +25,7 @@ const StorePage: React.FC = () => {
 
   const handleSearch = (): void => {
     console.log("fetch")
-    searchProduct({ name: searchQuery, category: categoryFilter });
+    searchProduct({ name: searchQuery, category: categoryFilter, },true);
   }
 
 
@@ -46,7 +46,7 @@ const StorePage: React.FC = () => {
   const handleResetFilters = () => {
     setCategoryFilter('');
     setSearchQuery('');
-    searchProduct({});
+    searchProduct({},true);
   };
 
   const noProductsFoundMessage = (
@@ -76,7 +76,7 @@ const StorePage: React.FC = () => {
                 alt="Banner"
                 className="w-full object-fill rounded-lg"
                 style={{
-                  maxHeight: '70vh',
+                  maxHeight: '45vh',
                 }}
               />
             </section>

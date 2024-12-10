@@ -1,14 +1,14 @@
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from './select';
 import { Input } from './input';
-import { Button } from './button'; 
+import { Button } from './button';
 import { Product } from '@/core/interfaces';
 
 interface FilterProps {
   categories: Product[];
   onFilterChange: (selectedCategory: string) => void;
   onSearchChange: (query: string) => void;
-  categoryValue: string; 
-  searchQuery: string;   
+  categoryValue: string;
+  searchQuery: string;
   onSearch: () => void;
 }
 
@@ -16,14 +16,14 @@ const Filters: React.FC<FilterProps> = ({ onFilterChange, onSearchChange, catego
 
   const handleCategoryChange = (value: string) => {
     if (value === 'all') {
-      onFilterChange('');  
+      onFilterChange('');
     } else {
-      onFilterChange(value);  
+      onFilterChange(value);
     }
   };
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    onSearchChange(e.target.value);  // Directly call onSearchChange with the value
+    onSearchChange(e.target.value);
   };
 
   return (
@@ -37,8 +37,9 @@ const Filters: React.FC<FilterProps> = ({ onFilterChange, onSearchChange, catego
           <SelectGroup>
             <SelectLabel>Categories</SelectLabel>
             <SelectItem value="all">All</SelectItem>
-            <SelectItem value="camping">Camping Gears</SelectItem>
-            <SelectItem value="others">Other</SelectItem>
+            <SelectItem value="accessories">Outdoor accessories</SelectItem>
+            <SelectItem value="camping light">Camping Lights</SelectItem>
+            <SelectItem value="cookwear">Cookwears</SelectItem>
           </SelectGroup>
         </SelectContent>
       </Select>

@@ -76,13 +76,13 @@ const MobileMenu: React.FC = () => {
             {/* Navigation Menu */}
             <NavigationMenu>
               <NavigationMenuList className="flex flex-col space-y-4">
-                <NavigationMenuItem>
+                {/* <NavigationMenuItem>
                   <Link to="/gallery" onClick={handleLinkClick}>
                     <Button className="w-full sm:w-auto">
                       Gallery
                     </Button>
                   </Link>
-                </NavigationMenuItem>
+                </NavigationMenuItem> */}
                 <NavigationMenuItem>
                   <Link to="/products" onClick={handleLinkClick}>
                     <Button className="w-full sm:w-auto">

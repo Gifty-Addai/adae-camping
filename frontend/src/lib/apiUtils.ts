@@ -35,8 +35,8 @@ export const deleteProduct = async (id: string): Promise<void> => {
 };
 
 // Search products by filters
-export const searchProducts = async (filters: Record<string, any>, page: number, limit: number): Promise<{ products: Product[], totalPages: number, currentPage:number, totalProducts:number, isSuggestion:boolean }> => {
-  const data = await postRequest<{ products: Product[], totalPages: number, currentPage:number, totalProducts:number, isSuggestion:boolean }>('/api/product/searchProducts', { ...filters, page, limit });
+export const searchProducts = async (filters: Record<string, any>, page: number, limit: number,isAvailable:boolean|undefined): Promise<{ products: Product[], totalPages: number, currentPage:number, totalProducts:number, isSuggestion:boolean }> => {
+  const data = await postRequest<{ products: Product[], totalPages: number, currentPage:number, totalProducts:number, isSuggestion:boolean }>('/api/product/searchProducts', { ...filters, page, limit, isAvailable });
   console.log("product search", data)
   return data;
 };

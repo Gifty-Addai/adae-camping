@@ -7,16 +7,17 @@ import { Button } from "@/components/ui/button";
 import AdminProductCard from "../../AdComponents/admin_product_card";
 import { cn } from "@/lib/utils";
 import { Spinner } from "@/components/ui/loader/_spinner";
+import Pagination from "@/components/pages/product/pagination";
 
 const AdminProductDash: React.FC = () => {
-  const { products, loading, addProduct, editProduct, removeProduct, searchProduct } = useProductAPI();
+  const { products, loading, addProduct, editProduct, removeProduct, searchProduct, totalPages, currentPage, goToPage } = useProductAPI();
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [showModal, setShowModal] = useState<boolean>(false);
   const [productToEdit, setProductToEdit] = useState<Product | null>(null);
   const [action, setAction] = useState<"add" | "update" | null>(null);
 
   const handleSearch = (): void => {
-    searchProduct({ name: searchQuery });
+    searchProduct({ name: searchQuery }, undefined);
   };
 
   const handleAddProduct = (): void => {
@@ -78,31 +79,38 @@ const AdminProductDash: React.FC = () => {
 
       {loading ? (
         <div
-        className={cn(
-          'fixed top-0 left-0  flex items-center justify-center bg-primary/50'
-        )}
-      >
-        <div className="text-center flex relative flex-col">
-          <Spinner size={'xl'} />
+          className={cn(
+            'fixed top-0 left-0  flex items-center justify-center bg-primary/50'
+          )}
+        >
+          <div className="text-center flex relative flex-col">
+            <Spinner size={'xl'} />
+          </div>
         </div>
-      </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-          {products.map((product: Product) => (
-            <AdminProductCard
-              key={product._id}
-              product={product}
-              onEdit={handleEditProduct}
-              onDelete={handleDeleteProduct}
+        <>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+            {products.map((product: Product) => (
+              <AdminProductCard
+                key={product._id}
+                product={product}
+                onEdit={handleEditProduct}
+                onDelete={handleDeleteProduct}
+              />
+            ))}
+          </div>
+          {totalPages > 1 && (
+            <Pagination currentPage={currentPage} totalPages={totalPages} goToPage={goToPage}
             />
-          ))}
-        </div>
+
+          )}
+        </>
       )}
 
       {showModal && (
         <AdminProductModal
           product={productToEdit}
-          onClose={()=>setShowModal(false)}
+          onClose={() => setShowModal(false)}
           onOpen={showModal}
           onSave={handleSaveProduct}
           onDelete={handleDeleteProduct}

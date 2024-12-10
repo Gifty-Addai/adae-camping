@@ -52,14 +52,14 @@ const DesktopMenu: React.FC = () => {
           </NavigationMenu> */}
           <NavigationMenu>
             <NavigationMenuList>
-              <NavigationMenuItem>
+              {/* <NavigationMenuItem>
                 <Link to="/gallery">
                   <Button>
                     Gallery
                   </Button>
                 </Link>
 
-              </NavigationMenuItem>
+              </NavigationMenuItem> */}
               <Link to="/products">
                 <Button >
                   Products

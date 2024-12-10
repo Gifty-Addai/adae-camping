@@ -20,7 +20,7 @@ export interface UseProductAPI {
   addProduct: (productData: ProductFormData) => void;
   editProduct: (id: string, productData: ProductFormData) => void;
   removeProduct: (id: string) => void;
-  searchProduct: (filters: Record<string, any>) => void;
+  searchProduct: (filters: Record<string, any>,isAvailable:boolean|undefined) => void;
   currentPage: number,
   totalPages: number,
   isSuggestion:boolean,

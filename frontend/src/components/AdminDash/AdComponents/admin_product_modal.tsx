@@ -33,10 +33,10 @@ const productSchema = z.object({
 export interface AdminProductModalProps {
     product: Product | null;
     onOpen: boolean;
-    onClose: () => void; 
+    onClose: () => void;
     onSave: (data: ProductFormData) => void;
     onDelete: (id: string) => void;
-    action: "add" | "update" | null;  
+    action: "add" | "update" | null;
 }
 
 const AdminProductModal: React.FC<AdminProductModalProps> = ({ product, onOpen, onClose, onSave, onDelete }) => {
@@ -46,7 +46,7 @@ const AdminProductModal: React.FC<AdminProductModalProps> = ({ product, onOpen, 
             name: "",
             description: "",
             price: undefined, // Changed from 0 to undefined
-            category: "camping",
+            category: "accessories",
             stock: 0,
             image: "",
             isAvailable: false,
@@ -55,14 +55,13 @@ const AdminProductModal: React.FC<AdminProductModalProps> = ({ product, onOpen, 
 
     const [showConfirmDialog, setShowConfirmDialog] = useState(false);
 
-    // Update form state if a product is passed for editing
     useEffect(() => {
         if (product) {
             form.reset({
                 name: product.name,
                 description: product.description,
                 price: product.price,
-                category: product.category || "camping",
+                category: product.category || "accessories",
                 stock: product.stock,
                 image: product.imageUrl || "",
                 isAvailable: product.isAvailable,
@@ -72,8 +71,8 @@ const AdminProductModal: React.FC<AdminProductModalProps> = ({ product, onOpen, 
             form.reset({
                 name: "",
                 description: "",
-                price: undefined, // Ensure default is undefined
-                category: "camping",
+                price: undefined,
+                category: "accessories",
                 stock: 0,
                 image: "",
                 isAvailable: false,
@@ -89,8 +88,8 @@ const AdminProductModal: React.FC<AdminProductModalProps> = ({ product, onOpen, 
     const handleDelete = () => {
         if (product) {
             onDelete(product._id);
-            setShowConfirmDialog(false); 
-            onClose(); 
+            setShowConfirmDialog(false);
+            onClose();
         }
     };
 
@@ -125,9 +124,9 @@ const AdminProductModal: React.FC<AdminProductModalProps> = ({ product, onOpen, 
                             <FormItem>
                                 <FormLabel className="text-card-foreground">Product Name</FormLabel>
                                 <FormControl>
-                                    <Textarea 
-                                        placeholder="Enter product name" 
-                                        {...field} 
+                                    <Textarea
+                                        placeholder="Enter product name"
+                                        {...field}
                                         className="resize-none h-16"
                                     />
                                 </FormControl>
@@ -140,9 +139,9 @@ const AdminProductModal: React.FC<AdminProductModalProps> = ({ product, onOpen, 
                             <FormItem>
                                 <FormLabel className="text-card-foreground">Description</FormLabel>
                                 <FormControl>
-                                    <Textarea 
-                                        placeholder="Enter product description" 
-                                        {...field} 
+                                    <Textarea
+                                        placeholder="Enter product description"
+                                        {...field}
                                         className="resize-none h-24"
                                     />
                                 </FormControl>
@@ -200,8 +199,10 @@ const AdminProductModal: React.FC<AdminProductModalProps> = ({ product, onOpen, 
                                         <SelectValue placeholder="Select category" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        <SelectItem value="camping">Camping</SelectItem>
-                                        <SelectItem value="others">Others</SelectItem>
+                                        <SelectItem value="accessories">Outdoor accessory</SelectItem>
+                                        <SelectItem value="camping light">Camping Light</SelectItem>
+                                        <SelectItem value="cookwear">Cookwear</SelectItem>
+                                        {/* <SelectItem value="others">Others</SelectItem> */}
                                     </SelectContent>
                                 </Select>
                                 <FormMessage />
@@ -213,9 +214,9 @@ const AdminProductModal: React.FC<AdminProductModalProps> = ({ product, onOpen, 
                             <FormItem>
                                 <FormLabel className="text-card-foreground">Image URL</FormLabel>
                                 <FormControl>
-                                    <Textarea 
-                                        placeholder="Provide image URL" 
-                                        {...field} 
+                                    <Textarea
+                                        placeholder="Provide image URL"
+                                        {...field}
                                         className="resize-none h-16"
                                     />
                                 </FormControl>
