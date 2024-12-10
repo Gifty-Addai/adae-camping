@@ -13,8 +13,8 @@ export const sigin = async (params:{email:string,password:string}): Promise<Sign
 };
 
 // Fetch all products
-export const fetchProducts = async (page: number, limit: number): Promise<{ products: Product[], totalPages: number, currentPage:number, totalProducts:number, isSuggestion:boolean }> => {
-  const data = await postRequest<{ products: Product[], totalPages: number, currentPage:number, totalProducts:number, isSuggestion:boolean }>('/api/product/searchProducts', { page, limit });
+export const fetchProducts = async (page: number, limit: number, isAvailable:boolean|undefined): Promise<{ products: Product[], totalPages: number, currentPage:number, totalProducts:number, isSuggestion:boolean }> => {
+  const data = await postRequest<{ products: Product[], totalPages: number, currentPage:number, totalProducts:number, isSuggestion:boolean }>('/api/product/searchProducts', { page, limit,isAvailable });
   return data;
 };
 

@@ -44,7 +44,7 @@ export const useProductAPI = (): UseProductAPI => {
     // }
 
     try {
-      const data = await fetchProducts(page, limit);
+      const data = await fetchProducts(page, limit, true);
       setProducts(data.products);
       setTotalPages(data.totalPages);
       setIsSuggestion(data.isSuggestion);

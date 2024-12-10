@@ -49,11 +49,11 @@ const LandingPage = () => {
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1.2, delay: 1.5 }}
-          className="z-0 flex flex-col items-center text-center px-4 mb-6"
+          className="z-0 flex flex-col items-center text-center px-4 mb-32"
         >
           <div className="flex flex-col sm:flex-row sm:space-x-24">
             <Link to="/products">
-              <Button variant="default" className="px-8 py-4 text-lg">
+              <Button variant="default" className="px-8 text-lg">
                 Shop Gears
               </Button>
             </Link>
