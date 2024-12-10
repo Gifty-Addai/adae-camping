@@ -8,7 +8,7 @@ import { AdminLayout } from "./admin.layout";
 import { PageNotFound } from "../pages/not_found.page";
 import LandingPage from "../pages/landing";
 import StorePage from "../pages/product/products";
-import GalleryPage from "../pages/Gallery/gallery";
+// import GalleryPage from "../pages/Gallery/gallery";
 import SignInPage from "../pages/signin.page";
 import CartPage from "../pages/Cart/cart.page";
 import AdminProductDash from "../AdminDash/pages/Dashboard/productDash";

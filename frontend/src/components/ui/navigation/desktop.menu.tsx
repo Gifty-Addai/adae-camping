@@ -1,6 +1,6 @@
 import {
   NavigationMenu,
-  NavigationMenuItem,
+  // NavigationMenuItem,
   NavigationMenuList,
 } from "../navigation-menu"
 import { Button } from "../button"
