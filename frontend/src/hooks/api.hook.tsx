@@ -3,10 +3,10 @@ import { createProduct, deleteProduct, fetchProducts, searchProducts, updateProd
 import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 
-const CACHE_EXPIRATION_TIME = 15 * 60 * 1000; 
-const CACHE_KEY_PREFIX = "productsCachePage_";
+// const CACHE_EXPIRATION_TIME = 15 * 60 * 1000; 
+// const CACHE_KEY_PREFIX = "productsCachePage_";
 
-const getCacheKeyForPage = (page: number) => `${CACHE_KEY_PREFIX}${page}`;
+// const getCacheKeyForPage = (page: number) => `${CACHE_KEY_PREFIX}${page}`;
 
 
 export const useProductAPI = (): UseProductAPI => {
@@ -18,41 +18,41 @@ export const useProductAPI = (): UseProductAPI => {
 
   const limit = 12; 
 
-  const isCacheExpired = (timestamp: number): boolean => {
-    return Date.now() - timestamp > CACHE_EXPIRATION_TIME;
-  };
+  // const isCacheExpired = (timestamp: number): boolean => {
+  //   return Date.now() - timestamp > CACHE_EXPIRATION_TIME;
+  // };
 
   const getProducts = async (page: number = currentPage): Promise<void> => {
     setLoading(true);
 
-    const cacheKey = getCacheKeyForPage(page);
-    const cachedData = localStorage.getItem(cacheKey);
+    // const cacheKey = getCacheKeyForPage(page);
+    // const cachedData = localStorage.getItem(cacheKey);
 
 
-    if (cachedData) {
-      const parsedData = JSON.parse(cachedData);
-      const { products, totalPages, timestamp } = parsedData;
+    // if (cachedData) {
+    //   const parsedData = JSON.parse(cachedData);
+    //   const { products, totalPages, timestamp } = parsedData;
 
-      if (!isCacheExpired(timestamp)) {
-        setProducts(products);
-        setTotalPages(totalPages);
-        setLoading(false);
-        return;
-      } else {
-        localStorage.removeItem(cacheKey);
-      }
-    }
+    //   if (!isCacheExpired(timestamp)) {
+    //     setProducts(products);
+    //     setTotalPages(totalPages);
+    //     setLoading(false);
+    //     return;
+    //   } else {
+    //     localStorage.removeItem(cacheKey);
+    //   }
+    // }
 
     try {
       const data = await fetchProducts(page, limit);
       setProducts(data.products);
       setTotalPages(data.totalPages);
       setIsSuggestion(data.isSuggestion);
-      localStorage.setItem(cacheKey, JSON.stringify({
-        products: data.products,
-        totalPages: data.totalPages,
-        timestamp: Date.now(), 
-      }));
+      // localStorage.setItem(cacheKey, JSON.stringify({
+      //   products: data.products,
+      //   totalPages: data.totalPages,
+      //   timestamp: Date.now(), 
+      // }));
     } catch (error) {
       toast.error("Failed to load products");
     } finally {
