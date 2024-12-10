@@ -20,7 +20,7 @@ const StorePage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { products, loading, searchProduct, isSuggestion, totalPages, currentPage, goToPage } = useProductAPI();
+  const { products, loading, searchProduct, isSuggestion, totalPages, currentPage, goToPage } = useProductAPI(true);
   const totalItems = useSelector((state: RootState) => state.cart.totalItems);
 
   const handleSearch = (): void => {

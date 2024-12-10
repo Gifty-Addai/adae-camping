@@ -9,7 +9,7 @@ import { toast } from "react-toastify";
 // const getCacheKeyForPage = (page: number) => `${CACHE_KEY_PREFIX}${page}`;
 
 
-export const useProductAPI = (): UseProductAPI => {
+export const useProductAPI = (defaultAvailability: boolean | undefined = undefined): UseProductAPI => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [currentPage, setCurrentPage] = useState<number>(1); 
@@ -18,33 +18,11 @@ export const useProductAPI = (): UseProductAPI => {
 
   const limit = 12; 
 
-  // const isCacheExpired = (timestamp: number): boolean => {
-  //   return Date.now() - timestamp > CACHE_EXPIRATION_TIME;
-  // };
-
-  const getProducts = async (page: number = currentPage): Promise<void> => {
+  const getProducts = async ( isAvailable:boolean|undefined = defaultAvailability,page: number = currentPage): Promise<void> => {
     setLoading(true);
 
-    // const cacheKey = getCacheKeyForPage(page);
-    // const cachedData = localStorage.getItem(cacheKey);
-
-
-    // if (cachedData) {
-    //   const parsedData = JSON.parse(cachedData);
-    //   const { products, totalPages, timestamp } = parsedData;
-
-    //   if (!isCacheExpired(timestamp)) {
-    //     setProducts(products);
-    //     setTotalPages(totalPages);
-    //     setLoading(false);
-    //     return;
-    //   } else {
-    //     localStorage.removeItem(cacheKey);
-    //   }
-    // }
-
     try {
-      const data = await fetchProducts(page, limit, true);
+      const data = await fetchProducts(page, limit, isAvailable);
       setProducts(data.products);
       setTotalPages(data.totalPages);
       setIsSuggestion(data.isSuggestion);
@@ -63,7 +41,7 @@ export const useProductAPI = (): UseProductAPI => {
   const addProduct = async (productData: ProductFormData): Promise<void> => {
     try {
       await createProduct(productData);
-      await getProducts();
+      await getProducts(undefined);
       
       toast.success("Product added successfully!");
     } catch (error) {
@@ -74,7 +52,7 @@ export const useProductAPI = (): UseProductAPI => {
   const editProduct = async (id: string, productData: ProductFormData): Promise<void> => {
     try {
       await updateProduct(id, productData);
-      await getProducts();
+      await getProducts(undefined);
       toast.success("Product updated successfully!");
     } catch (error) {
       toast.error("Failed to update product");
@@ -84,7 +62,7 @@ export const useProductAPI = (): UseProductAPI => {
   const removeProduct = async (id: string): Promise<void> => {
     try {
       await deleteProduct(id);
-      await getProducts(); 
+      await getProducts(undefined); 
       toast.success("Product deleted successfully!");
     } catch (error) {
       toast.error("Failed to delete product");
@@ -109,12 +87,12 @@ export const useProductAPI = (): UseProductAPI => {
   const goToPage = (page: number): void => {
     if (page >= 1 && page <= totalPages) {
       setCurrentPage(page);
-      getProducts(page);
+      getProducts(undefined,page);
     }
   };
 
   useEffect(() => {
-    getProducts(); 
+    getProducts(undefined); 
   }, []);
 
   return {
