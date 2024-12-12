@@ -2,20 +2,21 @@ import { Page } from "../ui/page";
 import { Button } from "../ui/button";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
+import { Images } from "@/assets/assets";
 
 const LandingPage = () => {
 
   return (
     <>
       {/* Hero Section */}
-      <section className="relative h-screen flex flex-col justify-between">
-        {/* <img
-          className="absolute inset-0 w-full h-full object-cover sm:object-cover md:object-cover"
+      <section className="relative h-screen bg-landing flex flex-col justify-between">
+        <img
+          className="hidden lg:block absolute inset-0 w-full h-full object-cover sm:object-cover md:object-cover"
           src={Images.Background}
           alt="background"
-        /> */}
+        />
         {/* Overlay */}
-        <div className="absolute inset-0 bg-landing bg-opacity-50"></div>
+        <div className="absolute inset-0 lg:bg-black lg:bg-opacity-50"></div>
         {/* Hero Content */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
