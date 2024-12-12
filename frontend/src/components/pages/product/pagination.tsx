@@ -2,20 +2,32 @@ import { Button } from '@/components/ui/button';
 import { ChevronRight, ChevronLeft } from 'lucide-react';
 
 const Pagination: React.FC<{ currentPage: number, totalPages: number, goToPage: (page: number) => void }> = ({ currentPage, totalPages, goToPage }) => {
-  // Function to generate the page numbers with a limit of three page numbers at a time
-  const generatePageNumbers = (): number[] => {
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth', 
+    });
+  };
+
+  const handlePageChange = (page: number) => {
+    scrollToTop();
+    goToPage(page); 
+  };
+
+
+    const generatePageNumbers = (): number[] => {
     const pageNumbers: number[] = [];
     // const maxPagesToShow = 3;
 
-    let startPage = Math.max(currentPage - 1, 1);  // Show one page before
-    let endPage = Math.min(currentPage + 1, totalPages);  // Show one page after
+    let startPage = Math.max(currentPage - 1, 1);
+    let endPage = Math.min(currentPage + 1, totalPages);
 
     // Ensure the range is always 3 pages at most, with ellipses if necessary
     if (currentPage <= 2) {
       startPage = 1;
-      endPage = Math.min(3, totalPages);  // Show the first 3 pages
+      endPage = Math.min(3, totalPages);
     } else if (currentPage >= totalPages - 1) {
-      startPage = Math.max(totalPages - 2, 1);  // Show the last 3 pages
+      startPage = Math.max(totalPages - 2, 1);
       endPage = totalPages;
     }
 
@@ -34,7 +46,7 @@ const Pagination: React.FC<{ currentPage: number, totalPages: number, goToPage: 
       <Button
         size={"icon"}
         variant={'secondary'}
-        onClick={() => goToPage(currentPage - 1)}
+        onClick={() => handlePageChange(currentPage - 1)}
         disabled={currentPage === 1}
       >
         <ChevronLeft color='white' />
@@ -46,7 +58,7 @@ const Pagination: React.FC<{ currentPage: number, totalPages: number, goToPage: 
         {pageNumbers[0] !== 1 && (
           <>
             <span
-              onClick={() => goToPage(1)}
+              onClick={() => handlePageChange(1)}
               className="cursor-pointer text-card-foreground text-sm"
             >
               1
@@ -59,7 +71,7 @@ const Pagination: React.FC<{ currentPage: number, totalPages: number, goToPage: 
         {pageNumbers.map(page => (
           <span
             key={page}
-            onClick={() => goToPage(page)}
+            onClick={() => handlePageChange(page)}
             className={`cursor-pointer text-sm text-card-foreground ${page === currentPage ? 'font-bold' : ''}`}
           >
             {page}
@@ -71,7 +83,7 @@ const Pagination: React.FC<{ currentPage: number, totalPages: number, goToPage: 
           <>
             {pageNumbers[pageNumbers.length - 1] < totalPages - 1 && <span className="text-sm text-card-foreground">...</span>}
             <span
-              onClick={() => goToPage(totalPages)}
+              onClick={() => handlePageChange(totalPages)}
               className="cursor-pointer text-card-foreground text-sm"
             >
               {totalPages}
@@ -83,7 +95,7 @@ const Pagination: React.FC<{ currentPage: number, totalPages: number, goToPage: 
       {/* Next button */}
       <Button
         size={"icon"}
-        onClick={() => goToPage(currentPage + 1)}
+        onClick={() => handlePageChange(currentPage + 1)}
         disabled={currentPage === totalPages}
       >
         <ChevronRight color='white' />

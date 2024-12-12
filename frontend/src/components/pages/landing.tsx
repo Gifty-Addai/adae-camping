@@ -2,7 +2,7 @@ import { Page } from "../ui/page";
 import { Button } from "../ui/button";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import { Vid } from "@/assets/assets";
+import { Images } from "@/assets/assets";
 
 const LandingPage = () => {
 
@@ -10,14 +10,11 @@ const LandingPage = () => {
     <>
       {/* Hero Section */}
       <section className="relative h-screen bg-cover bg-center flex flex-col justify-between">
-        <video
-          className="absolute inset-0 w-full h-full object-cover"
-          src={Vid.LandingGif}
-          autoPlay
-          loop
-          muted
-          playsInline
-        ></video>
+        <img
+          className="absolute inset-0 w-full h-full object-cover sm:object-cover md:object-cover"
+          src={Images.Background}
+          alt="background"
+        />
         {/* Overlay */}
         <div className="absolute inset-0 bg-black bg-opacity-50"></div>
         {/* Hero Content */}
