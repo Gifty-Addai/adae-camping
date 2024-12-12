@@ -5,6 +5,7 @@
 @layer base {
   :root {
     /* Base Colors */
+    --landing: 180 36.5% 11%;
     --background: 210 19% 10%; /* Almost black background */
     --foreground: 0 0% 95%; /* Near-white for primary text */
     --card: 210 16% 13%; /* Very dark gray for cards */
@@ -85,4 +86,5 @@
 
 @import "./fonts.scss";
 @import "./animate.scss";
-@import "./extend.scss";
+@import "./animate.scss";
+@import "./sidebar.scss";
