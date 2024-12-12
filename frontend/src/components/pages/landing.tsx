@@ -2,7 +2,6 @@ import { Page } from "../ui/page";
 import { Button } from "../ui/button";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import { Images } from "@/assets/assets";
 
 const LandingPage = () => {
 
