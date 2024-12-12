@@ -9,14 +9,14 @@ const LandingPage = () => {
   return (
     <>
       {/* Hero Section */}
-      <section className="relative h-screen bg-cover bg-center flex flex-col justify-between">
-        <img
+      <section className="relative h-screen flex flex-col justify-between">
+        {/* <img
           className="absolute inset-0 w-full h-full object-cover sm:object-cover md:object-cover"
           src={Images.Background}
           alt="background"
-        />
+        /> */}
         {/* Overlay */}
-        <div className="absolute inset-0 bg-black bg-opacity-50"></div>
+        <div className="absolute inset-0 bg-landing bg-opacity-50"></div>
         {/* Hero Content */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}

@@ -23,6 +23,7 @@ export default {
         'bg-hero' : "url('src/assets/landpage.jpg')"
       },
       colors: {
+        landing: "hsl(var(--landing))",
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
