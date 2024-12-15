@@ -1,46 +1,27 @@
+// src/components/AdminDash/layout/AdminLayout.tsx
+
+import { SidebarProvider, SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
+import { Separator } from "../ui/separator";
 import { Outlet } from "react-router-dom";
-import React, { useState } from "react";
-import Header from "../AdminDash/AdComponents/header";
-import Sidebar from "../AdminDash/AdComponents/side_bar";
+import { AppSidebar } from "../AdminDash/AdComponents/side_bar";
+import Breadcrumbs from "../AdminDash/pages/trip/admin-breadcumb";
 
-type AdminLayout ={
-  auth:boolean
-}
-
-export const AdminLayout : React.FC<AdminLayout> = ({ }) => {
-
-    const [sidebarOpen, setSidebarOpen] = useState(false);
-
+export default function AdminLayout() {
   return (
-
-    
-    <>
-    <div className="dark:bg-boxdark-2 dark:text-bodydark">
-      {/* <!-- ===== Page Wrapper Start ===== --> */}
-      <div className="flex h-screen overflow-hidden">
-        {/* <!-- ===== Sidebar Start ===== --> */}
-        <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
-        {/* <!-- ===== Sidebar End ===== --> */}
-
-        {/* <!-- ===== Content Area Start ===== --> */}
-        <div className="relative flex flex-1 flex-col overflow-y-auto overflow-x-hidden">
-          {/* <!-- ===== Header Start ===== --> */}
-          <Header sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
-          {/* <!-- ===== Header End ===== --> */}
-
-          {/* <!-- ===== Main Content Start ===== --> */}
-          {/* <main> */}
-            <div className="mx-auto max-w-screen-2xl p-4 md:p-6 2xl:p-10">
-            <Outlet />
-            </div>
-          {/* </main> */}
-          {/* <!-- ===== Main Content End ===== --> */}
-        </div>
-        {/* <!-- ===== Content Area End ===== --> */}
-      </div>
-      {/* <!-- ===== Page Wrapper End ===== --> */}
-    </div>
-  
-    </>
+    <SidebarProvider>
+      <AppSidebar />
+      <SidebarInset>
+        <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
+          <div className="flex items-center gap-2 px-4 w-full">
+            <SidebarTrigger className="-ml-1" />
+            <Separator orientation="vertical" className="mr-2 h-4" />
+            <Breadcrumbs />
+          </div>
+        </header>
+        <main className="p-4">
+          <Outlet />
+        </main>
+      </SidebarInset>
+    </SidebarProvider>
   );
-};
+}

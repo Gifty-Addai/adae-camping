@@ -17,7 +17,7 @@ const userSlice = createSlice({
     setLoading: (state: IUserState, action: PayloadAction<boolean>) => {
       state.isLoading = action.payload;
       if (action.payload) {
-        state.error = null; // Reset error on loading
+        state.error = null;
       }
     },
     setUser: (state: IUserState, action: PayloadAction<IUser>) => {  

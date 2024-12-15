@@ -1,6 +1,77 @@
 import { bookingSchema } from "./zod";
 import { z } from "zod";
 
+export interface Itinerary {
+  day: number;
+  activities: string;
+  _id: string;
+}
+
+export interface Duration {
+  days: number;
+  nights: number;
+}
+
+export interface Cost {
+  basePrice: number;
+  discount: number;
+}
+
+export interface Location {
+  mainLocation: string;
+  pointsOfInterest: string[];
+}
+
+export interface Schedule {
+  startDate: string;
+  endDate: string;
+  itinerary: Itinerary[];
+}
+
+export interface Logistics {
+  transportation: string;
+  gearProvided: boolean;
+  accommodation: string;
+}
+
+export interface Trip {
+  _id?: string;
+  name: string;
+  description?: string;
+  type?: string;
+  difficulty?: string;
+  activityLevel?: number;
+  participants?: any[]; // Adjust based on actual participant structure
+  images?: string[];
+  status?: string;
+  createdAt?: string;
+  updatedAt?: string;
+  __v?: number;
+
+  // Nested Objects
+  duration?: Duration;
+  location?: Location;
+  cost?: Cost;
+  schedule?: Schedule;
+  logistics?: Logistics;
+}
+
+
+export interface TripFormData extends Omit<Trip, "_id"> {}
+
+export interface UseTripAPI {
+  trips: Trip[];
+  loading: boolean;
+  addTrip: (tripData: TripFormData) => Promise<void>;
+  editTrip: (id: string, tripData: TripFormData) => Promise<void>;
+  removeTrip: (id: string) => Promise<void>;
+  getTripById: (id: string) => Promise<Trip | null>;
+  searchTrip: (filters: Record<string, any>, page?: number) => Promise<void>;
+  currentPage: number;
+  totalPages: number;
+  goToPage: (page: number) => void;
+  getTrips: (page?: number, type?: string, difficulty?: string) => Promise<void>;
+}
 
 export type BookingFormValues = z.infer<typeof bookingSchema>;
 

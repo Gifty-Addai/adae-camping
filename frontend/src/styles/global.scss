@@ -6,26 +6,54 @@
   :root {
     /* Base Colors */
     --landing: 180 36.5% 11%;
-    --background: 210 19% 10%; /* Almost black background */
-    --foreground: 0 0% 95%; /* Near-white for primary text */
-    --card: 210 16% 13%; /* Very dark gray for cards */
-    --card-foreground: 0 0% 85%; /* Light gray for card content */
-    --popover: 0 0% 14%; /* Same as card for popovers */
-    --popover-foreground: 0 0% 85%; /* Light gray for popover text */
-    --primary: 120 61% 34%; /* Slightly brighter green for primary buttons */
-    --primary-foreground: 0 0% 95%; /* Near-white for primary text */
-    --secondary: 0 0% 30%; /* Mid-gray for secondary elements */
-    --secondary-foreground: 0 0% 80%; /* Muted light gray for secondary text */
-    --muted: 0 0% 20%; /* Dark muted gray for inactive elements */
-    --muted-foreground: 0 0% 60%; /* Muted gray for text */
-    --accent: 0 80% 55%; /* Vivid red for accents (like YouTube red) */
-    --accent-foreground: 0 0% 95%; /* Near-white for accent text */
-    --destructive: 0 70% 50%; /* Bright red for destructive actions */
-    --destructive-foreground: 0 0% 95%; /* Near-white for destructive text */
-    --border: 0 0% 20%; /* Subtle gray for borders */
-    --input: 0 0% 16%; /* Slightly lighter gray for input fields */
-    --ring: 0 80% 50%; /* Bright red for focus rings */
-    --radius: 0.5rem; /* Subtle rounded corners */
+    --background: 210 19% 10%;
+    /* Almost black background */
+    --foreground: 0 0% 95%;
+    /* Near-white for primary text */
+    --card: 210 16% 13%;
+    /* Very dark gray for cards */
+    --card-foreground: 0 0% 85%;
+    /* Light gray for card content */
+    --popover: 0 0% 14%;
+    /* Same as card for popovers */
+    --popover-foreground: 0 0% 85%;
+    /* Light gray for popover text */
+    --primary: 120 61% 34%;
+    /* Slightly brighter green for primary buttons */
+    --primary-foreground: 0 0% 95%;
+    /* Near-white for primary text */
+    --secondary: 0 0% 30%;
+    /* Mid-gray for secondary elements */
+    --secondary-foreground: 0 0% 80%;
+    /* Muted light gray for secondary text */
+    --muted: 0 0% 20%;
+    /* Dark muted gray for inactive elements */
+    --muted-foreground: 0 0% 60%;
+    /* Muted gray for text */
+    --accent: 0 80% 55%;
+    /* Vivid red for accents (like YouTube red) */
+    --accent-foreground: 0 0% 95%;
+    /* Near-white for accent text */
+    --destructive: 0 70% 50%;
+    /* Bright red for destructive actions */
+    --destructive-foreground: 0 0% 95%;
+    /* Near-white for destructive text */
+    --border: 0 0% 20%;
+    /* Subtle gray for borders */
+    --input: 0 0% 16%;
+    /* Slightly lighter gray for input fields */
+    --ring: 0 80% 50%;
+    /* Bright red for focus rings */
+    --radius: 0.5rem;
+    /* Subtle rounded corners */
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
 
     /* Chart Colors */
     --chart-1: 200 30% 60%;
@@ -42,27 +70,22 @@
   }
 
   // /* Dark Mode Color Palette */
-  // .dark {
-  //   --background: 120 25% 10%; /* Dark olive green background */
-  //   --foreground: 30 10% 60%; /* Dusty gray-brown text color */
-  //   --card: 85 10% 20%; /* Dark moss green for cards */
-  //   --card-foreground: 40 10% 65%; /* Soft grayish text inside cards */
-  //   --popover: 60 10% 25%; /* Dark olive for popover */
-  //   --popover-foreground: 40 25% 80%; /* Soft beige for popover text */
-  //   --primary: 120 15% 35%; /* Muted sage green for primary buttons */
-  //   --primary-foreground: 40 25% 90%; /* Off-white text over primary elements */
-  //   --secondary: 40 20% 70%; /* Warm taupe for secondary buttons */
-  //   --secondary-foreground: 60 15% 50%; /* Faded olive for secondary text */
-  //   --muted: 85 5% 75%; /* Light muted green for inactive elements */
-  //   --muted-foreground: 30 10% 60%; /* Light taupe for muted text */
-  //   --accent: 0 40% 55%; /* Soft terracotta for accent elements */
+  .dark {
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 0 0% 100%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
   //   --accent-foreground: 40 25% 90%; /* Off-white text for accents */
   //   --destructive: 0 45% 40%; /* Deep terracotta for destructive actions */
   //   --destructive-foreground: 40 25% 90%; /* Soft beige for destructive text */
   //   --border: 30 20% 45%; /* Deep taupe for dark borders */
   //   --input: 80 10% 40%; /* Dark sage green for input fields */
   //   --ring: 50 50% 45%; /* Muted golden yellow for focus ring */
-  // }
+  }
 }
 
 @layer base {

@@ -1,10 +1,9 @@
 // AppRoute.tsx
 
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate, Outlet } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { RootState } from "@/core/store/store";
 import { VerifiedLayout } from "./pages.layout";
-import { AdminLayout } from "./admin.layout";
 import { PageNotFound } from "../pages/not_found.page";
 import LandingPage from "../pages/landing";
 import StorePage from "../pages/product/products";
@@ -14,6 +13,10 @@ import CartPage from "../pages/Cart/cart.page";
 import AdminProductDash from "../AdminDash/pages/Dashboard/productDash";
 import { Spinner } from "../ui/loader/_spinner";
 import { cn } from "@/lib/utils";
+import BookingPage from "../pages/bookings";
+import AdminLayout from "./admin.layout";
+import AdminTripPage from "../AdminDash/pages/trip/trip.page";
+import AdminTripFormPage from "../AdminDash/pages/trip/tripFormPage";
 
 export const AppRoute = () => {
   const { user, isLoading: userLoading } = useSelector((state: RootState) => state.userSlice);
@@ -43,6 +46,7 @@ export const AppRoute = () => {
       <Route element={<VerifiedLayout auth={isAuthenticated} />}>
         <Route path="/" element={<LandingPage />} />
         <Route path="/products" element={<StorePage />} />
+        <Route path="/booking" element={<BookingPage />} />
         {/* <Route path="/gallery" element={<GalleryPage />} /> */}
         <Route path="/cart" element={<CartPage />} />
         <Route path="*" element={<PageNotFound />} />
@@ -52,18 +56,73 @@ export const AppRoute = () => {
       <Route
         path="/admin/*"
         element={
-          isAdmin ? (
-            <AdminLayout auth={isAuthenticated} />
-          ) : (
-            <Navigate to="/admin/signin" replace />
-          )
+          isAdmin ? <AdminLayout /> : <Navigate to="/admin/signin" replace />
         }
       >
-        <Route path="productDash" element={<AdminProductDash />} />
-        <Route path="profile" element={<LandingPage />} />
-        <Route path="signin" element={<SignInPage />} />
+        {/* Authentication Routes */}
+        <Route path="auth" element={<Outlet />}>
+          <Route path="signin" element={<SignInPage />} />
+          {/* Add more auth routes if needed */}
+        </Route>
+
+        {/* Products Routes */}
+        <Route path="products" element={<Outlet />}>
+          <Route index element={<AdminProductDash />} />
+          <Route path="new" element={<AdminProductDash />} />
+          {/* Add more product routes if needed */}
+        </Route>
+
+        {/* Bookings Routes */}
+        <Route path="bookings" element={<Outlet />}>
+          {/* <Route index element={<AllBookingsPage />} />
+          <Route path="new" element={<NewBookingPage />} /> */}
+          {/* Add more booking routes if needed */}
+        </Route>
+
+        {/* Users Routes */}
+        <Route path="users" element={<Outlet />}>
+          {/* <Route index element={<AllUsersPage />} />
+          <Route path="new" element={<CreateUserPage />} /> */}
+          {/* Add more user routes if needed */}
+        </Route>
+
+        {/* Trips Routes */}
+        <Route path="trips" element={<Outlet />}>
+          <Route index element={<AdminTripPage />} />
+          <Route path="new" element={<AdminTripFormPage  />} />
+          <Route path="edit/:id" element={<AdminTripFormPage  />} />
+          {/* Add more trip routes if needed */}
+        </Route>
+
+        {/* Gallery Routes */}
+        <Route path="gallery" element={<Outlet />}>
+          {/* <Route index element={<AllGalleryItemsPage />} />
+          <Route path="new" element={<AddGalleryItemPage />} /> */}
+          {/* Add more gallery routes if needed */}
+        </Route>
+
+        {/* Videos Routes */}
+        <Route path="videos" element={<Outlet />}>
+          {/* <Route index element={<AllVideosPage />} />
+          <Route path="new" element={<UploadVideoPage />} /> */}
+          {/* Add more video routes if needed */}
+        </Route>
+
+        {/* Testimonies Routes */}
+        <Route path="testimonies" element={<Outlet />}>
+          {/* <Route index element={<AllTestimoniesPage />} />
+          <Route path="new" element={<AddTestimonyPage />} /> */}
+          {/* Add more testimony routes if needed */}
+        </Route>
+
+        {/* Additional Admin Routes */}
+        {/* <Route path="profile" element={<ProfilePage />} /> */}
+        {/* Add other standalone admin routes if needed */}
+
+        {/* Fallback Route */}
         <Route path="*" element={<PageNotFound />} />
       </Route>
+
 
       {/* Admin Sign-In */}
       <Route path="/admin/signin" element={<SignInPage />} />

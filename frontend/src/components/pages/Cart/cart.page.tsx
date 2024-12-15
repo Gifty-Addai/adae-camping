@@ -1,6 +1,6 @@
 // src/pages/CartPage.tsx
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import CartItem from './cart_item';
@@ -42,6 +42,17 @@ const CartPage: React.FC = () => {
     const [isVerify, setIsVerifyModal] = useState(false);
     const [isSucces, setIsSuccess] = useState(false);
     const [formData, setFormData] = useState<BookingFormValues | null>(null);
+    const [isFirstLoad, setIsFirstLoad] = useState(true);
+
+    useEffect(() => {
+        if (isFirstLoad) {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth',
+            });
+            setIsFirstLoad(false);
+        }
+    }, [isFirstLoad]);
 
     const onSubmit = (data: BookingFormValues) => {
         setFormData(data);

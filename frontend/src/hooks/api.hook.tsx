@@ -1,12 +1,7 @@
-import { Product, ProductFormData, UseProductAPI } from "@/core/interfaces";
-import { createProduct, deleteProduct, fetchProducts, searchProducts, updateProduct } from "@/lib/apiUtils";
+import { Product, ProductFormData, Trip, TripFormData, UseProductAPI, UseTripAPI } from "@/core/interfaces";
+import { createProduct, createTrip, deleteProduct, deleteTrip, fetchProducts, fetchTrips, searchProducts, searchTrips, updateProduct, updateTrip } from "@/lib/apiUtils";
 import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
-
-// const CACHE_EXPIRATION_TIME = 15 * 60 * 1000; 
-// const CACHE_KEY_PREFIX = "productsCachePage_";
-
-// const getCacheKeyForPage = (page: number) => `${CACHE_KEY_PREFIX}${page}`;
 
 
 export const useProductAPI = (defaultAvailability: boolean | undefined = undefined): UseProductAPI => {
@@ -108,3 +103,122 @@ export const useProductAPI = (defaultAvailability: boolean | undefined = undefin
     goToPage, 
   };
 };
+
+export function useTripAPI(defaultType?: string, defaultDifficulty?: string): UseTripAPI {
+  const [trips, setTrips] = useState<Trip[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(1);
+
+  // Items per page
+  const limit = 10;
+
+  // GET trips from the server
+  const getTrips = async (
+    page: number = currentPage,
+    type?: string,
+    difficulty?: string
+  ): Promise<void> => {
+    setLoading(true);
+    try {
+      const data = await fetchTrips(page, limit, type || defaultType, difficulty || defaultDifficulty);
+      setTrips(data.trips);
+      setCurrentPage(data.currentPage);
+      setTotalPages(data.totalPages);
+    } catch (error) {
+      toast.error("Failed to load trips");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getTripById = async (id: string): Promise<Trip | null> => {
+    setLoading(true);
+    try {
+      const trip = await getTripById(id);
+      return trip;
+    } catch (error) {
+      toast.error("Failed to fetch trip details");
+      return null;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // CREATE a new trip
+  const addTrip = async (tripData: TripFormData): Promise<void> => {
+    try {
+      await createTrip(tripData);
+      await getTrips(); 
+      toast.success("Trip created successfully!");
+    } catch (error) {
+      toast.error("Failed to create trip");
+    }
+  };
+
+  // UPDATE an existing trip
+  const editTrip = async (id: string, tripData: TripFormData): Promise<void> => {
+    try {
+      await updateTrip(id, tripData);
+      await getTrips(); // Refresh list
+      toast.success("Trip updated successfully!");
+    } catch (error) {
+      toast.error("Failed to update trip");
+    }
+  };
+
+  // DELETE a trip
+  const removeTrip = async (id: string): Promise<void> => {
+    try {
+      await deleteTrip(id);
+      await getTrips(); // Refresh list
+      toast.success("Trip deleted successfully!");
+    } catch (error) {
+      toast.error("Failed to delete trip");
+    }
+  };
+
+  // SEARCH trips
+  const searchTrip = async (
+    filters: Record<string, any>,
+    page: number = currentPage
+  ): Promise<void> => {
+    setLoading(true);
+    try {
+      const result = await searchTrips(filters, page, limit);
+      setTrips(result.trips);
+      setCurrentPage(result.currentPage);
+      setTotalPages(result.totalPages);
+    } catch (error) {
+      toast.error("Failed to search trips");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // PAGINATION
+  const goToPage = (page: number): void => {
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page);
+      getTrips(page);
+    }
+  };
+
+  useEffect(() => {
+    getTrips();
+  }, []);
+
+  return {
+    trips,
+    loading,
+    addTrip,
+    editTrip,
+    removeTrip,
+    searchTrip,
+    getTripById,
+    currentPage,
+    totalPages,
+    goToPage,
+    getTrips,
+  };
+}
