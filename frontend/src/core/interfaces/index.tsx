@@ -1,6 +1,42 @@
 import { bookingSchema } from "./zod";
 import { z } from "zod";
 
+
+export interface PersonalInfo {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  notParticipating: boolean;
+
+}
+
+export interface TravelDetails {
+  dob: Date | undefined,
+  gender: string,
+  streetAddress: string,
+  address2: string,
+  city: string,
+  zipCode: string,
+}
+
+export interface AccommodationPreferences {
+  roomType: string;
+  specialRequests: string;
+}
+
+export interface PaymentInfo {
+  cardNumber: string;
+  expiryDate: string;
+  cvv: string;
+}
+
+export interface BookingFormData {
+  personalInfo: PersonalInfo;
+  travelDetails: TravelDetails;
+  // accommodationPreferences: AccommodationPreferences;
+  // paymentInfo: PaymentInfo;
+}
 export interface Itinerary {
   day: number;
   activities: string;
@@ -22,9 +58,16 @@ export interface Location {
   pointsOfInterest: string[];
 }
 
-export interface Schedule {
+export interface TripDate {
   startDate: string;
   endDate: string;
+  isAvailable: boolean;
+  slotsRemaining: number;
+  _id?: string;
+}
+
+export interface Schedule {
+  dates: TripDate[];
   itinerary: Itinerary[];
 }
 
@@ -37,27 +80,57 @@ export interface Logistics {
 export interface Trip {
   _id?: string;
   name: string;
-  description?: string;
-  type?: string;
-  difficulty?: string;
-  activityLevel?: number;
-  participants?: any[]; // Adjust based on actual participant structure
-  images?: string[];
-  status?: string;
+  description: string;
+  type: 'hiking' | 'camping' | 'mountaineering' | 'other';
+  difficulty: 'easy' | 'moderate' | 'hard' | 'expert';
+  activityLevel: 1 | 2 | 3 | 4 | 5;
+  participants: any[];
+  images: string[];
+  status: 'open' | 'closed' | 'completed' | 'cancelled';
   createdAt?: string;
   updatedAt?: string;
   __v?: number;
-
-  // Nested Objects
-  duration?: Duration;
-  location?: Location;
-  cost?: Cost;
-  schedule?: Schedule;
-  logistics?: Logistics;
+  duration: Duration;
+  groupSize: {
+    min: number;
+    max: number;
+  };
+  location: Location;
+  cost: Cost;
+  schedule: Schedule;
+  logistics: Logistics;
 }
 
+export type TripType = 'hiking' | 'camping' | 'mountaineering' | 'other';
+export type DifficultyLevel = 'easy' | 'moderate' | 'hard' | 'expert';
+export type TripStatus = 'open' | 'closed' | 'completed' | 'cancelled';
+export type SortOrder = 'asc' | 'desc';
 
-export interface TripFormData extends Omit<Trip, "_id"> {}
+export interface TripSearchParams {
+  type?: TripType;
+  difficulty?: DifficultyLevel;
+  activityLevel?: number | number[];
+  minDays?: number;
+  maxDays?: number;
+  minNights?: number;
+  maxNights?: number;
+  minGroupSize?: number;
+  maxGroupSize?: number;
+  mainLocation?: string;
+  pointsOfInterest?: string[];
+  minPrice?: number;
+  maxPrice?: number;
+  status?: TripStatus;
+  startDate?: string;
+  endDate?: string;
+  search?: string;
+  sortBy?: 'name' | 'type' | 'difficulty' | 'activityLevel' | 'duration.days' | 'cost.basePrice' | 'schedule.dates.startDate';
+  order?: SortOrder;
+  page?: number;
+  limit?: number;
+}
+
+export interface TripFormData extends Omit<Trip, "_id"> { }
 
 export interface UseTripAPI {
   trips: Trip[];
@@ -66,13 +139,50 @@ export interface UseTripAPI {
   editTrip: (id: string, tripData: TripFormData) => Promise<void>;
   removeTrip: (id: string) => Promise<void>;
   getTripById: (id: string) => Promise<Trip | null>;
-  searchTrip: (filters: Record<string, any>, page?: number) => Promise<void>;
+  searchTrip: (filters: TripSearchParams) => Promise<void>;
   currentPage: number;
   totalPages: number;
   goToPage: (page: number) => void;
   getTrips: (page?: number, type?: string, difficulty?: string) => Promise<void>;
 }
 
+export interface UseUserAPI {
+  users: User[] | null;
+  loading: boolean;
+  error: string | null;
+  getUserProfile: () => Promise<User | null>;
+  updateUserProfile: (payload: UpdateUserPayload) => Promise<User | null>;
+  confirmMembership: (name: string, email: string, phone: string) => Promise<ConfirmMembershipResponse | null>;
+  getAllUsers: () => Promise<User[] | null>;
+  getUserById: (id: string) => Promise<User | null>;
+  updateUserById: (id: string, payload: UpdateUserPayload) => Promise<User | null>;
+  deleteUser: (id: string) => Promise<boolean>;
+}
+
+export interface ConfirmMembershipResponse {
+  success: boolean;
+  message: string;
+  user?: {
+    name: string;
+    email: string;
+    phone: string;
+    nextRenewalDate?: string;
+  };
+  membershipExpired?: boolean;
+}
+
+export interface UpdateUserPayload {
+  name?: string;
+  phone?: string;
+  address?: string;
+  preferences?: Record<string, string>;
+  role?: "user" | "admin";
+}
+export interface UserSearchParams {
+  name?: string;
+  email?: string;
+  role?: string;
+}
 export type BookingFormValues = z.infer<typeof bookingSchema>;
 
 export interface ProductFormData {
@@ -91,10 +201,10 @@ export interface UseProductAPI {
   addProduct: (productData: ProductFormData) => void;
   editProduct: (id: string, productData: ProductFormData) => void;
   removeProduct: (id: string) => void;
-  searchProduct: (filters: Record<string, any>,isAvailable:boolean|undefined) => void;
+  searchProduct: (filters: Record<string, any>, isAvailable: boolean | undefined) => void;
   currentPage: number,
   totalPages: number,
-  isSuggestion:boolean,
+  isSuggestion: boolean,
   goToPage: (page: number) => void;
 }
 
@@ -130,6 +240,33 @@ export interface IUser {
   id: string,
   name: string
 }
+
+export interface User {
+  _id: string;
+  name: string;
+  email: string;
+  phone: string;
+  role: "user" | "admin";
+  preferences?: { [key: string]: string };
+  bookings: string[]; // Array of Booking ObjectId strings
+  address?: string;
+  isEmailConfirmed: boolean;
+  dateJoined: string; // ISO date string
+  age?: number;
+  isMember: boolean;
+  image?: string;
+  recentTrip?: string; // Trip ObjectId string
+  nextRenewalDate?: string; // ISO date string
+  latestPaymentDate?: string; // ISO date string
+  latestPaymentAmount?: number;
+  nextTrip?: string; // Trip ObjectId string
+  hasDiscount: boolean;
+  idCard?: string;
+  active: boolean;
+  createdAt: string; // from { timestamps: true }
+  updatedAt: string; // from { timestamps: true }
+}
+
 
 export interface IUserState {
   user: IUser | null;

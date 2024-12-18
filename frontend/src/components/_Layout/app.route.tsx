@@ -13,10 +13,12 @@ import CartPage from "../pages/Cart/cart.page";
 import AdminProductDash from "../AdminDash/pages/Dashboard/productDash";
 import { Spinner } from "../ui/loader/_spinner";
 import { cn } from "@/lib/utils";
-import BookingPage from "../pages/bookings";
 import AdminLayout from "./admin.layout";
-import AdminTripPage from "../AdminDash/pages/trip/trip.page";
+import AdminTripPage from "../AdminDash/pages/trip/admin-trip.page";
 import AdminTripFormPage from "../AdminDash/pages/trip/tripFormPage";
+import { TripPage } from "../pages/Trips/trip.page";
+import TripDetail from "../pages/Trips/trip.details.page";
+import BookingPage from "../pages/Bookings/booking.page";
 
 export const AppRoute = () => {
   const { user, isLoading: userLoading } = useSelector((state: RootState) => state.userSlice);
@@ -46,7 +48,9 @@ export const AppRoute = () => {
       <Route element={<VerifiedLayout auth={isAuthenticated} />}>
         <Route path="/" element={<LandingPage />} />
         <Route path="/products" element={<StorePage />} />
-        <Route path="/booking" element={<BookingPage />} />
+        <Route path="/booking/:id/:date" element={<BookingPage />} />
+        <Route path="/trip" element={<TripPage />} />
+        <Route path="/trip/:id" element={<TripDetail />} />
         {/* <Route path="/gallery" element={<GalleryPage />} /> */}
         <Route path="/cart" element={<CartPage />} />
         <Route path="*" element={<PageNotFound />} />

@@ -68,7 +68,7 @@ const StorePage: React.FC = () => {
     <>
       <Page
         renderBody={() => (
-          <div className="mt-12">
+          <div className="mt-3">
             {/* Banner */}
             <section className="mb-4 relative w-full">
               <img
@@ -80,11 +80,6 @@ const StorePage: React.FC = () => {
                 }}
               />
             </section>
-
-
-
-
-
 
             {/* Filters */}
             <div className="flex items-center justify-between mb-6">

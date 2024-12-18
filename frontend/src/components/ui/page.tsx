@@ -8,25 +8,25 @@ import { RootState } from "@/core/store/store";
 import { Input } from "./input";
 
 type IPageProp = {
-    goBack: () => void
+  goBack: () => void
 }
 
 type ISearchProp = {
-    enabled?: boolean;
-    isSearching?: boolean;
-    placeholder?: string;
-    onSearch?: (value: string) => void;
+  enabled?: boolean;
+  isSearching?: boolean;
+  placeholder?: string;
+  onSearch?: (value: string) => void;
 }
 
 type MixedArray = (string | (() => void))[];
 type IProps = {
-    renderBody?: (page: IPageProp) => React.ReactNode;
-    renderFooter?: () => React.ReactNode;
-    backInfo?: MixedArray;
-    searchProp?: ISearchProp;
-    pageTitle?: string;
-    scrollable?: boolean;
-    isLoading?: boolean;
+  renderBody?: (page: IPageProp) => React.ReactNode;
+  renderFooter?: () => React.ReactNode;
+  backInfo?: MixedArray;
+  searchProp?: ISearchProp;
+  pageTitle?: string;
+  scrollable?: boolean;
+  isLoading?: boolean;
 }
 export const Page = ({
   renderBody,
@@ -64,13 +64,14 @@ export const Page = ({
     <>
       <div
         className={cn(
-          "flex-1 overflow-y-auto overflow-hidden bg-accent-foregroundlg:px-28 px-4 py-4 relative rounded-lg",
+          "flex-1 overflow-y-auto px-4 py-16 relative mx-auto",
+          "max-w-[920px]",
           renderFooter != undefined && "-mb-10 pb-12 max-h-[97vh]",
-          scrollable && " max-h-[100vh]"
+          scrollable && "max-h-[100vh]"
         )}
       >
         <div className="w-full px-0 flex justify-between items-center gap-[10px] cursor-pointer">
-          {backInfo && backInfo.length >= 1 && (
+          {(backInfo && backInfo.length >= 1) && (
             <div className="w-max">
               <Button
                 onClick={goBack}
@@ -78,11 +79,12 @@ export const Page = ({
                 size={"sm"}
                 className="font-semibold m-0 !px-0 text-gray-700"
               >
-                <ChevronLeft className="inline-block w-3 h-3 mr-2  text-gray-500" />{" "}
+                <ChevronLeft className="inline-block w-3 h-3 mr-2 text-gray-500" />
                 {backInfo[0] as string}
               </Button>
             </div>
           )}
+
           {searchProp && searchProp.enabled && (
             <div className="flex w-full">
               <div className="relative mx-auto min-w-[320px]">
@@ -94,20 +96,18 @@ export const Page = ({
             </div>
           )}
         </div>
-        <div className="w-full h-full">
-          {renderBody != null && renderBody(pageProps)}
-        </div>
+
+        {renderBody != null && renderBody(pageProps)}
       </div>
+
+      {/* Optional footer */}
       {renderFooter != null && (
-        <>
-          <div className="border-t border-gray-200 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 p-4">
-            {renderFooter()}
-          </div>
-        </>
+        <div className="border-t border-gray-200 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 p-4">
+          {renderFooter()}
+        </div>
       )}
     </>
   );
 };
-
 
 

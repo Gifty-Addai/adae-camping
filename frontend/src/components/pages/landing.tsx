@@ -55,9 +55,9 @@ const LandingPage = () => {
               </Button>
             </Link>
 
-            <Link to="/booking">
+            <Link to="/trip">
               <Button variant="default" className="px-8 py-4 mt-5 sm:mt-0 text-lg">
-                Reserve a Spot
+                Begin Adventure 
               </Button>
             </Link>
           </div>

@@ -1,5 +1,5 @@
-import { Product, ProductFormData, SignInResponse, Trip, TripFormData, VerifyPaymentResponse } from "@/core/interfaces";
-import { deleteRequest, getRequest, postRequest } from "./utils";
+import { ConfirmMembershipResponse, Product, ProductFormData, SignInResponse, Trip, TripFormData, TripSearchParams, UpdateUserPayload, User, VerifyPaymentResponse } from "@/core/interfaces";
+import { deleteRequest, getRequest, postRequest, putRequest } from "./utils";
 
 export const verifyPayment = async (param: {reference_id:string}) : Promise<VerifyPaymentResponse> =>{
 
@@ -95,8 +95,8 @@ export const createTrip = async (tripData: TripFormData): Promise<{
   return data;
 };
 
-export const getTripById = async (id: string): Promise<Trip> => {
-  const data = await getRequest<Trip>(`/api/trip/${id}`);
+export const fetchTripById = async (id: string): Promise<Trip> => {
+  const data = await getRequest<Trip>(`/api/trip/getTripById/${id}`);
   return data;
 };
 
@@ -125,20 +125,67 @@ export const deleteTrip = async (id: string): Promise<{
 
 
 export const searchTrips = async (
-  filters: Record<string, any>,
-  page: number = 1,
-  limit: number = 10
+  filters: TripSearchParams
 ): Promise<{
   trips: Trip[];
   currentPage: number;
   totalPages: number;
   totalTrips: number;
 }> => {
-  const data = await postRequest<{
+  const data = await getRequest<{
     trips: Trip[];
     currentPage: number;
     totalPages: number;
     totalTrips: number;
-  }>("/api/trip/search", { ...filters, page, limit });
+  }>(`/api/trip/searchTrip/${filters}`);
+  return data;
+};
+
+
+
+// Fetch the current user's profile
+export const fetchUserProfile = async (): Promise<User> => {
+  const data = await getRequest<User>("/api/users/profile");
+  return data;
+};
+
+// Update the current user's profile
+export const updateUserProfileAPI = async (payload: UpdateUserPayload): Promise<User> => {
+  const data = await putRequest<User>("/api/user/profile", payload);
+  return data;
+};
+
+// Confirm user membership
+export const confirmUserMembership = async (
+  name: string, 
+  email: string, 
+  phone: string
+): Promise<ConfirmMembershipResponse> => {
+  const data = await postRequest<ConfirmMembershipResponse>("/api/user/confirmMembership", { name, email, phone });
+  console.log("ConfirmMembershipResponse",data)
+  return data;
+};
+
+// Fetch all users (for admins)
+export const fetchAllUsers = async (): Promise<User[]> => {
+  const data = await getRequest<User[]>("/api/user");
+  return data;
+};
+
+// Fetch a user by ID (admin or authorized)
+export const fetchUserByIdAPI = async (id: string): Promise<User> => {
+  const data = await getRequest<User>(`/api/users/${id}`);
+  return data;
+};
+
+// Update a user by ID (admin or authorized)
+export const updateUserByIdAPI = async (id: string, payload: UpdateUserPayload): Promise<User> => {
+  const data = await putRequest<User>(`/api/user/${id}`, payload);
+  return data;
+};
+
+// Delete a user by ID (admin or authorized)
+export const deleteUserAPI = async (id: string): Promise<{ success: boolean }> => {
+  const data = await deleteRequest<{ success: boolean }>(`/api/user/${id}`);
   return data;
 };

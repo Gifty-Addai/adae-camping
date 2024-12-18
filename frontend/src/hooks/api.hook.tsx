@@ -1,6 +1,6 @@
-import { Product, ProductFormData, Trip, TripFormData, UseProductAPI, UseTripAPI } from "@/core/interfaces";
-import { createProduct, createTrip, deleteProduct, deleteTrip, fetchProducts, fetchTrips, searchProducts, searchTrips, updateProduct, updateTrip } from "@/lib/apiUtils";
-import { useState, useEffect } from "react";
+import { ConfirmMembershipResponse, Product, ProductFormData, Trip, TripFormData, TripSearchParams, UpdateUserPayload, UseProductAPI, User, UserSearchParams, UseTripAPI, UseUserAPI } from "@/core/interfaces";
+import { confirmUserMembership, createProduct, createTrip, deleteProduct, deleteTrip, deleteUserAPI, fetchAllUsers, fetchProducts, fetchTripById, fetchTrips, fetchUserByIdAPI, fetchUserProfile, searchProducts, searchTrips, updateProduct, updateTrip, updateUserByIdAPI, updateUserProfileAPI } from "@/lib/apiUtils";
+import { useState, useEffect, useCallback } from "react";
 import { toast } from "react-toastify";
 
 
@@ -132,10 +132,10 @@ export function useTripAPI(defaultType?: string, defaultDifficulty?: string): Us
     }
   };
 
-  const getTripById = async (id: string): Promise<Trip | null> => {
+  const getTripById = useCallback(async (id: string): Promise<Trip | null> => {
     setLoading(true);
     try {
-      const trip = await getTripById(id);
+      const trip = await fetchTripById(id);
       return trip;
     } catch (error) {
       toast.error("Failed to fetch trip details");
@@ -143,7 +143,7 @@ export function useTripAPI(defaultType?: string, defaultDifficulty?: string): Us
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   // CREATE a new trip
   const addTrip = async (tripData: TripFormData): Promise<void> => {
@@ -180,12 +180,11 @@ export function useTripAPI(defaultType?: string, defaultDifficulty?: string): Us
 
   // SEARCH trips
   const searchTrip = async (
-    filters: Record<string, any>,
-    page: number = currentPage
+    filters: TripSearchParams
   ): Promise<void> => {
     setLoading(true);
     try {
-      const result = await searchTrips(filters, page, limit);
+      const result = await searchTrips(filters);
       setTrips(result.trips);
       setCurrentPage(result.currentPage);
       setTotalPages(result.totalPages);
@@ -220,5 +219,143 @@ export function useTripAPI(defaultType?: string, defaultDifficulty?: string): Us
     totalPages,
     goToPage,
     getTrips,
+  };
+}
+
+export function useUserAPI(): UseUserAPI {
+  const [users, setUsers] = useState<User[] | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleError = (err: any) => {
+    const message = err?.message || "An unexpected error occurred";
+    setError(message);
+    toast.error(message);
+  };
+
+  const getUserProfile = async (): Promise<User | null> => {
+    setLoading(true);
+    setError(null);
+    try {
+      const profile = await fetchUserProfile();
+      return profile;
+    } catch (err) {
+      handleError(err);
+      return null;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const updateUserProfile = async (payload: UpdateUserPayload): Promise<User | null> => {
+    setLoading(true);
+    setError(null);
+    try {
+      const updated = await updateUserProfileAPI(payload);
+      toast.success("Profile updated successfully!");
+      return updated;
+    } catch (err) {
+      handleError(err);
+      return null;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const confirmMembership = async (
+    name: string,
+    email: string,
+    phone: string
+  ): Promise<ConfirmMembershipResponse | null> => {
+    setLoading(true);
+    setError(null);
+    try {
+      const result = await confirmUserMembership(name, email, phone);
+      return result;
+    } catch (err) {
+      handleError(err);
+      return null;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getAllUsers = async (): Promise<User[] | null> => {
+    setLoading(true);
+    setError(null);
+    try {
+      const allUsers = await fetchAllUsers();
+      setUsers(allUsers);
+      return allUsers;
+    } catch (err) {
+      handleError(err);
+      return null;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getUserById = useCallback(async (id: string): Promise<User | null> => {
+    setLoading(true);
+    setError(null);
+    try {
+      const user = await fetchUserByIdAPI(id);
+      return user;
+    } catch (err) {
+      handleError(err);
+      return null;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  const updateUserById = async (id: string, payload: UpdateUserPayload): Promise<User | null> => {
+    setLoading(true);
+    setError(null);
+    try {
+      const user = await updateUserByIdAPI(id, payload);
+      toast.success("User updated successfully!");
+      // Optionally refresh users list if needed:
+      // await getAllUsers();
+      return user;
+    } catch (err) {
+      handleError(err);
+      return null;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const deleteUser = async (id: string): Promise<boolean> => {
+    setLoading(true);
+    setError(null);
+    try {
+      const result = await deleteUserAPI(id);
+      if (result.success) {
+        toast.success("User deleted successfully!");
+        // Optionally refresh users list if needed:
+        // await getAllUsers();
+        return true;
+      }
+      return false;
+    } catch (err) {
+      handleError(err);
+      return false;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return {
+    users,
+    loading,
+    error,
+    getUserProfile,
+    updateUserProfile,
+    confirmMembership,
+    getAllUsers,
+    getUserById,
+    updateUserById,
+    deleteUser,
   };
 }

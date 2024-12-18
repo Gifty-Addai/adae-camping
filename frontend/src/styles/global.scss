@@ -69,23 +69,6 @@
 
   }
 
-  // /* Dark Mode Color Palette */
-  .dark {
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 0 0% 100%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
-  //   --accent-foreground: 40 25% 90%; /* Off-white text for accents */
-  //   --destructive: 0 45% 40%; /* Deep terracotta for destructive actions */
-  //   --destructive-foreground: 40 25% 90%; /* Soft beige for destructive text */
-  //   --border: 30 20% 45%; /* Deep taupe for dark borders */
-  //   --input: 80 10% 40%; /* Dark sage green for input fields */
-  //   --ring: 50 50% 45%; /* Muted golden yellow for focus ring */
-  }
 }
 
 @layer base {
