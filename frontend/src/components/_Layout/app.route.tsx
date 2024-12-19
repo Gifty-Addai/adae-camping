@@ -50,7 +50,7 @@ export const AppRoute = () => {
         <Route path="/products" element={<StorePage />} />
         <Route path="/ASGSDWSDZ-234ADFSDAS/booking/:id/:date" element={<BookingPage />} />
         <Route path="/ASGSDWSDZ-234ADFSDAS/trip" element={<TripPage />} />
-        <Route path="/ASGSDWSDZ-234ADFSDAStrip/:id" element={<TripDetail />} />
+        <Route path="/ASGSDWSDZ-234ADFSDAS/trip/:id" element={<TripDetail />} />
         {/* <Route path="/gallery" element={<GalleryPage />} /> */}
         <Route path="/cart" element={<CartPage />} />
         <Route path="*" element={<PageNotFound />} />

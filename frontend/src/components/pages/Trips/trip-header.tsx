@@ -112,7 +112,7 @@ const TripDatesModal: React.FC<TripDatesModalProps> = ({
 
                   {isAvailable ? (
                     <div className="w-full">
-                      <Link to={`/booking/${tripId}/${selectedDate?._id}`}>
+                      <Link to={`/ASGSDWSDZ-234ADFSDAS/booking/${tripId}/${selectedDate?._id}`}>
 
                         <Button
                           className="w-full bg-green-700 hover:bg-green-800 text-white mb-2"
@@ -215,12 +215,12 @@ const TripHeaderCTA: React.FC<Props> = ({
           {trip.name}
         </h1>
         {/* Star Rating */}
-        <div className="flex items-center space-x-2 text-yellow-400">
+        {/* <div className="flex items-center space-x-2 text-yellow-400">
           <span className="text-2xl">★★★★★</span>
           <span className="text-muted-foreground text-lg font-medium">
             5.0 ({12} Reviews)
           </span>
-        </div>
+        </div> */}
         {/* Share Links */}
         <div className="flex space-x-3 text-white text-md font-medium">
           <span className="text-card-foreground">Share this trip:</span>
@@ -228,14 +228,14 @@ const TripHeaderCTA: React.FC<Props> = ({
             Facebook
           </a>
           <a href="#" className="hover:text-primary">
-            Pinterest
+            TikTok
           </a>
           <a href="#" className="hover:text-blue-400">
             Twitter
           </a>
         </div>
         {/* Trip Stats */}
-        <div className="flex flex-col lg:flex-row lg:space-x-8 mt-8 text-secondary">
+        <div className="grid grid-cols-2 lg:grid-cols-3 gap-8 mt-8 text-secondary">
           <div>
             <p className="uppercase text-yellow-200 text-sm font-semibold">Trip Length</p>
             <p className="text-2xl font-bold text-card-foreground">
@@ -249,13 +249,14 @@ const TripHeaderCTA: React.FC<Props> = ({
             </p>
           </div>
           <div>
-            <p className="uppercase text-sm  text-yellow-200 font-semibold">Activity Level</p>
+            <p className="uppercase text-sm text-yellow-200 font-semibold">Activity Level</p>
             <p className="text-2xl font-bold text-card-foreground">
               {trip.activityLevel}{" "}
               <span className="text-muted-foreground text-xl">ⓘ</span>
             </p>
           </div>
         </div>
+
       </div>
 
       {/* Right Column: Pricing Card */}

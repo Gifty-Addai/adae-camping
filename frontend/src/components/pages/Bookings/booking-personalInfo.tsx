@@ -79,7 +79,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({
     <div className="flex flex-col lg:mx-24 lg:flex-row justify-between items-start gap-8">
       {/* Left: Personal Info Form */}
       <div className="w-full lg:w-2/3">
-        <h2 className="text-2xl text-card-foreground font-semibold mb-4">
+        <h2 className="text-xl text-card-foreground font-semibold mb-4">
           Unlock the member discount
         </h2>
 
@@ -191,7 +191,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({
             />
 
             {/* Submit Button */}
-            <Button type="submit">
+            <Button type="submit" className="w-full lg:w-64">
               Continue
             </Button>
           </form>

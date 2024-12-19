@@ -10,7 +10,7 @@ interface TripCardProp {
 
 const TripCard: React.FC<TripCardProp> = ({ trip }) => {
   return (
-    <Link to={`/trip/${trip?._id}`} className="block">
+    <Link to={`/ASGSDWSDZ-234ADFSDAS/trip/${trip?._id}`} className="block">
       <Card className="w-full bg-gray-700 h-96 rounded-lg shadow-md hover:shadow-lg hover:scale-105 transition-transform duration-300 cursor-pointer overflow-hidden">
         {/* Card Header with Overlay */}
         <CardHeader className="p-0 relative">
