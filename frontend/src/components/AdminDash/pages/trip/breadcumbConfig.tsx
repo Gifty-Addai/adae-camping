@@ -122,7 +122,7 @@ export const breadcrumbConfig: BreadcrumbConfigItem[] = [
             {
                 title: "Edit Trip",
                 url: "/admin/trips/edit/:id",
-                breadcrumb: ({ id }, tripName) =>
+                breadcrumb: ({}, tripName) =>
                     tripName ? `Edit Trip: ${tripName}` : "Edit Trip",
             },
             // Add more trip routes if needed

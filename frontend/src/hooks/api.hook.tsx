@@ -1,4 +1,4 @@
-import { ConfirmMembershipResponse, Product, ProductFormData, Trip, TripFormData, TripSearchParams, UpdateUserPayload, UseProductAPI, User, UserSearchParams, UseTripAPI, UseUserAPI } from "@/core/interfaces";
+import { ConfirmMembershipResponse, Product, ProductFormData, Trip, TripFormData, TripSearchParams, UpdateUserPayload, UseProductAPI, User, UseTripAPI, UseUserAPI } from "@/core/interfaces";
 import { confirmUserMembership, createProduct, createTrip, deleteProduct, deleteTrip, deleteUserAPI, fetchAllUsers, fetchProducts, fetchTripById, fetchTrips, fetchUserByIdAPI, fetchUserProfile, searchProducts, searchTrips, updateProduct, updateTrip, updateUserByIdAPI, updateUserProfileAPI } from "@/lib/apiUtils";
 import { useState, useEffect, useCallback } from "react";
 import { toast } from "react-toastify";
@@ -109,6 +109,8 @@ export function useTripAPI(defaultType?: string, defaultDifficulty?: string): Us
   const [loading, setLoading] = useState<boolean>(false);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
+  console.info("loading book from api hook", loading)
+
 
   // Items per page
   const limit = 10;
@@ -171,7 +173,7 @@ export function useTripAPI(defaultType?: string, defaultDifficulty?: string): Us
   const removeTrip = async (id: string): Promise<void> => {
     try {
       await deleteTrip(id);
-      await getTrips(); // Refresh list
+      await getTrips();
       toast.success("Trip deleted successfully!");
     } catch (error) {
       toast.error("Failed to delete trip");

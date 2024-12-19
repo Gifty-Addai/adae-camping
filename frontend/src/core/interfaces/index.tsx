@@ -5,6 +5,7 @@ import { z } from "zod";
 export interface PersonalInfo {
   firstName: string;
   lastName: string;
+  idCard: string;
   email: string;
   phone: string;
   notParticipating: boolean;
@@ -40,7 +41,7 @@ export interface BookingFormData {
 export interface Itinerary {
   day: number;
   activities: string;
-  _id: string;
+  _id?: string; // Make _id optional as it's not handled by the form
 }
 
 export interface Duration {
@@ -80,11 +81,10 @@ export interface Logistics {
 export interface Trip {
   _id?: string;
   name: string;
-  description: string;
+  description?: string;
   type: 'hiking' | 'camping' | 'mountaineering' | 'other';
   difficulty: 'easy' | 'moderate' | 'hard' | 'expert';
   activityLevel: 1 | 2 | 3 | 4 | 5;
-  participants: any[];
   images: string[];
   status: 'open' | 'closed' | 'completed' | 'cancelled';
   createdAt?: string;
@@ -99,6 +99,20 @@ export interface Trip {
   cost: Cost;
   schedule: Schedule;
   logistics: Logistics;
+}
+
+// Define TripFormData to include only fields managed by the form
+export interface TripFormData {
+  name: string;
+  description?: string;
+  type: 'hiking' | 'camping' | 'mountaineering' | 'other';
+  difficulty: 'easy' | 'moderate' | 'hard' | 'expert';
+  duration: Duration;
+  cost: Cost;
+  location: Location;
+  schedule: Schedule;
+  logistics: Logistics;
+  images?: string[];
 }
 
 export type TripType = 'hiking' | 'camping' | 'mountaineering' | 'other';
@@ -129,8 +143,6 @@ export interface TripSearchParams {
   page?: number;
   limit?: number;
 }
-
-export interface TripFormData extends Omit<Trip, "_id"> { }
 
 export interface UseTripAPI {
   trips: Trip[];

@@ -110,7 +110,7 @@ const TravelDetails: React.FC<TravelDetailsProps> = ({
             <FormField
               control={form.control}
               name="gender"
-              render={({ field }) => (
+              render={({}) => (
                 <FormItem>
                   <FormLabel className="text-card-foreground">Gender *</FormLabel>
                   <FormControl>

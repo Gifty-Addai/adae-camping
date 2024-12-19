@@ -65,13 +65,10 @@ const AdminTripPage: React.FC = () => {
   const {
     trips,
     loading,
-    addTrip, // Not used here anymore
-    editTrip, // Not used here anymore
     removeTrip,
     currentPage,
     totalPages,
     goToPage,
-    getTrips, // Not used here
   } = useTripAPI();
 
   const handleEditClick = (trip: Trip) => {

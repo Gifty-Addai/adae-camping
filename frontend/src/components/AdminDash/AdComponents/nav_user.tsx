@@ -36,7 +36,7 @@ export function NavUser() {
   const { isMobile } = useSidebar();
   const  data  = getUserSession();
 
-  const [isLoggingOut, startLogoutTransition] = useTransition();
+  const [isLoggingOut] = useTransition();
 
 //   function handleLogout() {
 //     startLogoutTransition(async () => {

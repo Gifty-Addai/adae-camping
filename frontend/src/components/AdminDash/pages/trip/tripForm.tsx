@@ -1,5 +1,3 @@
-// src/components/AdminDash/pages/trip/TripForm.tsx
-
 "use client";
 
 import React from "react";
@@ -10,7 +8,7 @@ import Textarea from "@/components/ui/textarea";
 import * as z from "zod";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Trip, TripFormData } from "@/core/interfaces";
+import { TripFormData, Trip } from "@/core/interfaces";
 
 interface TripFormProps {
   defaultTrip?: Trip | null;
@@ -23,8 +21,8 @@ const TripForm: React.FC<TripFormProps> = ({ defaultTrip, onSubmit, isEdit }) =>
   const tripSchema = z.object({
     name: z.string().min(1, "Trip name is required"),
     description: z.string().optional(),
-    type: z.string().min(1, "Type is required"),
-    difficulty: z.string().min(1, "Difficulty is required"),
+    type: z.enum(['hiking', 'camping', 'mountaineering', 'other']),
+    difficulty: z.enum(['easy', 'moderate', 'hard', 'expert']),
     duration: z.object({
       days: z.number().min(1, "Duration must be at least 1 day"),
       nights: z.number().min(0, "Nights cannot be negative"),
@@ -38,27 +36,34 @@ const TripForm: React.FC<TripFormProps> = ({ defaultTrip, onSubmit, isEdit }) =>
       pointsOfInterest: z.array(z.string()).default([]),
     }),
     schedule: z.object({
-      startDate: z.string().min(1, "Start date is required"),
-      endDate: z.string().min(1, "End date is required"),
+      dates: z.array(
+        z.object({
+          startDate: z.string().min(1, "Start date is required"),
+          endDate: z.string().min(1, "End date is required"),
+          isAvailable: z.boolean().default(true),
+          slotsRemaining: z.number().min(0).default(10),
+          _id: z.string().optional(),
+        })
+      ).min(1, "At least one trip date is required"),
       itinerary: z
         .array(
           z.object({
             day: z.number(),
             activities: z.string(),
-            _id: z.string(),
+            _id: z.string().optional(),
           })
         )
-        .default([]), // Ensured to always be an array
+        .default([]),
     }),
     logistics: z.object({
       transportation: z.string().min(1, "Transportation is required"),
       gearProvided: z.boolean(),
       accommodation: z.string().min(1, "Accommodation is required"),
     }),
-    images: z.array(z.string()).optional(),
+    images: z.string().optional(), // Handle as comma-separated string in the form
   });
 
-  type TripFormSchema = z.infer<typeof tripSchema>;
+  type FormSchema = z.infer<typeof tripSchema>;
 
   const {
     register,
@@ -66,48 +71,72 @@ const TripForm: React.FC<TripFormProps> = ({ defaultTrip, onSubmit, isEdit }) =>
     reset,
     setValue,
     formState: { errors },
-  } = useForm<TripFormSchema>({
+  } = useForm<FormSchema>({
     resolver: zodResolver(tripSchema),
     defaultValues: defaultTrip
       ? {
           name: defaultTrip.name,
           description: defaultTrip.description || "",
-          type: defaultTrip.type || "",
-          difficulty: defaultTrip.difficulty || "",
-          duration: defaultTrip.duration || { days: 1, nights: 0 },
+          type: defaultTrip.type,
+          difficulty: defaultTrip.difficulty,
+          duration: defaultTrip.duration,
           location: {
-            mainLocation: defaultTrip.location?.mainLocation || "",
-            pointsOfInterest: defaultTrip.location?.pointsOfInterest || [],
+            mainLocation: defaultTrip.location.mainLocation,
+            pointsOfInterest: defaultTrip.location.pointsOfInterest,
           },
-          cost: defaultTrip.cost || { basePrice: 0, discount: 0 },
-          schedule: defaultTrip.schedule || { startDate: "", endDate: "", itinerary: [] },
-          logistics:
-            defaultTrip.logistics || { transportation: "", gearProvided: false, accommodation: "" },
-          images: defaultTrip.images || [],
+          cost: defaultTrip.cost,
+          schedule: {
+            dates: defaultTrip.schedule.dates.length > 0
+              ? defaultTrip.schedule.dates
+              : [{
+                  startDate: "",
+                  endDate: "",
+                  isAvailable: true,
+                  slotsRemaining: 10,
+                }],
+            itinerary: defaultTrip.schedule.itinerary || [],
+          },
+          logistics: defaultTrip.logistics,
+          images: defaultTrip.images?.join(", ") || "",
         }
       : {
           name: "",
           description: "",
-          type: "",
-          difficulty: "",
+          type: "hiking", // Default type
+          difficulty: "easy", // Default difficulty
           duration: { days: 1, nights: 0 },
           location: {
             mainLocation: "",
             pointsOfInterest: [],
           },
           cost: { basePrice: 0, discount: 0 },
-          schedule: { startDate: "", endDate: "", itinerary: [] },
+          schedule: {
+            dates: [{
+              startDate: "",
+              endDate: "",
+              isAvailable: true,
+              slotsRemaining: 10,
+            }],
+            itinerary: [],
+          },
           logistics: { transportation: "", gearProvided: false, accommodation: "" },
-          images: [],
+          images: "",
         },
   });
 
-  const onFormSubmit: SubmitHandler<TripFormSchema> = async (data) => {
+  const onFormSubmit: SubmitHandler<FormSchema> = async (data) => {
     try {
-      await onSubmit(data, isEdit);
+      const tripData: TripFormData = {
+        ...data,
+        images: data.images
+          ? data.images.split(",").map((url) => url.trim())
+          : [],
+      };
+      await onSubmit(tripData, isEdit);
       reset();
     } catch (error: any) {
       // Handle submission errors if necessary
+      console.error("Form submission error:", error);
     }
   };
 
@@ -135,13 +164,23 @@ const TripForm: React.FC<TripFormProps> = ({ defaultTrip, onSubmit, isEdit }) =>
           {/* Type */}
           <div className="flex flex-col space-y-2">
             <Label htmlFor="type">Type</Label>
-            <Input id="type" {...register("type")} />
+            <select id="type" {...register("type")} className="input-class">
+              <option value="hiking">Hiking</option>
+              <option value="camping">Camping</option>
+              <option value="mountaineering">Mountaineering</option>
+              <option value="other">Other</option>
+            </select>
             {errors.type && <span className="text-red-500">{errors.type.message}</span>}
           </div>
           {/* Difficulty */}
           <div className="flex flex-col space-y-2">
             <Label htmlFor="difficulty">Difficulty</Label>
-            <Input id="difficulty" {...register("difficulty")} />
+            <select id="difficulty" {...register("difficulty")} className="input-class">
+              <option value="easy">Easy</option>
+              <option value="moderate">Moderate</option>
+              <option value="hard">Hard</option>
+              <option value="expert">Expert</option>
+            </select>
             {errors.difficulty && (
               <span className="text-red-500">{errors.difficulty.message}</span>
             )}
@@ -212,18 +251,26 @@ const TripForm: React.FC<TripFormProps> = ({ defaultTrip, onSubmit, isEdit }) =>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {/* Start Date */}
           <div className="flex flex-col space-y-2">
-            <Label htmlFor="schedule.startDate">Start Date</Label>
-            <Input type="date" id="schedule.startDate" {...register("schedule.startDate")} />
-            {errors.schedule?.startDate && (
-              <span className="text-red-500">{errors.schedule.startDate.message}</span>
+            <Label htmlFor="schedule.dates.0.startDate">Start Date</Label>
+            <Input
+              type="date"
+              id="schedule.dates.0.startDate"
+              {...register("schedule.dates.0.startDate")}
+            />
+            {errors.schedule?.dates?.[0]?.startDate && (
+              <span className="text-red-500">{errors.schedule.dates[0].startDate.message}</span>
             )}
           </div>
           {/* End Date */}
           <div className="flex flex-col space-y-2">
-            <Label htmlFor="schedule.endDate">End Date</Label>
-            <Input type="date" id="schedule.endDate" {...register("schedule.endDate")} />
-            {errors.schedule?.endDate && (
-              <span className="text-red-500">{errors.schedule.endDate.message}</span>
+            <Label htmlFor="schedule.dates.0.endDate">End Date</Label>
+            <Input
+              type="date"
+              id="schedule.dates.0.endDate"
+              {...register("schedule.dates.0.endDate")}
+            />
+            {errors.schedule?.dates?.[0]?.endDate && (
+              <span className="text-red-500">{errors.schedule.dates[0].endDate.message}</span>
             )}
           </div>
         </div>
@@ -276,8 +323,7 @@ const TripForm: React.FC<TripFormProps> = ({ defaultTrip, onSubmit, isEdit }) =>
             {...register("images")}
             defaultValue={defaultTrip ? defaultTrip.images?.join(", ") : ""}
             onChange={(e) => {
-              const urls = e.target.value.split(",").map((url) => url.trim());
-              setValue("images", urls);
+              setValue("images", e.target.value);
             }}
             placeholder="https://example.com/image1.jpg, https://example.com/image2.jpg"
           />

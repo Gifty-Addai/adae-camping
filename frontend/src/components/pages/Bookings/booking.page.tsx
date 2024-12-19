@@ -11,7 +11,7 @@ import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const BookingPage: React.FC = () => {
-    const { loading, trips, getTripById } = useTripAPI();
+    const { loading, getTripById } = useTripAPI();
     const params = useParams<{ id: string; date: string }>();
     const id = params.id;
     const dateId = params.date;
@@ -22,6 +22,7 @@ const BookingPage: React.FC = () => {
         personalInfo: {
             firstName: "",
             lastName: "",
+            idCard: "",
             email: "",
             phone: "",
             notParticipating: false,
@@ -48,7 +49,6 @@ const BookingPage: React.FC = () => {
     }, [id, getTripById]);
 
     const nextStep = () => setCurrentStep((prev) => prev + 1);
-    const prevStep = () => setCurrentStep((prev) => prev - 1);
 
     const updateFormData = <K extends keyof BookingFormData>(
         section: K,
@@ -75,6 +75,8 @@ const BookingPage: React.FC = () => {
             return `Edit ${previousStepLabel} Step ${currentStep} of ${steps.length}`;
         }
     };
+
+    console.info("loading book", loading)
 
     return (
         <Page

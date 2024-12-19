@@ -20,9 +20,10 @@ const ReviewConfirm: React.FC<ReviewConfirmProps> = ({ formData, trip, selectedD
   const endDateFormatted = format(parseISO(selectedDate.endDate), "MMM d, yyyy");
 
   const basePrice = trip.cost.basePrice;
+  const tripDiscount = trip.cost.discount;
   // const discount = trip.cost.discount ?? 0;
   const discount = 0;
-  const finalPrice = basePrice - discount;
+  const finalPrice = basePrice + tripDiscount;
 
   const fullName = `${formData.personalInfo.firstName} ${formData.personalInfo.lastName}`.trim();
 
@@ -148,7 +149,7 @@ const ReviewConfirm: React.FC<ReviewConfirmProps> = ({ formData, trip, selectedD
             <p className="text-sm text-muted-foreground mb-3">
               If everything looks good, let’s finalize your booking and start counting down the days!
             </p>
-            <Button variant="default" size="lg" className="w-full" onClick={() => { console.log("formData", { ...formData, tripId: trip._id }) }}>
+            <Button variant="default" size="lg" className="w-full" onClick={() => { console.log("formData", { ...formData, tripId: trip._id, selectedDate: selectedDate._id }) }}>
               Confirm & Proceed to Payment
             </Button>
             <p className="text-xs text-muted-foreground mt-2">

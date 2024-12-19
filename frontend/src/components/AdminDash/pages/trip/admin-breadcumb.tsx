@@ -1,5 +1,3 @@
-// src/components/AdminDash/breadcrumbs/Breadcrumbs.tsx
-
 "use client";
 
 import React, { useEffect, useState } from "react";
@@ -16,16 +14,12 @@ const Breadcrumbs: React.FC<BreadcrumbProps> = () => {
   const pathname = location.pathname;
   const { getTripById } = useTripAPI();
 
-  const [tripName, setTripName] = useState<string | undefined>(undefined);
   const [loading, setLoading] = useState<boolean>(false);
 
   const generateBreadcrumbs = async () => {
     const breadcrumbs: Array<{ breadcrumb: string; path: string }> = [];
 
-    const recursiveSearch = async (
-      config: typeof breadcrumbConfig,
-      basePath: string = ""
-    ) => {
+    const recursiveSearch = async (config: typeof breadcrumbConfig) => {
       for (const item of config) {
         const match = matchPath(
           { path: item.url, end: false },
@@ -39,14 +33,12 @@ const Breadcrumbs: React.FC<BreadcrumbProps> = () => {
             const params = match.params as Record<string, string | undefined>;
             let dynamicName: string | undefined = undefined;
 
-            // Check if the path has dynamic segments like :id
             if (item.url.includes(":id")) {
               const tripId = params.id;
               if (tripId) {
                 setLoading(true);
                 const trip = await getTripById(tripId);
                 dynamicName = trip?.name;
-                setTripName(dynamicName);
               }
             }
 
@@ -55,7 +47,6 @@ const Breadcrumbs: React.FC<BreadcrumbProps> = () => {
             label = item.breadcrumb || item.title;
           }
 
-          // Replace dynamic segments with actual params or fallback to empty string
           const resolvedPath = item.url.replace(
             /:([^/]+)/g,
             (_, key) => match.params[key] || ''
@@ -64,7 +55,7 @@ const Breadcrumbs: React.FC<BreadcrumbProps> = () => {
           breadcrumbs.push({ breadcrumb: label, path: resolvedPath });
 
           if (item.children) {
-            await recursiveSearch(item.children, resolvedPath);
+            await recursiveSearch(item.children);
           }
         }
       }
