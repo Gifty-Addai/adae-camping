@@ -1,5 +1,5 @@
-import { ConfirmMembershipResponse, Product, ProductFormData, Trip, TripFormData, TripSearchParams, UpdateUserPayload, UseProductAPI, User, UseTripAPI, UseUserAPI } from "@/core/interfaces";
-import { confirmUserMembership, createProduct, createTrip, deleteProduct, deleteTrip, deleteUserAPI, fetchAllUsers, fetchProducts, fetchTripById, fetchTrips, fetchUserByIdAPI, fetchUserProfile, searchProducts, searchTrips, updateProduct, updateTrip, updateUserByIdAPI, updateUserProfileAPI } from "@/lib/apiUtils";
+import { Booking, BookingFormData, BookingSearchParams, ConfirmMembershipResponse, Product, ProductFormData, Trip, TripFormData, TripSearchParams, UpdateUserPayload, UseBookingAPI, UseProductAPI, User, UseTripAPI, UseUserAPI } from "@/core/interfaces";
+import { confirmUserMembership, createBooking, createProduct, createTrip, deleteBookingAPI, deleteProduct, deleteTrip, deleteUserAPI, fetchAllUsers, fetchBookingById, fetchBookings, fetchProducts, fetchTripById, fetchTrips, fetchUserByIdAPI, fetchUserProfile, searchBookings, searchProducts, searchTrips, updateBooking, updateProduct, updateTrip, updateUserByIdAPI, updateUserProfileAPI } from "@/lib/apiUtils";
 import { useState, useEffect, useCallback } from "react";
 import { toast } from "react-toastify";
 
@@ -359,5 +359,132 @@ export function useUserAPI(): UseUserAPI {
     getUserById,
     updateUserById,
     deleteUser,
+  };
+}
+
+export function useBookingAPI(defaultFilters?: BookingSearchParams): UseBookingAPI {
+  const [bookings, setBookings] = useState<Booking[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(1);
+
+  // Items per page
+  const limit = 10;
+
+  // GET bookings from the server
+  const getBookings = useCallback(
+    async (
+      page: number = currentPage,
+      filters?: BookingSearchParams
+    ): Promise<void> => {
+      setLoading(true);
+      try {
+        const data = await fetchBookings(page, limit, filters || defaultFilters);
+        setBookings(data.bookings);
+        setCurrentPage(data.currentPage);
+        setTotalPages(data.totalPages);
+      } catch (error) {
+        toast.error('Failed to load bookings');
+      } finally {
+        setLoading(false);
+      }
+    },
+    [currentPage, defaultFilters]
+  );
+
+  const getBookingById = useCallback(async (id: string): Promise<Booking | null> => {
+    setLoading(true);
+    try {
+      const booking = await fetchBookingById(id);
+      return booking;
+    } catch (error) {
+      toast.error('Failed to fetch booking details');
+      return null;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  // CREATE a new booking
+  const addBooking = async (bookingData: BookingFormData): Promise<void> => {
+    setLoading(true);
+    try {
+      await createBooking(bookingData);
+      await getBookings(); // Refresh list
+      toast.success('Booking created successfully!');
+    } catch (error) {
+      toast.error('Failed to create booking');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // UPDATE an existing booking
+  const editBooking = async (id: string, bookingData: BookingFormData): Promise<void> => {
+    setLoading(true);
+    try {
+      await updateBooking(id, bookingData);
+      await getBookings(); // Refresh list
+      toast.success('Booking updated successfully!');
+    } catch (error) {
+      toast.error('Failed to update booking');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // DELETE a booking
+  const removeBooking = async (id: string): Promise<void> => {
+    setLoading(true);
+    try {
+      await deleteBookingAPI(id);
+      await getBookings();
+      toast.success('Booking deleted successfully!');
+    } catch (error) {
+      toast.error('Failed to delete booking');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // SEARCH bookings
+  const searchBooking = async (filters: BookingSearchParams): Promise<void> => {
+    setLoading(true);
+    try {
+      const result = await searchBookings(filters);
+      setBookings(result.bookings);
+      setCurrentPage(result.currentPage);
+      setTotalPages(result.totalPages);
+    } catch (error) {
+      toast.error('Failed to search bookings');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // PAGINATION
+  const goToPage = (page: number): void => {
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page);
+      getBookings(page);
+    }
+  };
+
+  useEffect(() => {
+    getBookings();
+  }, [getBookings]);
+
+  return {
+    bookings,
+    loading,
+    addBooking,
+    editBooking,
+    removeBooking,
+    searchBooking,
+    getBookingById,
+    currentPage,
+    totalPages,
+    goToPage,
+    getBookings,
   };
 }

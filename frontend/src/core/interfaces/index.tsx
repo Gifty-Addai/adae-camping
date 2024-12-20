@@ -35,6 +35,9 @@ export interface PaymentInfo {
 export interface BookingFormData {
   personalInfo: PersonalInfo;
   travelDetails: TravelDetails;
+  tripId: string | undefined;
+  selectedDate: string | undefined;
+  numberOfPeople: number | undefined;
   // accommodationPreferences: AccommodationPreferences;
   // paymentInfo: PaymentInfo;
 }
@@ -156,6 +159,46 @@ export interface UseTripAPI {
   totalPages: number;
   goToPage: (page: number) => void;
   getTrips: (page?: number, type?: string, difficulty?: string) => Promise<void>;
+}
+
+export interface Booking {
+  _id: string;
+  tempUser: string; // Assuming it's a user ID
+  trip: string; // Assuming it's a trip ID
+  selectedDateId: string;
+  participing: boolean;
+  numberOfPeople: number;
+  bookingDate: Date;
+  payment: boolean;
+  status: 'pending' | 'confirmed' | 'cancelled' | 'reschedule';
+  rescheduleDate?: Date;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+
+export interface BookingSearchParams {
+  tempUser?: string;
+  trip?: string;
+  status?: 'pending' | 'confirmed' | 'cancelled' | 'reschedule';
+  dateRange?: {
+    from: Date;
+    to: Date;
+  };
+}
+
+export interface UseBookingAPI {
+  bookings: Booking[];
+  loading: boolean;
+  addBooking: (bookingData: BookingFormData) => Promise<void>;
+  editBooking: (id: string, bookingData: BookingFormData) => Promise<void>;
+  removeBooking: (id: string) => Promise<void>;
+  getBookingById: (id: string) => Promise<Booking | null>;
+  searchBooking: (filters: BookingSearchParams) => Promise<void>;
+  currentPage: number;
+  totalPages: number;
+  goToPage: (page: number) => void;
+  getBookings: (page?: number, filters?: BookingSearchParams) => Promise<void>;
 }
 
 export interface UseUserAPI {
@@ -386,17 +429,6 @@ export interface Product {
 
 export type AuthType = {
   auth: boolean
-}
-
-export interface Booking {
-  _id: string;
-  campsite: string;
-  campingDate: string;
-  numberOfPeople: number;
-  bookingDate: string;
-  totalCost: number;
-  status: string;
-  specialRequests?: string;
 }
 
 export interface CartItem extends Product {

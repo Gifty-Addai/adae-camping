@@ -191,7 +191,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({
             />
 
             {/* Submit Button */}
-            <Button type="submit" className="w-full lg:w-64">
+            <Button disabled={loading} type="submit" className="w-full lg:w-64">
               Continue
             </Button>
           </form>

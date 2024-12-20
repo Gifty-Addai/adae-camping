@@ -1,4 +1,4 @@
-import { ConfirmMembershipResponse, Product, ProductFormData, SignInResponse, Trip, TripFormData, TripSearchParams, UpdateUserPayload, User, VerifyPaymentResponse } from "@/core/interfaces";
+import { Booking, BookingFormData, BookingSearchParams, ConfirmMembershipResponse, Product, ProductFormData, SignInResponse, Trip, TripFormData, TripSearchParams, UpdateUserPayload, User, VerifyPaymentResponse } from "@/core/interfaces";
 import { deleteRequest, getRequest, postRequest, putRequest } from "./utils";
 
 export const verifyPayment = async (param: {reference_id:string}) : Promise<VerifyPaymentResponse> =>{
@@ -188,4 +188,70 @@ export const updateUserByIdAPI = async (id: string, payload: UpdateUserPayload):
 export const deleteUserAPI = async (id: string): Promise<{ success: boolean }> => {
   const data = await deleteRequest<{ success: boolean }>(`/api/user/${id}`);
   return data;
+};
+
+export const fetchBookings = async (
+  page: number = 1,
+  limit: number = 10,
+  filters?: BookingSearchParams
+): Promise<{ bookings: Booking[]; currentPage: number; totalPages: number }> => {
+  const params: Record<string, any> = { page, limit };
+
+  if (filters) {
+    if (filters.tempUser) params.tempUser = filters.tempUser;
+    if (filters.trip) params.trip = filters.trip;
+    if (filters.status) params.status = filters.status;
+    if (filters.dateRange) {
+      params.from = filters.dateRange.from.toISOString();
+      params.to = filters.dateRange.to.toISOString();
+    }
+  }
+
+  // Serialize query parameters
+  const queryString = new URLSearchParams(params).toString();
+  const url = `api/booking/getAllBookings?${queryString}`;
+
+  return await getRequest<{ bookings: Booking[]; currentPage: number; totalPages: number }>(url);
+};
+
+export const fetchBookingById = async (id: string): Promise<Booking> => {
+  const url = `/api/booking/getBookingById/${id}`;
+  return await getRequest<Booking>(url);
+};
+
+export const createBooking = async (bookingData: BookingFormData): Promise<Booking> => {
+  const url = `/api/booking/createBooking`;
+  return await postRequest<Booking>(url, bookingData);
+};
+
+export const updateBooking = async (id: string, bookingData: BookingFormData): Promise<Booking> => {
+  const url = `/api/booking/updateBooking/${id}`;
+  return await putRequest<Booking>(url, bookingData);
+};
+
+export const deleteBookingAPI = async (id: string): Promise<void> => {
+  const url = `/api/booking/deleteBooking/${id}`;
+  await deleteRequest(url);
+};
+
+export const searchBookings = async (
+  filters: BookingSearchParams,
+  page: number = 1,
+  limit: number = 10
+): Promise<{ bookings: Booking[]; currentPage: number; totalPages: number }> => {
+  const params: Record<string, any> = { page, limit };
+
+  if (filters.tempUser) params.tempUser = filters.tempUser;
+  if (filters.trip) params.trip = filters.trip;
+  if (filters.status) params.status = filters.status;
+  if (filters.dateRange) {
+    params.from = filters.dateRange.from.toISOString();
+    params.to = filters.dateRange.to.toISOString();
+  }
+
+  // Serialize query parameters
+  const queryString = new URLSearchParams(params).toString();
+  const url = `/api/booking/searchBookings?${queryString}`;
+
+  return await getRequest<{ bookings: Booking[]; currentPage: number; totalPages: number }>(url);
 };

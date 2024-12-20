@@ -1,7 +1,7 @@
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { Trip } from "@/core/interfaces";
 import React from "react";
-import { Star, CalendarDays, Activity, DollarSign } from "lucide-react";
+import { Star, CalendarDays, Activity, } from "lucide-react";
 import { Link } from "react-router-dom";
 
 interface TripCardProp {
@@ -28,7 +28,7 @@ const TripCard: React.FC<TripCardProp> = ({ trip }) => {
           </span>
         </CardHeader>
 
-        {/* Card Content */}  
+        {/* Card Content */}
         <CardContent className="py-4 px-2 flex flex-col justify-between h-[calc(100%-9rem)]">
           {/* Trip Title */}
           <h5 className="text-lg font-semibold text-white  line-clamp-2">
@@ -58,13 +58,13 @@ const TripCard: React.FC<TripCardProp> = ({ trip }) => {
               </span>
             </div>
             <div className="flex items-center gap-2">
-              <DollarSign className="w-4 h-4 text-yellow-500" />
+              {'₵'}
               <span>
                 <strong>Member:</strong> GHS {trip?.cost?.basePrice}
               </span>
             </div>
             <div className="flex items-center gap-2">
-              <DollarSign className="w-4 h-4 text-yellow-400" />
+              {'₵'}
               <span>
                 <strong>Non-Member:</strong> GHS{" "}
                 {trip?.cost?.basePrice! + (trip?.cost?.discount || 0)}

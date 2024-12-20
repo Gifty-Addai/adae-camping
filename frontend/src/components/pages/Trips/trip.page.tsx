@@ -1,6 +1,6 @@
 // src/components/TripPage.tsx
 
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useTripAPI } from '@/hooks/api.hook';
 import TripCard from './trip-card';
 import { Page } from '@/components/ui/page';
@@ -15,14 +15,15 @@ import {
   DialogOverlay,
   DialogTrigger,
 } from '@/components/ui/dialog';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export const TripPage: React.FC = () => {
   const { loading, trips, searchTrip } = useTripAPI();
   const [isFilterOpen, setIsFilterOpen] = useState<boolean>(false);
 
-  const handleApplyFilters = (params: TripSearchParams) => {
+  const handleApplyFilters = useCallback((params: TripSearchParams) => {
     searchTrip(params);
-  };
+  }, [searchTrip]);
 
   return (
     <Page
@@ -66,16 +67,19 @@ export const TripPage: React.FC = () => {
           {/* Main Trip Cards Section */}
           <div className="flex-1">
             {loading ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3  gap-x-2 gap-y-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-x-2 gap-y-8">
                 {[...Array(4)].map((_, index) => (
-                  <div
-                    key={index}
-                    className="bg-gray-300 w-56 rounded-lg animate-pulse h-64"
-                  ></div>
+                  <div className="rounded-lg overflow-hidden mb-4">
+                    <Skeleton key={index} className="w-full h-96" />
+                  </div>
+                  // <div
+                  //   key={index}
+                  //   className="bg-gray-300 w-64 rounded-lg animate-pulse h-64"
+                  // ></div>
                 ))}
               </div>
             ) : trips.length > 0 ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3  gap-x-3 gap-y-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-x-3 gap-y-8">
                 {trips.map((trip) => (
                   <TripCard key={trip._id} trip={trip} />
                 ))}

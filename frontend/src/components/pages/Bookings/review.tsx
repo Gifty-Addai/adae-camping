@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { MapPin, Calendar, User, Package } from "lucide-react";
+import { useBookingAPI } from "@/hooks/api.hook";
 
 interface ReviewConfirmProps {
   formData: BookingFormData;
@@ -15,6 +16,8 @@ interface ReviewConfirmProps {
 
 const ReviewConfirm: React.FC<ReviewConfirmProps> = ({ formData, trip, selectedDate }) => {
   if (!trip || !selectedDate) return null;
+
+  const {loading, addBooking} = useBookingAPI()
 
   const startDateFormatted = format(parseISO(selectedDate.startDate), "MMM d, yyyy");
   const endDateFormatted = format(parseISO(selectedDate.endDate), "MMM d, yyyy");
@@ -149,7 +152,9 @@ const ReviewConfirm: React.FC<ReviewConfirmProps> = ({ formData, trip, selectedD
             <p className="text-sm text-muted-foreground mb-3">
               If everything looks good, let’s finalize your booking and start counting down the days!
             </p>
-            <Button variant="default" size="lg" className="w-full" onClick={() => { console.log("formData", { ...formData, tripId: trip._id, selectedDate: selectedDate._id }) }}>
+            <Button disabled={loading} variant="default" size="lg" className="w-full" onClick={() => { 
+              addBooking({ ...formData, tripId: trip._id, selectedDate: selectedDate._id , numberOfPeople:1})
+              console.log("formData", ) }}>
               Confirm & Proceed to Payment
             </Button>
             <p className="text-xs text-muted-foreground mt-2">
