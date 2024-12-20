@@ -2,13 +2,20 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Trip, BookingFormData } from "@/core/interfaces";
-import PersonalInfo from "./booking-personalInfo";
-import TravelDetails from "./booking-travel-details";
+import PersonalInfoComponent from "./booking-personalInfo";
+import TravelDetailsComponent from "./booking-travel-details";
 import ReviewConfirm from "./review";
 import { useTripAPI } from "@/hooks/api.hook";
 import { Page } from "@/components/ui/page";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
+
+// Utility type to extract keys with object types
+type ObjectKeys<T> = {
+    [K in keyof T]: T[K] extends object ? K : never;
+}[keyof T];
+
+type BookingFormDataObjectKeys = ObjectKeys<BookingFormData>;
 
 const BookingPage: React.FC = () => {
     const { loading, getTripById } = useTripAPI();
@@ -34,7 +41,10 @@ const BookingPage: React.FC = () => {
             address2: "",
             city: "",
             zipCode: "",
-        }
+        },
+        tripId: undefined,
+        selectedDate: undefined,
+        numberOfPeople: undefined
     });
 
     useEffect(() => {
@@ -42,7 +52,6 @@ const BookingPage: React.FC = () => {
             if (id) {
                 const data = await getTripById(id);
                 setTrip(data);
-
             }
         };
         fetchData();
@@ -50,7 +59,8 @@ const BookingPage: React.FC = () => {
 
     const nextStep = () => setCurrentStep((prev) => prev + 1);
 
-    const updateFormData = <K extends keyof BookingFormData>(
+    // Updated to restrict K to object keys only
+    const updateFormData = <K extends BookingFormDataObjectKeys>(
         section: K,
         data: Partial<BookingFormData[K]>
     ) => {
@@ -106,7 +116,7 @@ const BookingPage: React.FC = () => {
 
                     {/* Render Current Step */}
                     {currentStep === 1 && (
-                        <PersonalInfo
+                        <PersonalInfoComponent
                             trip={trip}
                             selectedDate={selectedDate}
                             nextStep={nextStep}
@@ -115,7 +125,7 @@ const BookingPage: React.FC = () => {
                         />
                     )}
                     {currentStep === 2 && (
-                        <TravelDetails
+                        <TravelDetailsComponent
                             nextStep={nextStep}
                             trip={trip}
                             selectedDate={selectedDate}

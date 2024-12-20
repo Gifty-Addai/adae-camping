@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import { ChevronRight } from "lucide-react";
-import UserBookingsPage from "../Bookings/user_book_page";
 
 const SettingsPage: React.FC = () => {
     const [activeTab, setActiveTab] = useState<string>("Profile");
@@ -83,8 +82,8 @@ const SettingsPage: React.FC = () => {
             case "Appearance":
                 return <p className="p-6">Appearance settings content...</p>;
         
-            case "Bookings":
-                return <UserBookingsPage/>
+            // case "Bookings":
+            //     return <UserBookingsPage/>
             default:
                 return null;
         }

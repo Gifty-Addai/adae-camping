@@ -38,8 +38,6 @@ export interface BookingFormData {
   tripId: string | undefined;
   selectedDate: string | undefined;
   numberOfPeople: number | undefined;
-  // accommodationPreferences: AccommodationPreferences;
-  // paymentInfo: PaymentInfo;
 }
 export interface Itinerary {
   day: number;
