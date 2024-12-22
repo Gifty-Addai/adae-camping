@@ -28,12 +28,12 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector} from "react-redux";
 import { RootState } from "@/core/store/store";
 
 export function NavUser() {
   const { isMobile } = useSidebar();
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
 
   const { user, isLoading, error } = useSelector((state: RootState) => state.userSlice);
 

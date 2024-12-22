@@ -28,7 +28,6 @@ import {
   SelectItem,
   SelectGroup,
   SelectLabel,
-  SelectSeparator,
 } from "@/components/ui/select";
 import { difficultyOptions, typeOptions } from "@/data/data";
 import ErrorMessage from "@/components/ui/error-message";

@@ -1,6 +1,6 @@
 // src/components/booking/ReviewConfirm.tsx
 import React from "react";
-import { BookingFormData, Trip, TripDate } from "@/core/interfaces";
+import { BookingFormData, DateSchedule, Trip } from "@/core/interfaces";
 import { format, parseISO } from "date-fns";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -14,7 +14,7 @@ import { useBookingAPI } from "@/hooks/booking.hook";
 interface ReviewConfirmProps {
   formData: BookingFormData;
   trip: Trip | null | undefined;
-  selectedDate: TripDate | undefined;
+  selectedDate: DateSchedule | undefined;
 }
 
 const ReviewConfirm: React.FC<ReviewConfirmProps> = ({ formData, trip, selectedDate }) => {

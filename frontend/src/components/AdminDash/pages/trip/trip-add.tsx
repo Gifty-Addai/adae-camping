@@ -14,7 +14,7 @@ const AddTripPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   // Handler for form submission
-  const handleAddTrip = async (tripData: TripFormOutput, isEdit: boolean) => {
+  const handleAddTrip = async (tripData: TripFormOutput) => {
     setIsLoading(true);
     setSubmissionError(null); // Reset previous errors
 
@@ -34,7 +34,7 @@ const AddTripPage: React.FC = () => {
       }
 
       // Optionally, handle the response data
-      const createdTrip = await response.json();
+    //   const createdTrip = await response.json();
 
       // Show success toast
       toast.success("Trip created successfully!");

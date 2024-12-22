@@ -1,4 +1,4 @@
-import { ApiResponse, ConfirmMemberRequest, ConfirmMembershipResponse, UpdateUserPayload, User, UseUserAPI } from "@/core/interfaces";
+import { ConfirmMemberRequest, ConfirmMembershipResponse, UpdateUserPayload, User, UseUserAPI } from "@/core/interfaces";
 import { isApiError } from "@/core/interfaces/guards";
 import { confirmUserMembership, deleteUserAPI, fetchAllUsers, fetchUserByIdAPI, fetchUserProfile, updateUserByIdAPI, updateUserProfileAPI } from "@/lib/apiUtils";
 import { useCallback, useState } from "react";
