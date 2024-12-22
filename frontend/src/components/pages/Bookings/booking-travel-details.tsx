@@ -47,7 +47,10 @@ const formSchema = z.object({
   }, {
     message: "Date of birth cannot be in the future",
   }),
-  gender: z.string().min(1, "Gender is required"),
+  gender: z.enum(["Male", "Female", "Other", "Prefer not to say"], {
+    required_error: "Gender is required",
+    invalid_type_error: "Invalid gender selected",
+  }),
   streetAddress: z.string().min(1, "Street address is required"),
   address2: z.string().optional(),
   city: z.string().min(1, "City is required"),
@@ -61,7 +64,7 @@ const TravelDetails: React.FC<TravelDetailsProps> = ({
   updateData,
   data
 }) => {
-  const form = useForm({
+  const form = useForm<BookingFormData["travelDetails"]>({
     resolver: zodResolver(formSchema),
     defaultValues: data,
   });
@@ -69,7 +72,7 @@ const TravelDetails: React.FC<TravelDetailsProps> = ({
   const onSubmit = (values: BookingFormData["travelDetails"]) => {
     updateData(values);
     console.log("Form Submitted:", values);
-    nextStep(); 
+    nextStep();
   };
 
   return (
@@ -110,13 +113,13 @@ const TravelDetails: React.FC<TravelDetailsProps> = ({
             <FormField
               control={form.control}
               name="gender"
-              render={({}) => (
+              render={({ field }) => (
                 <FormItem>
                   <FormLabel className="text-card-foreground">Gender *</FormLabel>
                   <FormControl>
                     <Select
-                      onValueChange={(value) => form.setValue("gender", value)}
-                      value={form.watch("gender")}
+                      onValueChange={(value) => field.onChange(value)}
+                      value={field.value}
                     >
                       <SelectTrigger className="lg:w-64 ">
                         <SelectValue placeholder="Select a gender" />
@@ -124,9 +127,10 @@ const TravelDetails: React.FC<TravelDetailsProps> = ({
                       <SelectContent>
                         <SelectGroup>
                           <SelectLabel>Gender</SelectLabel>
-                          <SelectItem value="male">Male</SelectItem>
-                          <SelectItem value="female">Female</SelectItem>
-                          <SelectItem value="other">Other</SelectItem>
+                          <SelectItem value="Male">Male</SelectItem>
+                          <SelectItem value="Female">Female</SelectItem>
+                          <SelectItem value="Other">Other</SelectItem>
+                          <SelectItem value="Prefer not to say">Prefer not to say</SelectItem>
                         </SelectGroup>
                       </SelectContent>
                     </Select>

@@ -17,13 +17,12 @@ import {
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { bookingSchema } from '@/core/interfaces/zod';
-import { BookingFormValues, PaymentInitializationResponse } from '@/core/interfaces';
+import { BookingFormValues } from '@/core/interfaces';
 import { Input } from '@/components/ui/input';
 import { toast } from 'react-toastify';
-import PaystackPop from '@paystack/inline-js';
-import { postRequest } from '@/lib/utils';
 import InvoiceModal from './payment_instruction_modal';
 import TransactionModal from './transaction.modal';
+import { initializePayment } from '@/lib/payment-handler';
 
 const CartPage: React.FC = () => {
     const form = useForm<BookingFormValues>({
@@ -75,69 +74,34 @@ const CartPage: React.FC = () => {
     // };
 
     const handleCheckout = async (formData: BookingFormValues) => {
-        try {
-            const response = await postRequest<PaymentInitializationResponse>('/api/auth/payment', {
-                ...formData,
-                amount: Math.round(cart.totalPrice),
-            });
 
-            if (response.success) {
-                const popup = new PaystackPop();
-
-                const transactionOptions = {
-                    key: 'pk_live_c8527e2f21c94ad8cbb07b2e10a881f556fc025c',
-                    email: formData.email,
-                    amount: response.amount,
-                    phone :formData.phone,
-                    reference: response.reference,
-                    onSuccess: () => {
-                        // await handleTransactionSuccess(tranx, response.reference);
-
-                        setIsVerifyModal(true);
-                        setIsSuccess(true);
-
-                    },
-                    onCancel: () => {
-                        toast.error("Transaction was cancelled");
-                        setIsVerifyModal(true);
-                        setIsSuccess(false);
-                    },
-                    onError:() => {
-                        // await handleTransactionSuccess(error, response.reference);
-                        setIsVerifyModal(true);
-                        setIsSuccess(false);
-                    },
-                };
-                popup.newTransaction(transactionOptions);
-            } else {
-                toast.error('Payment initialization failed!');
-            }
-        } catch (error) {
-            console.error(error);
-            toast.error('Payment initialization failed! Check Internet and Retry');
-        }
+        await initializePayment({
+            formData : {
+                name : formData.name,
+                email : formData.email,
+                phone : formData.phone,
+                address : formData.address,
+                preferences : formData.preferences
+            },
+            totalAmount: cart.totalPrice,
+            onSuccess: (tranx) => {
+                console.info("tranx data",tranx);
+                setIsVerifyModal(true);
+                setIsSuccess(true);
+            },
+            onCancel: () => {
+                toast.error("Transaction was cancelled");
+                setIsVerifyModal(true);
+                setIsSuccess(false);
+            },
+            onError: () => {
+                setIsVerifyModal(true);
+                setIsSuccess(false);
+            },
+        });
     };
 
 
-    // const handleTransactionSuccess = async (tranx: any, reference: string) => {
-    //     try {
-    //         console.log("Transaction Successful:", tranx);
-
-    //         const verifyResponse = await getRequest<VerifyPaymentResponse>(`/api/auth/verifypayment/${reference}`);
-
-    //         if (verifyResponse.success) {
-    //             setIsVerifyModal(true);
-    //             setIsSuccess(true);
-    //         } else {
-    //             setIsVerifyModal(true);
-    //             setIsSuccess(false);
-    //         }
-    //     } catch (error) {
-    //         console.error("Verification failed:", error);
-    //         setIsVerifyModal(true);
-    //         setIsSuccess(false);
-    //     }
-    // };
 
     if (cart.totalItems === 0) {
         return (

@@ -14,10 +14,10 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Trip, TripDate, BookingFormData, ConfirmMembershipResponse } from "@/core/interfaces";
+import { Trip, TripDate, BookingFormData, ConfirmMembershipResponse, ApiResponse } from "@/core/interfaces";
 import { format, parseISO } from "date-fns";
-import { useUserAPI } from "@/hooks/api.hook";
 import BookConfirmModal from "./BookingComponents/confirm.personal.modal";
+import { useUserAPI } from "@/hooks/user.hook";
 
 interface PersonalInfoProps {
   trip: Trip | null;
@@ -47,16 +47,18 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({
     resolver: zodResolver(formSchema),
     defaultValues: data,
   });
-  
+
   const { loading, confirmMembership } = useUserAPI();
-  const [confirmData, setConfirmData] = useState<ConfirmMembershipResponse | null>(null);
+  const [confirmData, setConfirmData] = useState<ApiResponse<ConfirmMembershipResponse> | null>(null);
   const [showModal, setShowModal] = useState(false);
 
   const onSubmit = async (values: BookingFormData["personalInfo"]) => {
     const membershipResult = await confirmMembership(
-      `${values.firstName} ${values.lastName}`,
-      values.email,
-      values.phone
+      {
+        name: `${values.firstName} ${values.lastName}`,
+        email: values.email,
+        phone: values.phone
+      }
     );
     setConfirmData(membershipResult || null);
     updateData(values);
@@ -154,7 +156,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({
               )}
             />
 
-            
+
             {/* Phone */}
             <FormField
               control={form.control}

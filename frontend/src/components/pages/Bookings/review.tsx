@@ -6,7 +6,10 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { MapPin, Calendar, User, Package } from "lucide-react";
-import { useBookingAPI } from "@/hooks/api.hook";
+import { initializePayment } from "@/lib/payment-handler";
+import { toast } from "react-toastify";
+import { useUserAPI } from "@/hooks/user.hook";
+import { useBookingAPI } from "@/hooks/booking.hook";
 
 interface ReviewConfirmProps {
   formData: BookingFormData;
@@ -17,7 +20,9 @@ interface ReviewConfirmProps {
 const ReviewConfirm: React.FC<ReviewConfirmProps> = ({ formData, trip, selectedDate }) => {
   if (!trip || !selectedDate) return null;
 
-  const {loading, addBooking} = useBookingAPI()
+  const { loading, addBooking,editBooking } = useBookingAPI()
+  const { confirmMembership } = useUserAPI()
+  // const [disable, setDisable] = useState<boolean>(false)
 
   const startDateFormatted = format(parseISO(selectedDate.startDate), "MMM d, yyyy");
   const endDateFormatted = format(parseISO(selectedDate.endDate), "MMM d, yyyy");
@@ -25,10 +30,59 @@ const ReviewConfirm: React.FC<ReviewConfirmProps> = ({ formData, trip, selectedD
   const basePrice = trip.cost.basePrice;
   const tripDiscount = trip.cost.discount;
   // const discount = trip.cost.discount ?? 0;
-  const discount = 0;
+  let discount = 0;
   const finalPrice = basePrice + tripDiscount;
 
   const fullName = `${formData.personalInfo.firstName} ${formData.personalInfo.lastName}`.trim();
+
+  const handleReviewPay = async (data: BookingFormData) => {
+    await confirmMembership({
+      name: `${data.personalInfo.firstName} ${data.personalInfo.lastName}`.trim(),
+      phone: data.personalInfo.phone,
+      email: data.personalInfo.email,
+      dob: data.travelDetails.dob,
+      gender: data.travelDetails.gender,
+      streetAddress: data.travelDetails.streetAddress,
+      address2: data.travelDetails.address2,
+      city: data.travelDetails.city,
+      zipCode: data.travelDetails.zipCode,
+      idCard: data.personalInfo.idCard,
+    });
+    console.log("Membership confirmed successfully.");
+
+    const booking = await addBooking(data);
+
+    console.log("Initializing payment...",booking.tripId);
+    await initializePayment({
+      formData: {
+        name: `${data.personalInfo.firstName} ${data.personalInfo.lastName}`.trim(),
+        email: data.personalInfo.email,
+        phone: data.personalInfo.phone,
+        address: data.travelDetails.streetAddress,
+        preferences: data.tripId,
+        isBooking:true,
+        bookingId: booking.bookingId
+
+      },
+      totalAmount: finalPrice,
+      onSuccess: async (tranx) => {
+        await editBooking(booking.bookingId,{
+          payment:true
+        })
+        console.info("Transaction successful:", tranx);
+      },
+      onCancel: () => {
+        toast.error("Transaction was cancelled");
+      },
+      onError: (error) => {
+        console.error("Payment error:", error);
+        toast.error("Payment failed. Please try again.");
+      },
+    });
+    console.log("Payment initialized.");
+
+  };
+
 
   return (
     <div className="max-w-5xl mx-auto my-8 px-4 space-y-8">
@@ -152,9 +206,10 @@ const ReviewConfirm: React.FC<ReviewConfirmProps> = ({ formData, trip, selectedD
             <p className="text-sm text-muted-foreground mb-3">
               If everything looks good, let’s finalize your booking and start counting down the days!
             </p>
-            <Button disabled={loading} variant="default" size="lg" className="w-full" onClick={() => { 
-              addBooking({ ...formData, tripId: trip._id, selectedDate: selectedDate._id , numberOfPeople:1})
-              console.log("formData", ) }}>
+            <Button disabled={loading} variant="default" size="lg" className="w-full" onClick={() => {
+              handleReviewPay({ ...formData, tripId: trip._id, selectedDate: selectedDate._id, numberOfPeople: 1 })
+              console.log("formData",)
+            }}>
               Confirm & Proceed to Payment
             </Button>
             <p className="text-xs text-muted-foreground mt-2">

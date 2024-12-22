@@ -14,7 +14,7 @@ export interface PersonalInfo {
 
 export interface TravelDetails {
   dob: Date | undefined,
-  gender: string,
+  gender: 'Male' | 'Female' | 'Other' | 'Prefer not to say',
   streetAddress: string,
   address2: string,
   city: string,
@@ -30,6 +30,17 @@ export interface PaymentInfo {
   cardNumber: string;
   expiryDate: string;
   cvv: string;
+}
+
+export interface BookingUpdate {
+    selectedDateId?: string | null;
+    participing?: boolean | null;
+    numberOfPeople?: number | null;
+    payment?: boolean | null;
+    authorizationUrl?: string | null;
+    reference?: string | null;
+    status?: 'pending' | 'confirmed' | 'cancelled' | 'reschedule' | null;
+    rescheduleDate?: Date | null;
 }
 
 export interface BookingFormData {
@@ -188,8 +199,8 @@ export interface BookingSearchParams {
 export interface UseBookingAPI {
   bookings: Booking[];
   loading: boolean;
-  addBooking: (bookingData: BookingFormData) => Promise<void>;
-  editBooking: (id: string, bookingData: BookingFormData) => Promise<void>;
+  addBooking: (bookingData: BookingFormData) => Promise<AddBookinResponse>;
+  editBooking: (id: string, bookingData: BookingUpdate) => Promise<void>;
   removeBooking: (id: string) => Promise<void>;
   getBookingById: (id: string) => Promise<Booking | null>;
   searchBooking: (filters: BookingSearchParams) => Promise<void>;
@@ -199,13 +210,26 @@ export interface UseBookingAPI {
   getBookings: (page?: number, filters?: BookingSearchParams) => Promise<void>;
 }
 
+export interface ConfirmMemberRequest {
+  name: string;
+  phone: string;
+  email: string;
+  dob?: Date;
+  gender?: 'Male' | 'Female' | 'Other' | 'Prefer not to say';
+  streetAddress?: string;
+  address2?: string;
+  city?: string;
+  zipCode?: string;
+  idCard?: string;
+}
+
 export interface UseUserAPI {
   users: User[] | null;
   loading: boolean;
   error: string | null;
   getUserProfile: () => Promise<User | null>;
   updateUserProfile: (payload: UpdateUserPayload) => Promise<User | null>;
-  confirmMembership: (name: string, email: string, phone: string) => Promise<ConfirmMembershipResponse | null>;
+  confirmMembership: (param:ConfirmMemberRequest) => Promise<ApiResponse<ConfirmMembershipResponse>>;
   getAllUsers: () => Promise<User[] | null>;
   getUserById: (id: string) => Promise<User | null>;
   updateUserById: (id: string, payload: UpdateUserPayload) => Promise<User | null>;
@@ -213,15 +237,11 @@ export interface UseUserAPI {
 }
 
 export interface ConfirmMembershipResponse {
-  success: boolean;
-  message: string;
-  user?: {
-    name: string;
-    email: string;
-    phone: string;
-    nextRenewalDate?: string;
-  };
-  membershipExpired?: boolean;
+  name: string;
+  email: string;
+  phone: string;
+  isMember: boolean;
+  membershipExpired: boolean;
 }
 
 export interface UpdateUserPayload {
@@ -237,6 +257,85 @@ export interface UserSearchParams {
   role?: string;
 }
 export type BookingFormValues = z.infer<typeof bookingSchema>;
+
+export interface PaymentData {
+  name: string;
+  email: string;
+  phone: string;
+  address: string;
+  preferences?: string | undefined;
+  isBooking?: boolean | undefined;
+  bookingId?: string | undefined;
+}
+
+export interface AddBookinResponse {
+  bookingId: string;
+  tripId: string;
+  selectedDateId: string;
+  participing: boolean;
+  numberOfPeople: number;
+  bookingDate: string;
+  paymentDone: boolean;
+  reference: string;
+  status: "pending" |"confirm";
+}
+export interface PaymentOptions {
+  key: string;
+  email: string;
+  amount: number;
+  phone: string;
+  reference: string;
+  onSuccess?: (tranx: {
+    id: string;
+    reference: string;
+    message: string;
+    redirecturl: string;
+    status: "success";
+    trans: string;
+    transaction: string;
+    trxref: string;
+  }) => void;
+  onLoad?: (tranx: {
+    customer: Record<string, string>;
+    accessCode: string;
+  }) => void;
+  onCancel?: () => void;
+  onError?: (error: {
+    type: "setup";
+    message: string;
+  }) => void;
+  metadata?: {
+    custom_fields?: Array<{
+      display_name: string;
+      variable_name: string;
+      value?: string | number;
+    }>;
+  };
+}
+
+export interface InitializePaymentParams {
+  formData: PaymentData;
+  totalAmount: number;
+  onSuccess?: (tranx: {
+    id: string;
+    reference: string;
+    message: string;
+    redirecturl: string;
+    status: "success";
+    trans: string;
+    transaction: string;
+    trxref: string;
+  }) => void;
+  onLoad?: (tranx: {
+    customer: Record<string, string>;
+    accessCode: string;
+  }) => void;
+  onCancel?: () => void;
+  onError?: (error: {
+    type: "setup";
+    message: string;
+  }) => void;
+}
 
 export interface ProductFormData {
   name: string;
@@ -274,8 +373,6 @@ export interface ProductTableProps {
 }
 
 export interface PaymentInitializationResponse {
-  success: boolean;
-  message: string;
   amount: number;
   authorizationUrl: string;
   reference: string;
@@ -446,3 +543,14 @@ export type FilterSidebarProps = {
   categories: string[];
   onFilterChange: (category: string) => void;
 };
+
+export interface ApiResponse<T = any> {
+  success: boolean;
+  message: string;
+  data: T | null;
+}
+
+export interface CachedItem<T> {
+  data: ApiResponse<T>;
+  expiry: string;
+}

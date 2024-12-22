@@ -7,13 +7,13 @@ import ProductCard from './product.card';
 import { Product } from '@/core/interfaces';
 import { Button } from '@/components/ui/button';
 import { Page } from '@/components/ui/page';
-import { useProductAPI } from '@/hooks/api.hook';
 import Pagination from './pagination';
 import { ShoppingCart } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/core/store/store';
 import { Images } from '@/assets/assets';
+import { useProductAPI } from '@/hooks/product.hook';
 
 const StorePage: React.FC = () => {
   const [categoryFilter, setCategoryFilter] = useState<string>('');

@@ -14,7 +14,7 @@ interface TripDatesModalProps {
   selectedDate: TripDate | null;
   setSelectedDate: (date: TripDate) => void;
   onClose: () => void;
-  groupSizeMax: number;
+  groupSizeMin: number;
 }
 
 /** TripDatesModal: A scrollable, centered modal with year toggles and availability cards */
@@ -26,7 +26,7 @@ const TripDatesModal: React.FC<TripDatesModalProps> = ({
   selectedDate,
   setSelectedDate,
   onClose,
-  groupSizeMax,
+  groupSizeMin,
 }) => {
   const [years, setYears] = useState<number[]>([]);
   const [activeYear, setActiveYear] = useState<number | null>(null);
@@ -96,7 +96,8 @@ const TripDatesModal: React.FC<TripDatesModalProps> = ({
               const shortEnd = format(new Date(endDate), "MMM d");
 
               const isLimited =
-                isAvailable && slotsRemaining > 0 && slotsRemaining < groupSizeMax;
+                isAvailable && slotsRemaining > 0 && slotsRemaining <= groupSizeMin;
+                
 
               return (
                 <div
@@ -262,7 +263,8 @@ const TripHeaderCTA: React.FC<Props> = ({
       {/* Right Column: Pricing Card */}
       <div className="w-full lg:w-1/3 mt-4 lg:mt-0">
         <Card className="bg-card text-card-foreground shadow-md rounded-lg border border-border">
-          <CardContent className="p-4 space-y-2">
+          <CardContent className="p-6 space-y-4">
+
             {/* Pricing Info */}
             <div>
               <p className="text-sm text-muted-foreground">Starting from</p>
@@ -297,25 +299,33 @@ const TripHeaderCTA: React.FC<Props> = ({
               Select Dates
             </Button>
 
-            {/* Contact Info */}
-            <div className="flex flex-row items-center mt-4 space-y-1 text-muted-foreground">
-              <Button size="sm" className="pr-3" variant="link">
+            {/* Private Booking Contact Info */}
+            <div className="mt-4">
+              <p className="text-muted-foreground font-semibold mb-2">
+                For Private Booking Contact:
+              </p>
+              <p className="text-xs text-yellow-400">
+                📧{" "}
                 <a
-                  href="mailto:travel@rei.com"
-                  className="text-yellow-400 text-xs"
+                  href="mailto:akoben@fie.com"
+                  className="hover:underline"
                 >
-                  📧 akoben@fie.com
+                  akoben@fie.com
+                </a>{" "}
+                or 📞{" "}
+                <a
+                  href="tel:+233247413964"
+                  className="hover:underline"
+                >
+                  +233 247413964
                 </a>
-              </Button>
-              <Button size="sm" className="p-0" variant="link">
-                <a href="tel:1-800-622-2236" className="text-yellow-400 text-xs">
-                  📞 233 247413964
-                </a>
-              </Button>
+              </p>
             </div>
+
           </CardContent>
         </Card>
       </div>
+
 
       {/* Modal */}
       {showModal && (
@@ -327,7 +337,7 @@ const TripHeaderCTA: React.FC<Props> = ({
           selectedDate={selectedDate}
           setSelectedDate={setSelectedDate}
           onClose={() => setShowModal(false)}
-          groupSizeMax={trip.groupSize.max}
+          groupSizeMin={trip.groupSize.min}
         />
       )}
     </section>

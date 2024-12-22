@@ -1,6 +1,5 @@
 import { Input } from "@/components/ui/input";
 import { Product, ProductFormData } from "@/core/interfaces";
-import { useProductAPI } from "@/hooks/api.hook";
 import React, { useState } from "react";
 import AdminProductModal from "../../AdComponents/admin_product_modal";
 import { Button } from "@/components/ui/button";
@@ -8,6 +7,7 @@ import AdminProductCard from "../../AdComponents/admin_product_card";
 import { cn } from "@/lib/utils";
 import { Spinner } from "@/components/ui/loader/_spinner";
 import Pagination from "@/components/pages/product/pagination";
+import { useProductAPI } from "@/hooks/product.hook";
 
 const AdminProductDash: React.FC = () => {
   const { products, loading, addProduct, editProduct, removeProduct, searchProduct, totalPages, currentPage, goToPage } = useProductAPI();

@@ -9,7 +9,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useDispatch, useSelector } from "react-redux";
 import { localStorageUtil } from "@/lib/utils";
 import { useNavigate, Navigate } from "react-router-dom";
-import { SignInResponse } from "@/core/interfaces";
 import { Page } from "../ui/page";
 import { setUser, setLoading, setError } from "@/core/store/slice/user_slice";
 import { sigin } from "@/lib/apiUtils";
@@ -39,18 +38,18 @@ const SignInPage = () => {
     try {
       dispatch(setLoading(true));
       // Authenticate User
-      const signInResponse: SignInResponse = await sigin(data);
+      const signInResponse = await sigin(data);
       console.log("Sign In Response:", signInResponse);
 
       // Check if the user role is admin
-      if (signInResponse.user.role !== "admin") {
+      if (signInResponse?.data?.user.role !== "admin") {
         throw new Error("Access denied. Admins only.");
       }
 
       // Save the user data and token to localStorage and Redux
-      localStorageUtil.set("user-info", signInResponse.user);
-      localStorageUtil.set("token", signInResponse.token);
-      dispatch(setUser(signInResponse.user));
+      localStorageUtil.set("user-info", signInResponse.data.user);
+      localStorageUtil.set("token", signInResponse.data.token);
+      dispatch(setUser(signInResponse.data.user));
 
       // Redirect to admin dashboard
       navigate("/admin/productDash");

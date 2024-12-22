@@ -1,5 +1,5 @@
 import React from "react";
-import { ConfirmMembershipResponse } from "@/core/interfaces";
+import { ApiResponse, ConfirmMembershipResponse } from "@/core/interfaces";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
@@ -7,7 +7,7 @@ import clsx from "clsx";
 
 interface BookConfirmModalProps {
   loading: boolean;
-  confirmData: ConfirmMembershipResponse | null;
+  confirmData: ApiResponse<ConfirmMembershipResponse> | null;
   onClose: () => void;
   onApplyMembershipDiscount: () => void;
   onContinueWithoutDiscount: () => void;
@@ -26,7 +26,7 @@ const BookConfirmModal: React.FC<BookConfirmModalProps> = ({
   let actionButton = null;
 
   if (!loading && confirmData) {
-    if (confirmData.success) {
+    if (confirmData.data?.isMember && !confirmData.data?.membershipExpired) {
       title = "High-Five, Active Fie Member! 🙌";
       message =
         "Your membership is alive and thriving! Enjoy your extra-special discount and treat yourself to something nice.";
@@ -35,7 +35,7 @@ const BookConfirmModal: React.FC<BookConfirmModalProps> = ({
           Apply My Sweet Discount!
         </Button>
       );
-    } else if (confirmData.membershipExpired) {
+    } else if (confirmData.data?.isMember && confirmData.data?.membershipExpired) {
       title = "Oops, Your Membership Took a Nap 😴";
       message =
         "Your membership dozed off and expired! But no worries, you can still continue without that fancy discount. Maybe consider renewing later?";

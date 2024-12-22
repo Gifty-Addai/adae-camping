@@ -1,57 +1,47 @@
-import { Booking, BookingFormData, BookingSearchParams, ConfirmMembershipResponse, Product, ProductFormData, SignInResponse, Trip, TripFormData, TripSearchParams, UpdateUserPayload, User, VerifyPaymentResponse } from "@/core/interfaces";
+import { ApiResponse, ConfirmMemberRequest, ConfirmMembershipResponse, SignInResponse, Trip, TripFormData, TripSearchParams, UpdateUserPayload, User, VerifyPaymentResponse } from "@/core/interfaces";
 import { deleteRequest, getRequest, postRequest, putRequest } from "./utils";
 
-export const verifyPayment = async (param: {reference_id:string}) : Promise<VerifyPaymentResponse> =>{
+export class ApiError extends Error {
+  public statusCode: number;
+  public errorCode?: string;
 
-  const data = await postRequest<VerifyPaymentResponse>(`/api/auth/verifypayment/${param.reference_id}`);
+  constructor(message: string, statusCode: number = 500, errorCode?: string) {
+    super(message);
+    this.name = 'ApiError';
+    this.statusCode = statusCode;
+    this.errorCode = errorCode;
+
+    if (Error.captureStackTrace) {
+      Error.captureStackTrace(this, ApiError);
+    }
+  }
+}
+
+
+export const verifyPayment = async (param: { reference_id: string }): Promise<ApiResponse<VerifyPaymentResponse>> => {
+
+  const data = await postRequest<VerifyPaymentResponse>(`/api/auth/verifypayment/${param.reference_id}`, {});
   return data;
 }
 
-export const sigin = async (params:{email:string,password:string}): Promise<SignInResponse> => {
+export const sigin = async (params: { email: string, password: string }): Promise<ApiResponse<SignInResponse>> => {
   const data = await postRequest<SignInResponse>('/api/auth/login', params);
   return data;
 };
 
 // Fetch all products
-export const fetchProducts = async (page: number, limit: number, isAvailable:boolean|undefined): Promise<{ products: Product[], totalPages: number, currentPage:number, totalProducts:number, isSuggestion:boolean }> => {
-  const data = await postRequest<{ products: Product[], totalPages: number, currentPage:number, totalProducts:number, isSuggestion:boolean }>('/api/product/searchProducts', { page, limit,isAvailable });
-  return data;
-};
-
-export const createProduct = async (productData: ProductFormData): Promise<Product> => {
-  console.log("Creating product with data:", productData);
-  const data = await postRequest<Product>('/api/product/createProduct', productData);
-  return data;
-};
-
-export const updateProduct = async (id: string, productData: ProductFormData): Promise<Product> => {
-  console.log("Updating product with ID:", id, "Data:", productData);
-  const data = await postRequest<Product>(`/api/product/updateProduct/${id}`, productData);
-  return data;
-};
-// Delete a product by ID
-export const deleteProduct = async (id: string): Promise<void> => {
-  await deleteRequest(`/api/product/deleteProduct/${id}`);
-};
-
-// Search products by filters
-export const searchProducts = async (filters: Record<string, any>, page: number, limit: number,isAvailable:boolean|undefined): Promise<{ products: Product[], totalPages: number, currentPage:number, totalProducts:number, isSuggestion:boolean }> => {
-  const data = await postRequest<{ products: Product[], totalPages: number, currentPage:number, totalProducts:number, isSuggestion:boolean }>('/api/product/searchProducts', { ...filters, page, limit, isAvailable });
-  console.log("product search", data)
-  return data;
-};
 
 export const fetchTrips = async (
   page: number = 1,
   limit: number = 10,
   type?: string,
   difficulty?: string
-): Promise<{
+): Promise<ApiResponse<{
   trips: Trip[];
   currentPage: number;
   totalPages: number;
   totalTrips: number;
-}> => {
+}>> => {
   const query = new URLSearchParams({
     page: String(page),
     limit: String(limit),
@@ -69,11 +59,11 @@ export const fetchTrips = async (
   return data;
 };
 
-export const createTrips = async (trips: Trip[]): Promise<{
+export const createTrips = async (trips: Trip[]): Promise<ApiResponse<{
   message: string;
   trips?: Trip[];
   errors?: any[];
-}> => {
+}>> => {
   const data = await postRequest<{
     message: string;
     trips?: Trip[];
@@ -82,11 +72,11 @@ export const createTrips = async (trips: Trip[]): Promise<{
   return data;
 };
 
-export const createTrip = async (tripData: TripFormData): Promise<{
+export const createTrip = async (tripData: TripFormData): Promise<ApiResponse<{
   message: string;
   trip?: Trip;
   errors?: any[];
-}> => {
+}>> => {
   const data = await postRequest<{
     message: string;
     trip?: Trip;
@@ -95,16 +85,16 @@ export const createTrip = async (tripData: TripFormData): Promise<{
   return data;
 };
 
-export const fetchTripById = async (id: string): Promise<Trip> => {
+export const fetchTripById = async (id: string): Promise<ApiResponse<Trip>> => {
   const data = await getRequest<Trip>(`/api/trip/getTripById/${id}`);
   return data;
 };
 
-export const updateTrip = async (id: string, tripData: Partial<Trip>): Promise<{
+export const updateTrip = async (id: string, tripData: Partial<Trip>): Promise<ApiResponse<{
   message: string;
   trip?: Trip;
   errors?: any[];
-}> => {
+}>> => {
   const data = await fetch(`/api/trip/${id}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
@@ -116,9 +106,9 @@ export const updateTrip = async (id: string, tripData: Partial<Trip>): Promise<{
   return data.json();
 };
 
-export const deleteTrip = async (id: string): Promise<{
+export const deleteTrip = async (id: string): Promise<ApiResponse<{
   message: string;
-}> => {
+}>> => {
   const data = await deleteRequest<{ message: string }>(`/api/trip/${id}`);
   return data;
 };
@@ -126,12 +116,12 @@ export const deleteTrip = async (id: string): Promise<{
 
 export const searchTrips = async (
   filters: TripSearchParams
-): Promise<{
+): Promise<ApiResponse<{
   trips: Trip[];
   currentPage: number;
   totalPages: number;
   totalTrips: number;
-}> => {
+}>> => {
   const data = await getRequest<{
     trips: Trip[];
     currentPage: number;
@@ -144,114 +134,47 @@ export const searchTrips = async (
 
 
 // Fetch the current user's profile
-export const fetchUserProfile = async (): Promise<User> => {
+export const fetchUserProfile = async (): Promise<ApiResponse<User>> => {
   const data = await getRequest<User>("/api/users/profile");
   return data;
 };
 
 // Update the current user's profile
-export const updateUserProfileAPI = async (payload: UpdateUserPayload): Promise<User> => {
+export const updateUserProfileAPI = async (payload: UpdateUserPayload): Promise<ApiResponse<User>> => {
   const data = await putRequest<User>("/api/user/profile", payload);
   return data;
 };
 
 // Confirm user membership
 export const confirmUserMembership = async (
-  name: string, 
-  email: string, 
-  phone: string
-): Promise<ConfirmMembershipResponse> => {
-  const data = await postRequest<ConfirmMembershipResponse>("/api/user/confirmMembership", { name, email, phone });
-  console.log("ConfirmMembershipResponse",data)
+  params: ConfirmMemberRequest
+): Promise<ApiResponse<ConfirmMembershipResponse>> => {
+  const data = await postRequest<ConfirmMembershipResponse>("/api/user/confirmMembership", params);
+  console.log("ConfirmMembershipResponse", data)
   return data;
 };
 
 // Fetch all users (for admins)
-export const fetchAllUsers = async (): Promise<User[]> => {
+export const fetchAllUsers = async (): Promise<ApiResponse<User[]>> => {
   const data = await getRequest<User[]>("/api/user");
   return data;
 };
 
 // Fetch a user by ID (admin or authorized)
-export const fetchUserByIdAPI = async (id: string): Promise<User> => {
+export const fetchUserByIdAPI = async (id: string): Promise<ApiResponse<User>> => {
   const data = await getRequest<User>(`/api/users/${id}`);
   return data;
 };
 
 // Update a user by ID (admin or authorized)
-export const updateUserByIdAPI = async (id: string, payload: UpdateUserPayload): Promise<User> => {
+export const updateUserByIdAPI = async (id: string, payload: UpdateUserPayload): Promise<ApiResponse<User>> => {
   const data = await putRequest<User>(`/api/user/${id}`, payload);
   return data;
 };
 
 // Delete a user by ID (admin or authorized)
-export const deleteUserAPI = async (id: string): Promise<{ success: boolean }> => {
+export const deleteUserAPI = async (id: string): Promise<ApiResponse<{ success: boolean }>> => {
   const data = await deleteRequest<{ success: boolean }>(`/api/user/${id}`);
   return data;
 };
 
-export const fetchBookings = async (
-  page: number = 1,
-  limit: number = 10,
-  filters?: BookingSearchParams
-): Promise<{ bookings: Booking[]; currentPage: number; totalPages: number }> => {
-  const params: Record<string, any> = { page, limit };
-
-  if (filters) {
-    if (filters.tempUser) params.tempUser = filters.tempUser;
-    if (filters.trip) params.trip = filters.trip;
-    if (filters.status) params.status = filters.status;
-    if (filters.dateRange) {
-      params.from = filters.dateRange.from.toISOString();
-      params.to = filters.dateRange.to.toISOString();
-    }
-  }
-
-  // Serialize query parameters
-  const queryString = new URLSearchParams(params).toString();
-  const url = `api/booking/getAllBookings?${queryString}`;
-
-  return await getRequest<{ bookings: Booking[]; currentPage: number; totalPages: number }>(url);
-};
-
-export const fetchBookingById = async (id: string): Promise<Booking> => {
-  const url = `/api/booking/getBookingById/${id}`;
-  return await getRequest<Booking>(url);
-};
-
-export const createBooking = async (bookingData: BookingFormData): Promise<Booking> => {
-  const url = `/api/booking/createBooking`;
-  return await postRequest<Booking>(url, bookingData);
-};
-
-export const updateBooking = async (id: string, bookingData: BookingFormData): Promise<Booking> => {
-  const url = `/api/booking/updateBooking/${id}`;
-  return await putRequest<Booking>(url, bookingData);
-};
-
-export const deleteBookingAPI = async (id: string): Promise<void> => {
-  const url = `/api/booking/deleteBooking/${id}`;
-  await deleteRequest(url);
-};
-
-export const searchBookings = async (
-  filters: BookingSearchParams,
-  page: number = 1,
-  limit: number = 10
-): Promise<{ bookings: Booking[]; currentPage: number; totalPages: number }> => {
-  const params: Record<string, any> = { page, limit };
-
-  if (filters.tempUser) params.tempUser = filters.tempUser;
-  if (filters.trip) params.trip = filters.trip;
-  if (filters.status) params.status = filters.status;
-  if (filters.dateRange) {
-    params.from = filters.dateRange.from.toISOString();
-    params.to = filters.dateRange.to.toISOString();
-  }
-
-  // Serialize query parameters
-  const queryString = new URLSearchParams(params).toString();
-  const url = `/api/booking/searchBookings?${queryString}`;
-
-  return await getRequest<{ bookings: Booking[]; currentPage: number; totalPages: number }>(url);
-};

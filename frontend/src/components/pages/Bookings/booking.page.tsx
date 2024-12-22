@@ -36,7 +36,7 @@ const BookingPage: React.FC = () => {
         },
         travelDetails: {
             dob: undefined,
-            gender: "",
+            gender: "Male",
             streetAddress: "",
             address2: "",
             city: "",
