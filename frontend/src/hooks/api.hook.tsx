@@ -26,9 +26,9 @@ export function useTripAPI(defaultType?: string, defaultDifficulty?: string): Us
     setLoading(true);
     try {
       const result = await fetchTrips(page, limit, type || defaultType, difficulty || defaultDifficulty);
-      setTrips(result.data?.trips!);
-      setCurrentPage(result.data?.currentPage!);
-      setTotalPages(result.data?.totalPages!);
+      setTrips(result.trips!);
+      setCurrentPage(result.currentPage!);
+      setTotalPages(result.totalPages!);
     } catch (error) {
       toast.error("Failed to load trips");
     } finally {
@@ -40,7 +40,7 @@ export function useTripAPI(defaultType?: string, defaultDifficulty?: string): Us
     setLoading(true);
     try {
       const trip = await fetchTripById(id);
-      return trip.data;
+      return trip;
     } catch (error) {
       toast.error("Failed to fetch trip details");
       return null;
@@ -89,9 +89,9 @@ export function useTripAPI(defaultType?: string, defaultDifficulty?: string): Us
     setLoading(true);
     try {
       const result = await searchTrips(filters);
-      setTrips(result.data?.trips!);
-      setCurrentPage(result.data?.currentPage!);
-      setTotalPages(result.data?.totalPages!);
+      setTrips(result.trips!);
+      setCurrentPage(result.currentPage!);
+      setTotalPages(result.totalPages!);
     } catch (error) {
       toast.error("Failed to search trips");
     } finally {

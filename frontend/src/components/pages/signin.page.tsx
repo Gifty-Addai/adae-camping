@@ -1,4 +1,6 @@
-// src/pages/signin.page.tsx
+// src/components/pages/signin.page.tsx
+
+"use client";
 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -6,13 +8,10 @@ import { Form, FormField, FormItem, FormLabel, FormMessage } from "@/components/
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useDispatch, useSelector } from "react-redux";
-import { localStorageUtil } from "@/lib/utils";
 import { useNavigate, Navigate } from "react-router-dom";
 import { Page } from "../ui/page";
-import { setUser, setLoading, setError } from "@/core/store/slice/user_slice";
-import { sigin } from "@/lib/apiUtils";
-import { RootState } from "@/core/store/store";
+import { signIn } from "@/core/store/slice/user_slice";
+import { useAppDispatch, useAppSelector } from "@/core/constants";
 
 const signInSchema = z.object({
   email: z.string().email("Invalid email address"),
@@ -22,9 +21,9 @@ const signInSchema = z.object({
 type SignInFormValues = z.infer<typeof signInSchema>;
 
 const SignInPage = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch(); 
   const navigate = useNavigate();
-  const { user, isLoading, error } = useSelector((state: RootState) => state.userSlice);
+  const { user, isLoading, error } = useAppSelector((state:any) => state.userSlice);
 
   const form = useForm<SignInFormValues>({
     resolver: zodResolver(signInSchema),
@@ -36,26 +35,26 @@ const SignInPage = () => {
 
   const onSubmit = async (data: SignInFormValues) => {
     try {
-      dispatch(setLoading(true));
-      // Authenticate User
-      const signInResponse = await sigin(data);
+      const signInResponse = await dispatch(signIn(data)).unwrap(); // Type-safe dispatch
+
       console.log("Sign In Response:", signInResponse);
 
       // Check if the user role is admin
-      if (signInResponse?.data?.user.role !== "admin") {
+      if (signInResponse.role !== "admin") {
         throw new Error("Access denied. Admins only.");
       }
 
-      // Save the user data and token to localStorage and Redux
-      localStorageUtil.set("user-info", signInResponse.data.user);
-      localStorageUtil.set("token", signInResponse.data.token);
-      dispatch(setUser(signInResponse.data.user));
-
       // Redirect to admin dashboard
       navigate("/admin/productDash");
-    } catch (error: any) {
+    } catch (error: unknown) { // Handle error as unknown
       console.error("Error:", error);
-      dispatch(setError(error.message || "There was an error with your request. Please try again."));
+      if (error instanceof Error) {
+        // Optionally, dispatch an error action or display a notification
+        // Example: dispatch(setError(error.message));
+      } else {
+        // Handle unexpected errors
+        // Example: dispatch(setError("An unexpected error occurred."));
+      }
     }
   };
 

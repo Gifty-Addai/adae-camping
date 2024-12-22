@@ -50,12 +50,6 @@ export interface BookingFormData {
   selectedDate: string | undefined;
   numberOfPeople: number | undefined;
 }
-export interface Itinerary {
-  day: number;
-  activities: string;
-  _id?: string; // Make _id optional as it's not handled by the form
-}
-
 export interface Duration {
   days: number;
   nights: number;
@@ -66,12 +60,17 @@ export interface Cost {
   discount: number;
 }
 
+export interface GroupSize {
+  min: number;
+  max: number;
+}
+
 export interface Location {
   mainLocation: string;
   pointsOfInterest: string[];
 }
 
-export interface TripDate {
+export interface DateSchedule {
   startDate: string;
   endDate: string;
   isAvailable: boolean;
@@ -79,9 +78,15 @@ export interface TripDate {
   _id?: string;
 }
 
+export interface ItineraryItem {
+  day: number;
+  activities: string;
+  _id?: string;
+}
+
 export interface Schedule {
-  dates: TripDate[];
-  itinerary: Itinerary[];
+  dates: DateSchedule[];
+  itinerary: ItineraryItem[];
 }
 
 export interface Logistics {
@@ -90,30 +95,6 @@ export interface Logistics {
   accommodation: string;
 }
 
-export interface Trip {
-  _id?: string;
-  name: string;
-  description?: string;
-  type: 'hiking' | 'camping' | 'mountaineering' | 'other';
-  difficulty: 'easy' | 'moderate' | 'hard' | 'expert';
-  activityLevel: 1 | 2 | 3 | 4 | 5;
-  images: string[];
-  status: 'open' | 'closed' | 'completed' | 'cancelled';
-  createdAt?: string;
-  updatedAt?: string;
-  __v?: number;
-  duration: Duration;
-  groupSize: {
-    min: number;
-    max: number;
-  };
-  location: Location;
-  cost: Cost;
-  schedule: Schedule;
-  logistics: Logistics;
-}
-
-// Define TripFormData to include only fields managed by the form
 export interface TripFormData {
   name: string;
   description?: string;
@@ -121,11 +102,40 @@ export interface TripFormData {
   difficulty: 'easy' | 'moderate' | 'hard' | 'expert';
   duration: Duration;
   cost: Cost;
+  groupSize: GroupSize;
+  activityLevel: number;
   location: Location;
   schedule: Schedule;
   logistics: Logistics;
   images?: string[];
 }
+
+export interface Trip extends TripFormData {
+  _id: string;
+}
+
+// export interface Trip {
+//   _id?: string;
+//   name: string;
+//   description?: string;
+//   type: 'hiking' | 'camping' | 'mountaineering' | 'other';
+//   difficulty: 'easy' | 'moderate' | 'hard' | 'expert';
+//   activityLevel: 1 | 2 | 3 | 4 | 5;
+//   images: string[];
+//   status: 'open' | 'closed' | 'completed' | 'cancelled';
+//   createdAt?: string;
+//   updatedAt?: string;
+//   __v?: number;
+//   duration: Duration;
+//   groupSize: {
+//     min: number;
+//     max: number;
+//   };
+//   location: Location;
+//   cost: Cost;
+//   schedule: Schedule;
+//   logistics: Logistics;
+// }
 
 export type TripType = 'hiking' | 'camping' | 'mountaineering' | 'other';
 export type DifficultyLevel = 'easy' | 'moderate' | 'hard' | 'expert';
@@ -229,7 +239,7 @@ export interface UseUserAPI {
   error: string | null;
   getUserProfile: () => Promise<User | null>;
   updateUserProfile: (payload: UpdateUserPayload) => Promise<User | null>;
-  confirmMembership: (param:ConfirmMemberRequest) => Promise<ApiResponse<ConfirmMembershipResponse>>;
+  confirmMembership: (param:ConfirmMemberRequest) => Promise<ConfirmMembershipResponse>;
   getAllUsers: () => Promise<User[] | null>;
   getUserById: (id: string) => Promise<User | null>;
   updateUserById: (id: string, payload: UpdateUserPayload) => Promise<User | null>;
@@ -386,8 +396,8 @@ export interface PaymentVerifyResponse {
 }
 
 export interface IUser {
-  role: 'admin',
-  id: string,
+  role:  "user" | "admin",
+  _id: string,
   name: string
 }
 
@@ -398,23 +408,23 @@ export interface User {
   phone: string;
   role: "user" | "admin";
   preferences?: { [key: string]: string };
-  bookings: string[]; // Array of Booking ObjectId strings
+  bookings: string[];
   address?: string;
   isEmailConfirmed: boolean;
-  dateJoined: string; // ISO date string
+  dateJoined: string; 
   age?: number;
   isMember: boolean;
   image?: string;
-  recentTrip?: string; // Trip ObjectId string
-  nextRenewalDate?: string; // ISO date string
-  latestPaymentDate?: string; // ISO date string
+  recentTrip?: string; 
+  nextRenewalDate?: string;
+  latestPaymentDate?: string;
   latestPaymentAmount?: number;
-  nextTrip?: string; // Trip ObjectId string
+  nextTrip?: string;
   hasDiscount: boolean;
   idCard?: string;
   active: boolean;
-  createdAt: string; // from { timestamps: true }
-  updatedAt: string; // from { timestamps: true }
+  createdAt: string; 
+  updatedAt: string;
 }
 
 
@@ -506,7 +516,7 @@ export interface VerifyPaymentResponse {
 }
 export interface SignInResponse {
   message: string,
-  user: IUser,
+  user: User,
   token: string
 }
 export interface Product {
@@ -551,6 +561,6 @@ export interface ApiResponse<T = any> {
 }
 
 export interface CachedItem<T> {
-  data: ApiResponse<T>;
+  data: T;
   expiry: string;
 }

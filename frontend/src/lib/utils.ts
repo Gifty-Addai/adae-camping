@@ -2,10 +2,10 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import moment from "moment";
-import axios, { AxiosError, AxiosInstance, AxiosResponse } from "axios";
-import { app_local_storage_key, API_BASE_URL, YOUTUBE_API_KEY, CHANNEL_ID } from "../core/constants";
-import { ApiResponse, CachedItem, IUser, ProcessedVideo, YouTubePlaylistItem, YouTubePlaylistResponse, YouTubeVideosResponse } from "@/core/interfaces";
-import { ApiError } from "./apiUtils";
+import axios from "axios";
+import { app_local_storage_key, YOUTUBE_API_KEY, CHANNEL_ID } from "../core/constants";
+import { CachedItem, IUser, ProcessedVideo, YouTubePlaylistItem, YouTubePlaylistResponse, YouTubeVideosResponse } from "@/core/interfaces";
+import { getRequest } from "./api-Request/api-requests";
 
 // Utility function for combining class names
 export function cn(...inputs: ClassValue[]) {
@@ -56,40 +56,6 @@ export const getUserSession = (): IUser | null => {
   }
 };
 
-// Axios instance with optional custom configuration and automatic token handling
-export const axiosInstance: AxiosInstance = axios.create({
-  baseURL: API_BASE_URL,
-  timeout: 30000,
-  headers: {
-    'Content-Type': 'application/json',
-  },
-});
-
-axiosInstance.interceptors.response.use(
-  (response: AxiosResponse<ApiResponse>) => {
-    return response;
-  },
-  (error: AxiosError<ApiResponse>) => {
-    if (error.response) {
-      return Promise.reject(error.response.data);
-    } else if (error.request) {
-      // The request was made, but no response was received
-      return Promise.reject({
-        success: false,
-        message: 'No response received from the server.',
-        data: null,
-      });
-    } else {
-      // Something happened while setting up the request
-      return Promise.reject({
-        success: false,
-        message: error.message || 'An unknown error occurred.',
-        data: null,
-      });
-    }
-  }
-);
-
 
 /**
  * Perform a GET request with caching.
@@ -104,7 +70,7 @@ export const getCachedRequest = async <T>(
   params?: any,
   cacheKey?: string,
   cacheExpiryInMinutes = 5
-): Promise<ApiResponse<T>> => {
+): Promise<T> => {
   const key = cacheKey || url + JSON.stringify(params);
   const cachedItem = apiCache.get<T>(key);
 
@@ -116,7 +82,7 @@ export const getCachedRequest = async <T>(
   console.log(`Cache miss for key: ${key}. Fetching from API.`);
   const response = await getRequest<T>(url, params); // Correct generic usage
 
-  if (response.success) {
+  if (response) {
     apiCache.set<T>(key, response, cacheExpiryInMinutes);
   } else {
     console.warn(`API responded with success=false for key: ${key}`);
@@ -126,78 +92,6 @@ export const getCachedRequest = async <T>(
 };
 
 
-
-/**
- * Generic GET request
- * @param url - API endpoint
- * @param params - Query parameters
- * @returns Promise<ApiResponse<T>>
- */
-export const getRequest = <T = any>(url: string, params?: any): Promise<ApiResponse<T>> => {
-  return axiosInstance.get<ApiResponse<T>>(url, { params }).then((response) => response.data);
-};
-
-/**
- * Generic POST request
- * @param url - API endpoint
- * @param data - Request payload
- * @returns Promise<ApiResponse<T>>
- */
-export const postRequest = async <T>(
-  url: string,
-  data: any
-): Promise<ApiResponse<T>> => {
-  try {
-    const response = await axiosInstance.post<ApiResponse<T>>(url, data);
-
-    // If the response indicates success, return the data
-    if (response.data.success) {
-      return response.data;
-    } else {
-      // If success is false, throw an ApiError with the message
-      throw new ApiError(response.data.message || 'An error occurred', response.status);
-    }
-  } catch (error: any) {
-    if (axios.isAxiosError(error)) {
-      // Axios-specific error handling
-      if (error.response) {
-        // Server responded with a status other than 2xx
-        throw new ApiError(error.response.data.message || 'An error occurred', error.response.status);
-      } else if (error.request) {
-        // Request was made but no response received
-        throw new ApiError('No response from server. Please try again later.', 503);
-      } else {
-        // Something else happened while setting up the request
-        throw new ApiError(error.message || 'An unexpected error occurred.', 500);
-      }
-    } else if (error instanceof ApiError) {
-      // Re-throw ApiError to be handled later
-      throw error;
-    } else {
-      // For unexpected errors, throw a generic ApiError
-      throw new ApiError('An unexpected error occurred.', 500);
-    }
-  }
-};
-
-/**
- * Generic PUT request
- * @param url - API endpoint
- * @param data - Request payload
- * @returns Promise<ApiResponse<T>>
- */
-export const putRequest = <T = any>(url: string, data?: any): Promise<ApiResponse<T>> => {
-  return axiosInstance.put<ApiResponse<T>>(url, data).then((response) => response.data);
-};
-
-/**
- * Generic DELETE request
- * @param url - API endpoint
- * @returns Promise<ApiResponse<T>>
- */
-export const deleteRequest = <T = any>(url: string): Promise<ApiResponse<T>> => {
-  return axiosInstance.delete<ApiResponse<T>>(url).then((response) => response.data);
-};
 
 export const apiCache = {
   /**
@@ -216,7 +110,7 @@ export const apiCache = {
    * @param data - The ApiResponse data to cache.
    * @param expiryInMinutes - Time in minutes after which the cache expires.
    */
-  set: <T>(key: string, data: ApiResponse<T>, expiryInMinutes = 5): void => {
+  set: <T>(key: string, data: T, expiryInMinutes = 5): void => {
     const expiryDate = moment().add(expiryInMinutes, 'minutes').toISOString();
     const cacheData: CachedItem<T> = { data, expiry: expiryDate };
     localStorageUtil.set(`apiCache:${key}`, JSON.stringify(cacheData));

@@ -19,6 +19,7 @@ import AdminTripFormPage from "../AdminDash/pages/trip/tripFormPage";
 import { TripPage } from "../pages/Trips/trip.page";
 import TripDetail from "../pages/Trips/trip.details.page";
 import BookingPage from "../pages/Bookings/booking.page";
+import AddTripPage from "../AdminDash/pages/trip/trip-add";
 
 export const AppRoute = () => {
   const { user, isLoading: userLoading } = useSelector((state: RootState) => state.userSlice);
@@ -93,8 +94,10 @@ export const AppRoute = () => {
         {/* Trips Routes */}
         <Route path="trips" element={<Outlet />}>
           <Route index element={<AdminTripPage />} />
-          <Route path="new" element={<AdminTripFormPage  />} />
-          <Route path="edit/:id" element={<AdminTripFormPage  />} />
+          <Route path="new" element={<AdminTripFormPage />} />
+          <Route path="edit/:id" element={<AdminTripFormPage />} />
+          <Route path="add" element={<AddTripPage />} />
+
           {/* Add more trip routes if needed */}
         </Route>
 

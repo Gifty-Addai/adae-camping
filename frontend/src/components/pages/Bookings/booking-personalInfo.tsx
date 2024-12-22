@@ -14,14 +14,14 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Trip, TripDate, BookingFormData, ConfirmMembershipResponse, ApiResponse } from "@/core/interfaces";
+import { Trip, DateSchedule, BookingFormData, ConfirmMembershipResponse } from "@/core/interfaces";
 import { format, parseISO } from "date-fns";
 import BookConfirmModal from "./BookingComponents/confirm.personal.modal";
 import { useUserAPI } from "@/hooks/user.hook";
 
 interface PersonalInfoProps {
   trip: Trip | null;
-  selectedDate: TripDate | undefined;
+  selectedDate: DateSchedule | undefined;
   updateData: (data: Partial<BookingFormData["personalInfo"]>) => void;
   nextStep: () => void;
   data: BookingFormData["personalInfo"];
@@ -49,7 +49,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({
   });
 
   const { loading, confirmMembership } = useUserAPI();
-  const [confirmData, setConfirmData] = useState<ApiResponse<ConfirmMembershipResponse> | null>(null);
+  const [confirmData, setConfirmData] = useState<ConfirmMembershipResponse | null>(null);
   const [showModal, setShowModal] = useState(false);
 
   const onSubmit = async (values: BookingFormData["personalInfo"]) => {
@@ -206,7 +206,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({
           <div className="flex items-start gap-4">
             <div className="w-24 h-24 overflow-hidden rounded-md">
               <img
-                src={trip?.images[0] || "/default-placeholder.jpg"}
+                src={(trip && trip.images && trip.images[0]) || "/default-placeholder.jpg"}
                 alt={trip?.name || "Trip Image"}
                 className="w-full h-full object-cover"
               />

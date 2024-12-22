@@ -1,7 +1,6 @@
 import { AddBookinResponse, ApiResponse, Booking, BookingFormData, BookingSearchParams, BookingUpdate, UseBookingAPI } from "@/core/interfaces";
 import { isApiError } from "@/core/interfaces/guards";
-import { patchRequest, postRequest } from "@/lib/api-Request/api-requests";
-import { getRequest, deleteRequest } from "@/lib/utils";
+import { deleteRequest, getRequest, patchRequest, postRequest } from "@/lib/api-Request/api-requests";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
@@ -9,7 +8,7 @@ export const fetchBookings = async (
     page: number = 1,
     limit: number = 10,
     filters?: BookingSearchParams
-): Promise<ApiResponse<{ bookings: Booking[]; currentPage: number; totalPages: number }>> => {
+): Promise<{ bookings: Booking[]; currentPage: number; totalPages: number }> => {
     const params: Record<string, any> = { page, limit };
 
     if (filters) {
@@ -29,7 +28,7 @@ export const fetchBookings = async (
     return await getRequest<{ bookings: Booking[]; currentPage: number; totalPages: number }>(url);
 };
 
-export const fetchBookingById = async (id: string): Promise<ApiResponse<Booking>> => {
+export const fetchBookingById = async (id: string): Promise<Booking> => {
     const url = `/api/booking/getBookingById/${id}`;
     return await getRequest<Booking>(url);
 };
@@ -56,7 +55,7 @@ export const searchBookings = async (
     filters: BookingSearchParams,
     page: number = 1,
     limit: number = 10
-): Promise<ApiResponse<{ bookings: Booking[]; currentPage: number; totalPages: number }>> => {
+): Promise<{ bookings: Booking[]; currentPage: number; totalPages: number }> => {
     const params: Record<string, any> = { page, limit };
 
     if (filters.tempUser) params.tempUser = filters.tempUser;
@@ -95,9 +94,9 @@ export function useBookingAPI(defaultFilters?: BookingSearchParams): UseBookingA
         setLoading(true);
         try {
           const response = await fetchBookings(page, limit, filters || defaultFilters);
-          setBookings(response.data?.bookings!);
-          setCurrentPage(response.data?.currentPage!);
-          setTotalPages(response.data?.totalPages!);
+          setBookings(response.bookings!);
+          setCurrentPage(response.currentPage!);
+          setTotalPages(response.totalPages!);
         } catch (error) {
           toast.error('Failed to load bookings');
         } finally {
@@ -111,7 +110,7 @@ export function useBookingAPI(defaultFilters?: BookingSearchParams): UseBookingA
       setLoading(true);
       try {
         const response = await fetchBookingById(id);
-        return response.data;
+        return response;
       } catch (error) {
         toast.error('Failed to fetch booking details');
         return null;
@@ -175,9 +174,9 @@ export function useBookingAPI(defaultFilters?: BookingSearchParams): UseBookingA
       setLoading(true);
       try {
         const result = await searchBookings(filters);
-        setBookings(result.data?.bookings!);
-        setCurrentPage(result.data?.currentPage!);
-        setTotalPages(result.data?.totalPages!);
+        setBookings(result.bookings!);
+        setCurrentPage(result.currentPage!);
+        setTotalPages(result.totalPages!);
       } catch (error) {
         toast.error('Failed to search bookings');
       } finally {

@@ -28,21 +28,25 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { useTransition } from "react";
-import { getUserSession } from "@/lib/utils";
-
+import { useSelector} from "react-redux";
+import { RootState } from "@/core/store/store";
 
 export function NavUser() {
   const { isMobile } = useSidebar();
-  const  data  = getUserSession();
+  // const dispatch = useDispatch();
 
-  const [isLoggingOut] = useTransition();
+  const { user, isLoading, error } = useSelector((state: RootState) => state.userSlice);
 
-//   function handleLogout() {
-//     startLogoutTransition(async () => {
-//       await authSignOut();
-//     });
-//   }
+  const handleLogout = async () => {
+    try {
+      // await dispatch(performSignOut()).unwrap();
+      // Optionally, navigate to a public route after logout
+      // navigate("/signin");
+    } catch (err) {
+      console.error("Logout failed:", err);
+      // Optionally, dispatch an error action or display a notification
+    }
+  };
 
   return (
     <SidebarMenu>
@@ -56,16 +60,16 @@ export function NavUser() {
               <Avatar className="h-8 w-8 rounded-lg">
                 <AvatarImage
                   src={`https://github.com/shadcn.png`}
-                  alt={data?.id}
+                  alt={user?._id}
                 />
-                <AvatarFallback className="rounded-lg font-bold">{`${data?.name}`}</AvatarFallback>
+                <AvatarFallback className="rounded-lg font-bold">{`${user?.name}`}</AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm text-sidebar-foreground leading-tight">
                 <span className="truncate font-semibold">
-                  {data?.name}
+                  {user?.name || "Guest"}
                 </span>
                 <span className="truncate text-xs">
-                  {data?.id || `Add phone number`}
+                  {user?._id || `Add phone number`}
                 </span>
               </div>
               <ChevronsUpDown className="ml-auto size-4" />
@@ -82,38 +86,44 @@ export function NavUser() {
                 <Avatar className="h-8 w-8 rounded-lg">
                   <AvatarImage
                     src={`https://github.com/shadcn.png`}
-                    alt={data?.name}
+                    alt={user?.name}
                   />
                   <AvatarFallback className="rounded-lg">CN</AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-semibold">
-                    {data?.name}
+                    {user?.name || "Guest"}
                   </span>
-                  <span className="truncate text-xs">
-                    {data?.id || `Add phone number`}
-                  </span>
+                  
                 </div>
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuGroup></DropdownMenuGroup>
-            <DropdownMenuSeparator />
             <DropdownMenuGroup>
               <DropdownMenuItem>
-                <BadgeCheck />
+                <BadgeCheck className="mr-2 h-4 w-4" />
                 Account
               </DropdownMenuItem>
               <DropdownMenuItem>
-                <Bell />
+                <Bell className="mr-2 h-4 w-4" />
                 Notifications
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem disabled={isLoggingOut} onClick={()=>{}}>
-              {isLoggingOut ? <LoaderIcon size={16} /> : <LogOut />}
-              Log out
-            </DropdownMenuItem>
+            <DropdownMenuGroup>
+              <DropdownMenuItem disabled={isLoading} onClick={handleLogout}>
+                {isLoading ? <LoaderIcon className="mr-2 h-4 w-4 animate-spin" /> : <LogOut className="mr-2 h-4 w-4" />}
+                Log out
+              </DropdownMenuItem>
+            </DropdownMenuGroup>
+            {error && (
+              <>
+                <DropdownMenuSeparator />
+                <div className="px-4 py-2 text-red-500 text-sm">
+                  {error}
+                </div>
+              </>
+            )}
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>

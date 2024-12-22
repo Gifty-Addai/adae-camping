@@ -1,5 +1,7 @@
 import { z } from "zod";
 import { isValidPhoneNumber } from "react-phone-number-input";
+import { AppDispatch, RootState } from "./store/store";
+import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 
 export const isDev = process.env.NODE_ENV === 'development';
 
@@ -19,8 +21,10 @@ export const imageSchema = z.object({
 	}),
 });
 
-export const YOUTUBE_API_KEY = 'AIzaSyB2Hj_MqRKvhgBgNfVTCNCaQ0Sr-QPo9dg';
-export const CHANNEL_ID = 'UC6W502Qdzdu4cRvOEtc96tA';
+export const YOUTUBE_API_KEY = import.meta.env.YOUTUBE_API_KEY;
+export const CHANNEL_ID = import.meta.env.CHANNEL_ID;
 
+export const useAppDispatch = () => useDispatch<AppDispatch>();
+export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
 
 export const phoneNumberSchema = z.string({ required_error: "An phone number is required" }).refine(isValidPhoneNumber, "Invalid phone number entered");

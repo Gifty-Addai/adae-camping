@@ -4,24 +4,22 @@ import axiosRetry from 'axios-retry';
 import logger from './logger';
 import { API_BASE_URL } from '@/core/constants';
 
-// Create an Axios instance
 const axiosInstance = axios.create({
-    baseURL: API_BASE_URL,
-    timeout: 30000,
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
+  baseURL: API_BASE_URL,
+  timeout: 30000,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  withCredentials: true,
+});
 
-// Configure axios-retry to retry failed requests
 axiosRetry(axiosInstance, {
-  retries: 3, // Number of retry attempts
+  retries: 3,
   retryDelay: (retryCount) => {
     logger.warn(`Retry attempt: ${retryCount}`);
-    return retryCount * 1000; // Exponential backoff: 1s, 2s, 3s
+    return retryCount * 1000;
   },
   retryCondition: (error) => {
-    // Retry on network errors or 5xx status codes
     return axiosRetry.isNetworkError(error) || axiosRetry.isRetryableError(error);
   },
 });
