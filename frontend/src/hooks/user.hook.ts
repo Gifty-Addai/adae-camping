@@ -20,7 +20,7 @@ export function useUserAPI(): UseUserAPI {
       setError(null);
       try {
         const result = await fetchUserProfile();
-        return result.data;
+        return result;
       } catch (err) {
         handleError(err);
         return null;
@@ -35,7 +35,7 @@ export function useUserAPI(): UseUserAPI {
       try {
         const updated = await updateUserProfileAPI(payload);
         toast.success("Profile updated successfully!");
-        return updated.data;
+        return updated;
       } catch (err) {
         handleError(err);
         return null;
@@ -46,7 +46,7 @@ export function useUserAPI(): UseUserAPI {
   
     const confirmMembership = async (
       params : ConfirmMemberRequest
-    ): Promise<ApiResponse<ConfirmMembershipResponse>> => {
+    ): Promise<ConfirmMembershipResponse> => {
       setLoading(true);
       setError(null);
       try {
@@ -72,8 +72,8 @@ export function useUserAPI(): UseUserAPI {
       setError(null);
       try {
         const allUsers = await fetchAllUsers();
-        setUsers(allUsers.data);
-        return allUsers.data;
+        setUsers(allUsers);
+        return allUsers;
       } catch (err) {
         handleError(err);
         return null;
@@ -87,7 +87,7 @@ export function useUserAPI(): UseUserAPI {
       setError(null);
       try {
         const user = await fetchUserByIdAPI(id);
-        return user.data;
+        return user;
       } catch (err) {
         handleError(err);
         return null;
@@ -104,7 +104,7 @@ export function useUserAPI(): UseUserAPI {
         toast.success("User updated successfully!");
         // Optionally refresh users list if needed:
         // await getAllUsers();
-        return user.data;
+        return user;
       } catch (err) {
         handleError(err);
         return null;

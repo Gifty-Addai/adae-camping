@@ -92,14 +92,14 @@ const Breadcrumbs: React.FC<BreadcrumbProps> = () => {
         <li className="inline-flex items-center">
           <Link
             to="/admin"
-            className="flex items-center text-sm font-medium text-gray-700 hover:text-blue-600"
+            className="flex items-center text-sm font-medium text-muted-foreground hover:text-yellow-400"
           >
             <HomeIcon className="w-4 h-4 mr-1" />
             Admin
           </Link>
           {breadcrumbs.length > 0 && (
             <svg
-              className="w-4 h-4 mx-2 text-gray-400 hidden md:inline"
+              className="w-4 h-4 mx-2 text-muted-foreground hidden md:inline"
               fill="currentColor"
               viewBox="0 0 20 20"
               aria-hidden="true"
@@ -117,7 +117,7 @@ const Breadcrumbs: React.FC<BreadcrumbProps> = () => {
           <li key={index} className="inline-flex items-center">
             <Link
               to={crumb.path}
-              className={`text-sm font-medium ${
+              className={`text-sm font-medium text-card-foreground ${
                 index === breadcrumbs.length - 1
                   ? "text-gray-500 pointer-events-none"
                   : "text-gray-700 hover:text-blue-600"
@@ -128,7 +128,7 @@ const Breadcrumbs: React.FC<BreadcrumbProps> = () => {
             </Link>
             {index < breadcrumbs.length - 1 && (
               <svg
-                className="w-4 h-4 mx-2 text-gray-400 hidden md:inline"
+                className="w-4 h-4 mx-2 text-card-foreground hidden md:inline"
                 fill="currentColor"
                 viewBox="0 0 20 20"
                 aria-hidden="true"

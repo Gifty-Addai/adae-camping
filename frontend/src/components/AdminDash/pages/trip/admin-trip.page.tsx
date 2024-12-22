@@ -1,64 +1,14 @@
 // src/components/AdminDash/pages/trip/AdminTripPage.tsx
 
-"use client";
-
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { toast } from "react-toastify";
 import { Trip } from "@/core/interfaces";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useTripAPI } from "@/hooks/api.hook";
 import { useNavigate } from "react-router-dom";
-
-interface TripTableProps {
-  trips: Trip[];
-  onEdit: (trip: Trip) => void;
-  onDelete: (id: string) => void;
-}
-
-const TripTable: React.FC<TripTableProps> = ({ trips, onEdit, onDelete }) => {
-  if (!trips || trips.length === 0) {
-    return <p>No trips found.</p>;
-  }
-
-  return (
-    <Table>
-      <TableHeader>
-        <TableRow>
-          <TableHead>Name</TableHead>
-          <TableHead>Type</TableHead>
-          <TableHead>Difficulty</TableHead>
-          <TableHead>Duration</TableHead>
-          <TableHead>Action</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {trips.map((trip) => (
-          <TableRow key={trip._id || trip.name}>
-            <TableCell>{trip.name}</TableCell>
-            <TableCell>{trip.type}</TableCell>
-            <TableCell>{trip.difficulty}</TableCell>
-            <TableCell>
-              {trip.duration?.days} days / {trip.duration?.nights} nights
-            </TableCell>
-            <TableCell className="flex gap-2">
-              <Button variant="outline" size="sm" onClick={() => onEdit(trip)}>
-                Edit
-              </Button>
-              <Button
-                variant="destructive"
-                size="sm"
-                onClick={() => trip._id && onDelete(trip._id)}
-              >
-                Delete
-              </Button>
-            </TableCell>
-          </TableRow>
-        ))}
-      </TableBody>
-    </Table>
-  );
-};
+import { Plus } from "lucide-react";
+import TripCard from "@/components/pages/Trips/trip-card";
+import Pagination from "@/components/pages/product/pagination";
 
 const AdminTripPage: React.FC = () => {
   const navigate = useNavigate();
@@ -71,11 +21,11 @@ const AdminTripPage: React.FC = () => {
     goToPage,
   } = useTripAPI();
 
-  const handleEditClick = (trip: Trip) => {
+  const handleEdit = (trip: Trip) => {
     navigate(`/admin/trips/edit/${trip._id}`);
   };
 
-  const handleDeleteClick = async (id: string) => {
+  const handleDelete = async (id: string) => {
     if (!id) return;
     if (!window.confirm("Are you sure you want to delete this trip?")) return;
     try {
@@ -86,41 +36,58 @@ const AdminTripPage: React.FC = () => {
     }
   };
 
+  const handleAddTrip = () => {
+    navigate("/admin/trips/add");
+  };
+
   return (
-    <div className="container mx-auto py-8">
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold">Manage Trips</h1>
-        <Button onClick={() => navigate("/admin/trips/add")}>Add Trip</Button>
+    <div className="container mx-auto py-8 px-4">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row items-center justify-between mb-6">
+        <h1 className="text-2xl text-card-foreground mb-5 font-bold">Manage Trips</h1>
+        <Button
+          className="flex items-center space-x-2"
+          onClick={handleAddTrip}
+        >
+          <Plus size={20} />
+          <span>Add Trip</span>
+        </Button>
       </div>
 
-      {/* TABLE OF TRIPS */}
+      {/* Loading State */}
       {loading ? (
-        <p>Loading Trips...</p>
-      ) : (
-        <TripTable trips={trips} onEdit={handleEditClick} onDelete={handleDeleteClick} />
-      )}
-
-      {/* PAGINATION */}
-      {totalPages > 1 && (
-        <div className="mt-4 flex items-center gap-2">
-          <Button
-            variant="outline"
-            onClick={() => goToPage(currentPage - 1)}
-            disabled={currentPage === 1}
-          >
-            Previous
-          </Button>
-          <span>
-            Page {currentPage} of {totalPages}
-          </span>
-          <Button
-            variant="outline"
-            onClick={() => goToPage(currentPage + 1)}
-            disabled={currentPage === totalPages}
-          >
-            Next
-          </Button>
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {[...Array(6)].map((_, index) => (
+            <div key={index} className="bg-gray-700 h-80 rounded-lg animate-pulse"></div>
+          ))}
         </div>
+      ) : (
+        <>
+          {/* Trips Grid */}
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {trips.map((trip) => (
+              <TripCard
+                key={trip._id}
+                trip={trip}
+                isAdmin={true}
+                onEdit={handleEdit}
+                onDelete={handleDelete}
+              />
+            ))}
+          </div>
+
+          {/* Pagination */}
+          {totalPages > 1 && (
+
+            <div className="mt-8 flex justify-center items-center gap-4">
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                goToPage={goToPage}
+              />
+            </div>
+          )}
+        </>
       )}
     </div>
   );
