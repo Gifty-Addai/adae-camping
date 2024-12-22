@@ -21,8 +21,8 @@ export const imageSchema = z.object({
 	}),
 });
 
-export const YOUTUBE_API_KEY = process.env.YOUTUBE_API_KEY;
-export const CHANNEL_ID = process.env.CHANNEL_ID;
+export const YOUTUBE_API_KEY = import.meta.env.YOUTUBE_API_KEY;
+export const CHANNEL_ID = import.meta.env.CHANNEL_ID;
 
 export const useAppDispatch = () => useDispatch<AppDispatch>();
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
