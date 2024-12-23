@@ -1,90 +1,148 @@
-// src/components/TripForm/sections/schedule-section.tsx
+// src/components/AdminDash/pages/trip/sections/ScheduleSection.tsx
 
 import React from "react";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { useFormContext, useFieldArray } from "react-hook-form";
-import { TripFormInput } from "@/core/interfaces/zod";
+import { useForm, Controller, useFieldArray } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { scheduleSchema, ScheduleInput } from "@/core/interfaces/zod";
 import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
 import ErrorMessage from "@/components/ui/error-message";
+import { Tooltip, TooltipContent } from "@/components/ui/tooltip";
+import { Checkbox } from "@/components/ui/checkbox";
 
-const ScheduleSection: React.FC = () => {
+interface ScheduleSectionProps {
+  data: ScheduleInput;
+  onNext: (data: ScheduleInput) => void;
+  onBack?: () => void; // Optional back button handler
+}
+
+const ScheduleSection: React.FC<ScheduleSectionProps> = ({ data, onNext, onBack }) => {
   const {
-    register,
     control,
+    handleSubmit,
+    watch,
     formState: { errors },
-  } = useFormContext<TripFormInput>();
-
-  const { fields: dateFields, append: appendDate, remove: removeDate } = useFieldArray({
-    control,
-    name: "schedule.dates",
+  } = useForm<ScheduleInput>({
+    resolver: zodResolver(scheduleSchema),
+    defaultValues: data,
+    mode: "onBlur", // Validation mode
   });
 
-  const { fields: itineraryFields, append: appendItinerary, remove: removeItinerary } = useFieldArray({
+  const {
+    fields: dateFields,
+    append: appendDate,
+    remove: removeDate,
+  } = useFieldArray({
     control,
-    name: "schedule.itinerary",
+    name: "dates",
   });
+
+  const {
+    fields: itineraryFields,
+    append: appendItinerary,
+    remove: removeItinerary,
+  } = useFieldArray({
+    control,
+    name: "itinerary",
+  });
+
+  const onSubmit = (formData: ScheduleInput) => {
+    onNext(formData);
+  };
 
   return (
-    <div className="flex flex-col space-y-4">
-      {/* Dates */}
-      <div className="flex flex-col space-y-2">
-        <Label className="mb-3 text-yellow-400 text-2xl">Trip Dates</Label>
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+      <h3 className="text-center text-yellow-400 text-2xl font-semibold">Schedule Information</h3>
+
+      {/* Dates Section */}
+      <div className="flex flex-col space-y-4">
+        <div className="flex justify-between items-center">
+          <Label className="text-lg">Trip Dates</Label>
+          <Tooltip>
+            <TooltipContent>Add the dates for the trip, including availability and slots.</TooltipContent>
+          </Tooltip>
+        </div>
         {dateFields.map((field, index) => (
-          <div key={field.id} className="flex flex-col space-y-2 mb-2">
+          <div key={field.id} className="border p-4 rounded-md space-y-4">
+            {/* Start and End Dates */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {/* Start Date */}
-              <div className="flex flex-col space-y-1">
-                <Label htmlFor={`schedule.dates.${index}.startDate`}>Start Date</Label>
-                <Input
-                  type="date"
-                  id={`schedule.dates.${index}.startDate`}
-                  {...register(`schedule.dates.${index}.startDate` as const)}
+              <div className="flex flex-col">
+                <Label htmlFor={`dates.${index}.startDate`}>Start Date</Label>
+                <Controller
+                  control={control}
+                  name={`dates.${index}.startDate`}
+                  render={({ field }) => (
+                    <input
+                      type="date"
+                      id={`dates.${index}.startDate`}
+                      {...field}
+                      className="border rounded-md px-4 py-2 focus:ring focus:ring-blue-300"
+                    />
+                  )}
                 />
-                {errors.schedule?.dates?.[index]?.startDate?.message && (
-                  <ErrorMessage message={errors.schedule.dates[index].startDate?.message} />
+                {errors.dates?.[index]?.startDate && (
+                  <ErrorMessage message={errors.dates[index].startDate.message} />
                 )}
               </div>
 
               {/* End Date */}
-              <div className="flex flex-col space-y-1">
-                <Label htmlFor={`schedule.dates.${index}.endDate`}>End Date</Label>
-                <Input
-                  type="date"
-                  id={`schedule.dates.${index}.endDate`}
-                  {...register(`schedule.dates.${index}.endDate` as const)}
+              <div className="flex flex-col">
+                <Label htmlFor={`dates.${index}.endDate`}>End Date</Label>
+                <Controller
+                  control={control}
+                  name={`dates.${index}.endDate`}
+                  render={({ field }) => (
+                    <input
+                      type="date"
+                      id={`dates.${index}.endDate`}
+                      {...field}
+                      className="border rounded-md px-4 py-2 focus:ring focus:ring-blue-300"
+                    />
+                  )}
                 />
-                {errors.schedule?.dates?.[index]?.endDate?.message && (
-                  <ErrorMessage message={errors.schedule.dates[index].endDate?.message} />
+                {errors.dates?.[index]?.endDate && (
+                  <ErrorMessage message={errors.dates[index].endDate.message} />
                 )}
               </div>
             </div>
 
-            {/* Available Checkbox and Slots Remaining */}
-            <div className="flex items-center space-x-4">
-              {/* Is Available */}
+            {/* Availability and Slots Remaining */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {/* Availability Checkbox */}
               <div className="flex items-center space-x-2">
-                <Label htmlFor={`schedule.dates.${index}.isAvailable`}>Available</Label>
-                <input
-                  type="checkbox"
-                  id={`schedule.dates.${index}.isAvailable`}
-                  {...register(`schedule.dates.${index}.isAvailable` as const)}
-                  className="h-4 w-4 text-blue-600 border-gray-300 rounded"
+                <Label htmlFor={`dates.${index}.isAvailable`}>Available</Label>
+                <Controller
+                  control={control}
+                  name={`dates.${index}.isAvailable`}
+                  render={({ field }) => (
+                    <Checkbox
+                      id={`dates.${index}.isAvailable`}
+                      checked={field.value}
+                      onCheckedChange={(checked) => field.onChange(checked)}
+                    />
+                  )}
                 />
               </div>
 
               {/* Slots Remaining */}
-              <div className="flex flex-col space-y-1">
-                <Label htmlFor={`schedule.dates.${index}.slotsRemaining`}>Slots Remaining</Label>
-                <Input
-                  type="number"
-                  id={`schedule.dates.${index}.slotsRemaining`}
-                  placeholder="Enter slots remaining"
-                  {...register(`schedule.dates.${index}.slotsRemaining` as const, { valueAsNumber: true })}
-                  min={0}
+              <div className="flex flex-col">
+                <Label htmlFor={`dates.${index}.slotsRemaining`}>Slots Remaining</Label>
+                <Controller
+                  control={control}
+                  name={`dates.${index}.slotsRemaining`}
+                  render={({ field }) => (
+                    <input
+                      type="number"
+                      id={`dates.${index}.slotsRemaining`}
+                      {...field}
+                      min={0}
+                      className="border rounded-md px-4 py-2 focus:ring focus:ring-blue-300"
+                    />
+                  )}
                 />
-                {errors.schedule?.dates?.[index]?.slotsRemaining?.message && (
-                  <ErrorMessage message={errors.schedule.dates[index].slotsRemaining?.message} />
+                {errors.dates?.[index]?.slotsRemaining && (
+                  <ErrorMessage message={errors.dates[index].slotsRemaining.message} />
                 )}
               </div>
             </div>
@@ -95,12 +153,12 @@ const ScheduleSection: React.FC = () => {
               type="button"
               onClick={() => removeDate(index)}
               disabled={dateFields.length === 1}
+              className="w-full sm:w-auto"
             >
               Remove Date
             </Button>
           </div>
         ))}
-
         <Button
           variant="outline"
           type="button"
@@ -112,42 +170,76 @@ const ScheduleSection: React.FC = () => {
               slotsRemaining: 10,
             })
           }
+          className="self-start"
         >
           Add Date
         </Button>
       </div>
 
-      {/* Itinerary */}
-      <div className="flex flex-col space-y-2">
-        <Label>Itinerary</Label>
+      {/* Itinerary Section */}
+      <div className="flex flex-col space-y-4">
+        <div className="flex justify-between items-center">
+          <Label className="text-lg">Itinerary</Label>
+          <Tooltip>
+            <TooltipContent>Add detailed activities for each day of the trip.</TooltipContent>
+          </Tooltip>
+        </div>
         {itineraryFields.map((field, index) => (
-          <div key={field.id} className="flex flex-col space-y-1 mb-2">
-            <div className="flex items-center space-x-2">
-              <Label htmlFor={`schedule.itinerary.${index}.day`}>Day</Label>
-              <Input
-                type="number"
-                id={`schedule.itinerary.${index}.day`}
-                placeholder="Day number"
-                {...register(`schedule.itinerary.${index}.day` as const, { valueAsNumber: true })}
-                min={1}
-              />
-              <Label htmlFor={`schedule.itinerary.${index}.activities`}>Activities</Label>
-              <Input
-                id={`schedule.itinerary.${index}.activities`}
-                placeholder="Enter activities"
-                {...register(`schedule.itinerary.${index}.activities` as const)}
-              />
-              <Button
-                variant="outline"
-                type="button"
-                onClick={() => removeItinerary(index)}
-              >
-                Remove
-              </Button>
+          <div key={field.id} className="border p-4 rounded-md space-y-2">
+            {/* Day and Activities */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {/* Day Number */}
+              <div className="flex flex-col">
+                <Label htmlFor={`itinerary.${index}.day`}>Day</Label>
+                <Controller
+                  control={control}
+                  name={`itinerary.${index}.day`}
+                  render={({ field }) => (
+                    <input
+                      type="number"
+                      id={`itinerary.${index}.day`}
+                      {...field}
+                      min={1}
+                      className="border rounded-md px-4 py-2 focus:ring focus:ring-blue-300"
+                    />
+                  )}
+                />
+                {errors.itinerary?.[index]?.day && (
+                  <ErrorMessage message={errors.itinerary[index].day.message} />
+                )}
+              </div>
+
+              {/* Activities */}
+              <div className="flex flex-col">
+                <Label htmlFor={`itinerary.${index}.activities`}>Activities</Label>
+                <Controller
+                  control={control}
+                  name={`itinerary.${index}.activities`}
+                  render={({ field }) => (
+                    <input
+                      type="text"
+                      id={`itinerary.${index}.activities`}
+                      {...field}
+                      placeholder="Describe activities"
+                      className="border rounded-md px-4 py-2 focus:ring focus:ring-blue-300"
+                    />
+                  )}
+                />
+                {errors.itinerary?.[index]?.activities && (
+                  <ErrorMessage message={errors.itinerary[index].activities.message} />
+                )}
+              </div>
             </div>
-            {errors.schedule?.itinerary?.[index]?.activities?.message && (
-              <ErrorMessage message={errors.schedule.itinerary[index].activities?.message} />
-            )}
+
+            {/* Remove Itinerary Item Button */}
+            <Button
+              variant="outline"
+              type="button"
+              onClick={() => removeItinerary(index)}
+              className="w-full sm:w-auto"
+            >
+              Remove Itinerary Item
+            </Button>
           </div>
         ))}
         <Button
@@ -159,12 +251,23 @@ const ScheduleSection: React.FC = () => {
               activities: "",
             })
           }
+          className="self-start"
         >
           Add Itinerary Item
         </Button>
       </div>
-    </div>
+
+      {/* Navigation Buttons */}
+      <div className="flex justify-between">
+        {onBack && (
+          <Button variant="ghost" type="button" onClick={onBack}>
+            Back
+          </Button>
+        )}
+        <Button type="submit">Continue</Button>
+      </div>
+    </form>
   );
 };
 
-export default ScheduleSection;
+export default React.memo(ScheduleSection);

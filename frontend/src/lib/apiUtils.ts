@@ -1,5 +1,6 @@
 import { ConfirmMemberRequest, ConfirmMembershipResponse, SignInResponse, Trip, TripFormData, TripSearchParams, UpdateUserPayload, User, VerifyPaymentResponse } from "@/core/interfaces";
 import { deleteRequest, getRequest, postRequest, putRequest } from "./api-Request/api-requests";
+import { TripFormOutput } from "@/core/interfaces/zod";
 
 export class ApiError extends Error {
   public statusCode: number;
@@ -72,7 +73,7 @@ export const createTrips = async (trips: Trip[]): Promise<{
   return data;
 };
 
-export const createTrip = async (tripData: TripFormData): Promise<{
+export const createTrip = async (tripData: TripFormOutput): Promise<{
   message: string;
   trip?: Trip;
   errors?: any[];
@@ -90,7 +91,7 @@ export const fetchTripById = async (id: string): Promise<Trip> => {
   return data;
 };
 
-export const updateTrip = async (id: string, tripData: Partial<Trip>): Promise<{
+export const updateTrip = async (id: string, tripData: TripFormOutput): Promise<{
   message: string;
   trip?: Trip;
   errors?: any[];

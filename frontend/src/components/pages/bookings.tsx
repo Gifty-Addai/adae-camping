@@ -6,24 +6,8 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import DatePicker from "@/components/ui/date-picker";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { bookingSchema } from "@/core/interfaces/zod";
 
-const bookingSchema = z.object({
-  name: z.string().min(1, "Name is required"),
-  email: z.string().email("Invalid email address"),
-  phone: z
-    .string()
-    .regex(/^\d+$/, "Phone number must contain only digits")
-    .min(10, "Phone number must be at least 10 digits"),
-  startDate: z.date().nullable().refine((date) => date !== null, "Start date is required"),
-  endDate: z.date().nullable().refine((date) => date !== null, "End date is required"),
-  bookingType: z.enum(["Group", "Private"]),
-  groupSize: z
-    .number()
-    .positive("Group size must be greater than zero")
-    .optional()
-    .refine((value) => value !== undefined || true, "Group size is required for private bookings"),
-  preferences: z.string().optional(),
-});
 
 type BookingFormValues = z.infer<typeof bookingSchema>;
 

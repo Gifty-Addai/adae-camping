@@ -1,57 +1,258 @@
-// src/components/TripForm/sections/images-section.tsx
-import React from "react";
+// src/components/TripForm/sections/ImagesSection.tsx
+import React, { useCallback, useState, useEffect } from "react";
+import { useForm, useFieldArray, useWatch } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { useFormContext } from "react-hook-form";
-import { TripFormInput } from "@/core/interfaces/zod";
 import ErrorMessage from "@/components/ui/error-message";
+import { useDropzone } from "react-dropzone";
+import { v4 as uuidv4 } from "uuid";
+import { postRequest } from "@/lib/api-Request/api-requests";
+import { ImageUpload, UploadImageResponse } from "@/core/interfaces";
+import { ImagesInput, imagesSchema } from "@/core/interfaces/zod";
+import { z } from "zod";
 
-const ImagesSection: React.FC = () => {
+// Define a wrapper schema that includes the images array
+const imagesSectionSchema = z.object({
+  images: imagesSchema.min(1, "At least one image is required"), // Ensure at least one image
+});
+
+// Infer the new type from the wrapper schema
+type ImagesSectionInput = z.infer<typeof imagesSectionSchema>;
+
+interface ImagesSectionProps {
+  data: { url: string }[];
+  onNext: (data: ImagesInput) => void;
+}
+
+const ImagesSection: React.FC<ImagesSectionProps> = ({ data, onNext }) => {
   const {
-    register,
-    watch,
+    control,
+    handleSubmit,
     formState: { errors },
-  } = useFormContext<TripFormInput>();
+  } = useForm<ImagesSectionInput>({
+    resolver: zodResolver(imagesSectionSchema),
+    defaultValues: {
+      images: data.length > 0 ? data : [], // Start with an empty array
+    },
+  });
 
-  const imagesValue = watch("images") as string;
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "images",
+  });
+
+  const [imageUploads, setImageUploads] = useState<ImageUpload[]>([]);
+
+  // Watch the images array for debugging
+  const watchedImages = useWatch({ control, name: "images" });
+
+  useEffect(() => {
+    console.log("Current form images:", watchedImages);
+  }, [watchedImages]);
+
+  const onDrop = useCallback((acceptedFiles: File[]) => {
+    const newUploads = acceptedFiles.map((file) => ({
+      id: uuidv4(),
+      file,
+      preview: URL.createObjectURL(file),
+      uploading: false,
+      progress: 0,
+      error: null,
+      url: null,
+    }));
+
+    setImageUploads((prev) => [...prev, ...newUploads]);
+
+    // Start uploading each image
+    newUploads.forEach((upload) => uploadImage(upload));
+  }, []);
+
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop,
+    accept: {
+      "image/jpeg": [".jpeg", ".jpg"],
+      "image/png": [".png"],
+      "image/gif": [".gif"],
+    },
+    maxSize: 5 * 1024 * 1024, // 5 MB
+  });
+
+  const uploadImage = async (upload: ImageUpload) => {
+    setImageUploads((prev) =>
+      prev.map((u) =>
+        u.id === upload.id ? { ...u, uploading: true, error: null } : u
+      )
+    );
+
+    const formData = new FormData();
+    formData.append("file", upload.file);
+
+    try {
+      const response = await postRequest<UploadImageResponse>(
+        "/api/image/upload-image",
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+          onUploadProgress: (progressEvent) => {
+            if (progressEvent.total) {
+              const percentCompleted = Math.round(
+                (progressEvent.loaded * 100) / progressEvent.total
+              );
+              setImageUploads((prev) =>
+                prev.map((u) =>
+                  u.id === upload.id
+                    ? { ...u, progress: percentCompleted }
+                    : u
+                )
+              );
+            }
+          },
+        }
+      );
+
+      const imageUrl = response.url;
+      console.log("Server response:", response);
+
+      if (imageUrl) { // Ensure imageUrl is valid
+        console.log("Image uploaded successfully:", imageUrl);
+        setImageUploads((prev) =>
+          prev.map((u) =>
+            u.id === upload.id
+              ? { ...u, uploading: false, url: imageUrl, progress: 100 }
+              : u
+          )
+        );
+
+        // Append the image URL to the form's images array
+        append({ url: imageUrl });
+        console.log("Appended image URL to form:", imageUrl);
+      } else {
+        throw new Error("Invalid image URL received");
+      }
+    } catch (error: any) {
+      console.error("Upload error:", error);
+      setImageUploads((prev) =>
+        prev.map((u) =>
+          u.id === upload.id
+            ? {
+              ...u,
+              uploading: false,
+              error: "Upload failed. Please try again.",
+            }
+            : u
+        )
+      );
+    }
+  };
+
+  const handleRemove = (index: number) => {
+    remove(index);
+    // Optionally remove from imageUploads if necessary
+    // setImageUploads((prev) => prev.filter((u) => u.id !== fields[index].id));
+  };
+
+  const handleRetry = (upload: ImageUpload) => {
+    uploadImage(upload);
+  };
+
+  useEffect(() => {
+    // Cleanup: Revoke data URIs to avoid memory leaks
+    return () => {
+      imageUploads.forEach((upload) => URL.revokeObjectURL(upload.preview));
+    };
+  }, [imageUploads]);
+
+  const onSubmit = (formData: ImagesSectionInput) => {
+    console.log("ImagesSection onSubmit called with:", formData.images);
+    onNext(formData.images);
+  };
+
+  const isUploading = imageUploads.some((upload) => upload.uploading);
 
   return (
-    <div className="flex flex-col space-y-2">
-      <Label htmlFor="images">Images (comma-separated URLs)</Label>
-      <Input
-        id="images"
-        {...register("images")}
-        placeholder="https://example.com/image1.jpg, https://example.com/image2.jpg"
-      />
-      {errors.images && typeof errors.images.message === "string" && (
-        <ErrorMessage message={errors.images.message} />
-      )}
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      className="space-y-6 flex flex-col items-center"
+    >
+      <Label className="text-yellow-400 text-2xl font-semibold">
+        Images
+      </Label>
+
+      {/* Dropzone */}
+      <div
+        {...getRootProps()}
+        className={`flex flex-col items-center justify-center border-2 border-dashed rounded-lg p-6 cursor-pointer transition-colors ${isDragActive
+            ? "border-blue-500 bg-blue-50"
+            : "border-gray-300"
+          }`}
+      >
+        <input {...getInputProps()} />
+        {isDragActive ? (
+          <p className="text-blue-500">Drop the images here...</p>
+        ) : (
+          <p className="text-gray-500">
+            Drag & drop images here, or click to select files
+          </p>
+        )}
+        <em className="text-sm text-muted-foreground">
+          (Only *.jpeg, *.jpg, *.png, *.gif images will be accepted, max size 5
+          MB)
+        </em>
+      </div>
+
       {/* Image Previews */}
-      {imagesValue && imagesValue.length > 0 && (
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-4">
-          {imagesValue
-            .split(",")
-            .map((url) => url.trim())
-            .filter((url) => url.length > 0)
-            .map((url, index) => (
-              <div
-                key={index}
-                className="w-full h-32 bg-gray-200 rounded-lg overflow-hidden"
+      {fields.length > 0 && (
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          {fields.map((field, index) => (
+            <div
+              key={field.id}
+              className="relative w-full h-32 bg-gray-100 rounded-md overflow-hidden"
+            >
+              <img
+                src={field.url}
+                alt={`Uploaded Image ${index + 1}`}
+                className="w-full h-full object-cover"
+              />
+              <button
+                type="button"
+                onClick={() => handleRemove(index)}
+                className="absolute top-1 right-1 bg-red-600 text-white rounded-full p-1 hover:bg-red-700 focus:outline-none"
+                aria-label={`Remove image ${index + 1}`}
               >
-                <img
-                  src={url}
-                  alt={`Trip Image ${index + 1}`}
-                  className="w-full h-full object-cover"
-                  onError={(e) => {
-                    (e.target as HTMLImageElement).src = "/placeholder.jpg";
-                  }}
-                />
-              </div>
-            ))}
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-4 w-4"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
+            </div>
+          ))}
         </div>
       )}
-    </div>
+
+      {/* Display Form Errors */}
+      {errors.images && (
+        <ErrorMessage message={errors.images.message as string} />
+      )}
+
+      {/* Continue Button */}
+      <div className="flex justify-end w-full">
+        <Button type="submit" disabled={isUploading}>
+          {isUploading ? "Uploading..." : "Continue"}
+        </Button>
+      </div>
+    </form>
   );
 };
 
-export default ImagesSection;
+export default React.memo(ImagesSection);

@@ -119,7 +119,7 @@ const TripDetail: React.FC = () => {
               {trip?.images?.map((image, index) => (
                 <SwiperSlide key={index} style={{ width: "100%", height: "100%" }}>
                   <img
-                    src={image}
+                    src={image.url}
                     alt={`Trip Image ${index + 1}`}
                     className="object-cover w-full h-full"
                   />
@@ -138,7 +138,7 @@ const TripDetail: React.FC = () => {
             <h2 className="text-xl font-bold text-primary">Trip Highlights</h2>
             <ul className="list-disc list-inside text-card-foreground">
               {trip?.location?.pointsOfInterest?.map((poi, index) => (
-                <li className="text-card-foreground" key={index}>{poi}</li>
+                <li className="text-card-foreground" key={index}>{poi.value}</li>
               ))}
             </ul>
           </section>

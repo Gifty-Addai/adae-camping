@@ -1,51 +1,106 @@
-// src/components/TripForm/sections/cost-section.tsx
-
+// src/components/TripForm/sections/CostSection.tsx
 import React from "react";
-import { Label } from "@/components/ui/label";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useFormContext } from "react-hook-form";
-import { TripFormInput } from "@/core/interfaces/zod";
+import { Label } from "@/components/ui/label";
 import ErrorMessage from "@/components/ui/error-message";
+import { Tooltip, TooltipContent } from "@/components/ui/tooltip";
+import { CostInput, costSchema } from "@/core/interfaces/zod";
 
-const CostSection: React.FC = () => {
+interface CostSectionProps {
+  data: {
+    basePrice: number;
+    discount: number;
+  };
+  onNext: (data: CostInput) => void;
+}
+
+const CostSection: React.FC<CostSectionProps> = ({ data, onNext }) => {
   const {
     register,
+    handleSubmit,
+    watch,
+    setValue,
     formState: { errors },
-  } = useFormContext<TripFormInput>();
+  } = useForm<CostInput>({
+    resolver: zodResolver(costSchema),
+    defaultValues: {
+      basePrice: data.basePrice,
+      discount: data.discount,
+    },
+  });
+
+  const basePrice = watch("basePrice");
+
+  // Ensure discount does not exceed basePrice
+  React.useEffect(() => {
+    const currentDiscount = watch("discount");
+    if (currentDiscount > basePrice) {
+      setValue("discount", basePrice);
+    }
+  }, [basePrice, setValue, watch]);
+
+  const onSubmit = (formData: CostInput) => {
+    onNext(formData);
+  };
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
       {/* Base Price */}
-      <div className="flex flex-col space-y-2">
-        <Label htmlFor="cost.basePrice">Base Price</Label>
+      <div className="flex flex-col space-y-1">
+        <div className="flex items-center justify-between">
+          <Label htmlFor="basePrice">
+            Base Price <span className="text-red-500">*</span>
+          </Label>
+          <Tooltip>
+            <TooltipContent>
+              The initial price before any discounts or additional costs.
+            </TooltipContent>
+          </Tooltip>
+        </div>
         <Input
           type="number"
-          id="cost.basePrice"
+          id="basePrice"
           placeholder="Enter base price"
-          {...register("cost.basePrice", { valueAsNumber: true })}
+          {...register("basePrice", { valueAsNumber: true })}
           min={0}
+          className="border rounded-md px-4 py-2 focus:ring focus:ring-blue-300"
+          aria-invalid={errors.basePrice ? "true" : "false"}
         />
-        {errors.cost?.basePrice?.message && (
-          <ErrorMessage message={errors.cost.basePrice.message} />
-        )}
+        {errors.basePrice && <ErrorMessage message={errors.basePrice.message} />}
       </div>
 
       {/* Discount */}
-      <div className="flex flex-col space-y-2">
-        <Label htmlFor="cost.discount">Discount</Label>
+      <div className="flex flex-col space-y-1">
+        <div className="flex items-center justify-between">
+          <Label htmlFor="discount">Discount</Label>
+          <Tooltip>
+            <TooltipContent>
+              Any reduction in price applied to the base price.
+            </TooltipContent>
+          </Tooltip>
+        </div>
         <Input
           type="number"
-          id="cost.discount"
+          id="discount"
           placeholder="Enter discount"
-          {...register("cost.discount", { valueAsNumber: true })}
+          {...register("discount", { valueAsNumber: true })}
           min={0}
+          max={basePrice}
+          className="border rounded-md px-4 py-2 focus:ring focus:ring-blue-300"
+          aria-invalid={errors.discount ? "true" : "false"}
         />
-        {errors.cost?.discount?.message && (
-          <ErrorMessage message={errors.cost.discount.message} />
-        )}
+        {errors.discount && <ErrorMessage message={errors.discount.message} />}
       </div>
-    </div>
+
+      {/* Continue Button */}
+      <div className="flex justify-end">
+        <Button type="submit">Continue</Button>
+      </div>
+    </form>
   );
 };
 
-export default CostSection;
+export default React.memo(CostSection);

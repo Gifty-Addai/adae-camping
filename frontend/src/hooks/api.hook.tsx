@@ -1,4 +1,5 @@
 import {Trip, TripFormData, TripSearchParams, UseTripAPI } from "@/core/interfaces";
+import { TripFormOutput } from "@/core/interfaces/zod";
 import {createTrip, deleteTrip, fetchTripById, fetchTrips,  searchTrips, updateTrip } from "@/lib/apiUtils";
 import { useState, useEffect, useCallback } from "react";
 import { toast } from "react-toastify";
@@ -50,7 +51,7 @@ export function useTripAPI(defaultType?: string, defaultDifficulty?: string): Us
   }, []);
 
   // CREATE a new trip
-  const addTrip = async (tripData: TripFormData): Promise<void> => {
+  const addTrip = async (tripData: TripFormOutput): Promise<void> => {
     try {
       await createTrip(tripData);
       await getTrips();
@@ -61,7 +62,7 @@ export function useTripAPI(defaultType?: string, defaultDifficulty?: string): Us
   };
 
   // UPDATE an existing trip
-  const editTrip = async (id: string, tripData: TripFormData): Promise<void> => {
+  const editTrip = async (id: string, tripData: TripFormOutput): Promise<void> => {
     try {
       await updateTrip(id, tripData);
       await getTrips(); // Refresh list
