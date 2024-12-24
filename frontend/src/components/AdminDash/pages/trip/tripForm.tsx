@@ -243,13 +243,14 @@ const TripForm: React.FC<TripFormProps> = ({
     ),
     8: (
       <ScheduleSection
-        data={formData.schedule}
-        onNext={(data: ScheduleInput) =>
-          handleNextStep({
-            schedule: data,
-          })
-        }
-      />
+      data={formData} 
+      onNext={(validatedData) =>
+        handleNextStep({
+          // Only store the updated schedule portion
+          schedule: validatedData.schedule,
+        })
+      }
+    />
     ),
     9: (
       <LogisticsSection

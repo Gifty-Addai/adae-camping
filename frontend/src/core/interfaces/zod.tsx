@@ -3,7 +3,9 @@
 import { z, ZodIssueCode } from "zod";
 import { differenceInDays, isAfter, isBefore } from "date-fns";
 
-// Booking Schema
+/* -------------------------------------------------------------------------- */
+/*                                Booking Schema                               */
+/* -------------------------------------------------------------------------- */
 export const bookingSchema = z.object({
   name: z.string().min(1, "Name is required"),
   email: z.string().email("Invalid email address"),
@@ -11,25 +13,18 @@ export const bookingSchema = z.object({
     .string()
     .regex(/^\d+$/, "Phone number must contain only digits")
     .min(10, "Phone number must be at least 10 digits"),
-  startDate: z
-    .date()
-    .nullable()
-    .refine((date) => date !== null, "Start date is required"),
-  endDate: z
-    .date()
-    .nullable()
-    .refine((date) => date !== null, "End date is required"),
+  startDate: z.date().nullable().refine((date) => date !== null, "Start date is required"),
+  endDate: z.date().nullable().refine((date) => date !== null, "End date is required"),
   bookingType: z.enum(["Group", "Private"]),
-  groupSize: z
-    .number()
-    .positive("Group size must be greater than zero")
-    .optional(),
+  groupSize: z.number().positive("Group size must be greater than zero").optional(),
   preferences: z.string().optional(),
 });
 
 export type BookingInput = z.infer<typeof bookingSchema>;
 
-// Basic Information Schema
+/* -------------------------------------------------------------------------- */
+/*                          Basic Information Schema                           */
+/* -------------------------------------------------------------------------- */
 export const basicInfoSchema = z.object({
   name: z.string().min(1, "Trip name is required"),
   description: z.string().optional(),
@@ -37,7 +32,9 @@ export const basicInfoSchema = z.object({
 
 export type BasicInfoInput = z.infer<typeof basicInfoSchema>;
 
-// Type and Difficulty Schema
+/* -------------------------------------------------------------------------- */
+/*                         Type and Difficulty Schema                          */
+/* -------------------------------------------------------------------------- */
 export const typeAndDifficultySchema = z.object({
   type: z.enum(["hiking", "camping", "mountaineering", "other"]),
   difficulty: z.enum(["easy", "moderate", "hard", "expert"]),
@@ -45,7 +42,9 @@ export const typeAndDifficultySchema = z.object({
 
 export type TypeAndDifficultyInput = z.infer<typeof typeAndDifficultySchema>;
 
-// Duration Schema
+/* -------------------------------------------------------------------------- */
+/*                              Duration Schema                                */
+/* -------------------------------------------------------------------------- */
 export const durationSchema = z.object({
   days: z
     .number({ invalid_type_error: "Duration (days) is required" })
@@ -57,7 +56,9 @@ export const durationSchema = z.object({
 
 export type DurationInput = z.infer<typeof durationSchema>;
 
-// Cost Schema
+/* -------------------------------------------------------------------------- */
+/*                                Cost Schema                                  */
+/* -------------------------------------------------------------------------- */
 export const costSchema = z.object({
   basePrice: z
     .number({ invalid_type_error: "Base price is required" })
@@ -69,27 +70,28 @@ export const costSchema = z.object({
 
 export type CostInput = z.infer<typeof costSchema>;
 
-// Group Size Schema
+/* -------------------------------------------------------------------------- */
+/*                           Group Size Schema                                */
+/* -------------------------------------------------------------------------- */
 export const groupSizeSchema = z.object({
   min: z.number().min(1, "Minimum group size must be at least 1"),
-  max: z
-    .number()
-    .min(1, "Maximum group size must be at least 1"),
+  max: z.number().min(1, "Maximum group size must be at least 1"),
 });
 
 export type GroupSizeInput = z.infer<typeof groupSizeSchema>;
 
-// Activity Level Schema
+/* -------------------------------------------------------------------------- */
+/*                          Activity Level Schema                              */
+/* -------------------------------------------------------------------------- */
 export const activityLevelSchema = z.object({
-  activityLevel: z
-    .number()
-    .min(1, "Activity level must be at least 1")
-    .max(5, "Activity level cannot exceed 5"),
+  activityLevel: z.number().min(1, "Activity level must be at least 1").max(5, "Activity level cannot exceed 5"),
 });
 
 export type ActivityLevelInput = z.infer<typeof activityLevelSchema>;
 
-// Location Schema
+/* -------------------------------------------------------------------------- */
+/*                              Location Schema                                */
+/* -------------------------------------------------------------------------- */
 export const locationSchema = z.object({
   mainLocation: z
     .string()
@@ -106,7 +108,9 @@ export const locationSchema = z.object({
 
 export type LocationInput = z.infer<typeof locationSchema>;
 
-// Schedule Date Schema
+/* -------------------------------------------------------------------------- */
+/*                            Schedule Date Schema                             */
+/* -------------------------------------------------------------------------- */
 export const scheduleDateSchema = z.object({
   startDate: z.string().refine((date) => !isNaN(Date.parse(date)), {
     message: "Invalid start date",
@@ -115,30 +119,30 @@ export const scheduleDateSchema = z.object({
     message: "Invalid end date",
   }),
   isAvailable: z.boolean(),
-  slotsRemaining: z
-    .number()
-    .min(0, "Slots remaining cannot be negative"),
+  slotsRemaining: z.number().min(0, "Slots remaining cannot be negative"),
 });
 
-// Itinerary Schema
+/* -------------------------------------------------------------------------- */
+/*                            Itinerary Schema                                 */
+/* -------------------------------------------------------------------------- */
 export const itinerarySchema = z.object({
   day: z.number().min(1, "Day must be at least 1"),
   activities: z.string().min(1, "Activities are required"),
 });
 
-// Schedule Schema
+/* -------------------------------------------------------------------------- */
+/*                            Schedule Schema                                  */
+/* -------------------------------------------------------------------------- */
 export const scheduleSchema = z.object({
-  dates: z
-    .array(scheduleDateSchema)
-    .min(1, "At least one date entry is required"),
-  itinerary: z
-    .array(itinerarySchema)
-    .optional(),
+  dates: z.array(scheduleDateSchema).min(1, "At least one date entry is required"),
+  itinerary: z.array(itinerarySchema).optional(),
 });
 
 export type ScheduleInput = z.infer<typeof scheduleSchema>;
 
-// Logistics Schema
+/* -------------------------------------------------------------------------- */
+/*                            Logistics Schema                                 */
+/* -------------------------------------------------------------------------- */
 export const logisticsSchema = z.object({
   transportation: z.string().min(1, "Transportation is required"),
   gearProvided: z.boolean(),
@@ -147,8 +151,9 @@ export const logisticsSchema = z.object({
 
 export type LogisticsInput = z.infer<typeof logisticsSchema>;
 
-
-// Images Schema
+/* -------------------------------------------------------------------------- */
+/*                               Images Schema                                 */
+/* -------------------------------------------------------------------------- */
 export const imagesSchema = z
   .array(
     z.object({
@@ -160,7 +165,10 @@ export const imagesSchema = z
 
 export type ImagesInput = z.infer<typeof imagesSchema>;
 
-// Trip Schema with Nested Structures and superRefine
+/* -------------------------------------------------------------------------- */
+/*                   Trip Schema with Nested Structures                       */
+/*                       (and .superRefine checks)                             */
+/* -------------------------------------------------------------------------- */
 export const tripSchema = z
   .object({
     basicInfo: basicInfoSchema,
@@ -175,44 +183,50 @@ export const tripSchema = z
     images: imagesSchema,
   })
   .superRefine((data, ctx) => {
-    // Schedule Validation
+    // The trip duration in days
     const tripDuration = data.duration.days;
 
+    // Validate each date range
     data.schedule.dates.forEach((date, index) => {
       const start = new Date(date.startDate);
       const end = new Date(date.endDate);
       const actualDuration = differenceInDays(end, start) + 1;
 
+      // 1. Start date cannot be after end date
       if (isAfter(start, end)) {
         ctx.addIssue({
           code: ZodIssueCode.custom,
-          path: ["schedule", "dates", index, "startDate"] as const,
+          path: ["schedule", "dates", index, "startDate"],
           message: "Start date cannot be after end date",
         });
       }
 
-      if (actualDuration > tripDuration) {
+      // 2. Date range must match EXACTLY the trip duration
+      if (actualDuration !== tripDuration) {
         ctx.addIssue({
           code: ZodIssueCode.custom,
-          path: ["schedule", "dates", index, "startDate"] as const,
-          message: `Date range cannot exceed trip duration of ${tripDuration} days`,
+          path: ["schedule", "dates", index, "startDate"],
+          message: `Date range must exactly match the trip duration of ${tripDuration} day(s)`,
         });
       }
 
-      // Check for overlapping dates
+      // 3. Check for overlapping dates with other entries
       for (let i = 0; i < data.schedule.dates.length; i++) {
         if (i === index) continue;
         const otherStart = new Date(data.schedule.dates[i].startDate);
         const otherEnd = new Date(data.schedule.dates[i].endDate);
 
-        if (
+        // Overlap occurs if (start < otherEnd && end > otherStart)
+        // or if exact same start/end times
+        const isOverlap =
           (isBefore(start, otherEnd) && isAfter(end, otherStart)) ||
           start.getTime() === otherStart.getTime() ||
-          end.getTime() === otherEnd.getTime()
-        ) {
+          end.getTime() === otherEnd.getTime();
+
+        if (isOverlap) {
           ctx.addIssue({
             code: ZodIssueCode.custom,
-            path: ["schedule", "dates", index, "startDate"] as const,
+            path: ["schedule", "dates", index, "startDate"],
             message: "Dates cannot overlap with existing entries",
           });
           break;
@@ -221,4 +235,5 @@ export const tripSchema = z
     });
   });
 
+// This type is the entire shape of a "Trip".
 export type TripFormInput = z.infer<typeof tripSchema>;
