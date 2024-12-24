@@ -13,7 +13,7 @@ import {
   FormMessage
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Trip, DateSchedule, BookingFormData } from "@/core/interfaces";
+import { Trip, BookingFormData, ScheduleDate } from "@/core/interfaces";
 import { format } from "date-fns";
 import { Label } from "@/components/ui/label";
 import {
@@ -32,7 +32,7 @@ import "react-datepicker/dist/react-datepicker.css";
 interface TravelDetailsProps {
   nextStep: () => void;
   trip: Trip | null;
-  selectedDate: DateSchedule | undefined;
+  selectedDate: ScheduleDate | undefined;
   updateData: (data: Partial<BookingFormData["travelDetails"]>) => void;
   data: BookingFormData["travelDetails"];
 }

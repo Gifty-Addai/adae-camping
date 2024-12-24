@@ -1,4 +1,4 @@
-import { bookingSchema } from "./zod";
+import { bookingSchema, TripFormInput, TypeAndDifficultyInput } from "./zod";
 import { z } from "zod";
 
 
@@ -33,14 +33,14 @@ export interface PaymentInfo {
 }
 
 export interface BookingUpdate {
-    selectedDateId?: string | null;
-    participing?: boolean | null;
-    numberOfPeople?: number | null;
-    payment?: boolean | null;
-    authorizationUrl?: string | null;
-    reference?: string | null;
-    status?: 'pending' | 'confirmed' | 'cancelled' | 'reschedule' | null;
-    rescheduleDate?: Date | null;
+  selectedDateId?: string | null;
+  participing?: boolean | null;
+  numberOfPeople?: number | null;
+  payment?: boolean | null;
+  authorizationUrl?: string | null;
+  reference?: string | null;
+  status?: 'pending' | 'confirmed' | 'cancelled' | 'reschedule' | null;
+  rescheduleDate?: Date | null;
 }
 
 export interface BookingFormData {
@@ -50,6 +50,11 @@ export interface BookingFormData {
   selectedDate: string | undefined;
   numberOfPeople: number | undefined;
 }
+export interface GroupSize {
+  min: number;
+  max: number;
+}
+
 export interface Duration {
   days: number;
   nights: number;
@@ -60,33 +65,28 @@ export interface Cost {
   discount: number;
 }
 
-export interface GroupSize {
-  min: number;
-  max: number;
-}
-
 export interface Location {
   mainLocation: string;
   pointsOfInterest: string[];
 }
 
-export interface DateSchedule {
-  startDate: string;
-  endDate: string;
+export interface ScheduleDate {
+  startDate: Date;
+  endDate: Date;
   isAvailable: boolean;
   slotsRemaining: number;
   _id?: string;
 }
 
-export interface ItineraryItem {
+export interface Itinerary {
   day: number;
   activities: string;
   _id?: string;
 }
 
 export interface Schedule {
-  dates: DateSchedule[];
-  itinerary: ItineraryItem[];
+  dates: ScheduleDate[];
+  itinerary: Itinerary[];
 }
 
 export interface Logistics {
@@ -95,11 +95,15 @@ export interface Logistics {
   accommodation: string;
 }
 
+export interface Image {
+  url: string;
+}
+
 export interface TripFormData {
   name: string;
   description?: string;
-  type: 'hiking' | 'camping' | 'mountaineering' | 'other';
-  difficulty: 'easy' | 'moderate' | 'hard' | 'expert';
+  type: TypeAndDifficultyInput["type"]; // "hiking" | "camping" | "mountaineering" | "other"
+  difficulty: TypeAndDifficultyInput["difficulty"]; // "easy" | "moderate" | "hard" | "expert"
   duration: Duration;
   cost: Cost;
   groupSize: GroupSize;
@@ -107,9 +111,21 @@ export interface TripFormData {
   location: Location;
   schedule: Schedule;
   logistics: Logistics;
-  images?: string[];
+  images: Image[];
 }
 
+export interface ImageUpload {
+  id: string;
+  file: File;
+  preview: string;
+  uploading: boolean;
+  progress: number;
+  error: string | null;
+  url: string | null;
+}
+export interface UploadImageResponse {
+  url: string
+}
 export interface Trip extends TripFormData {
   _id: string;
 }
@@ -169,8 +185,8 @@ export interface TripSearchParams {
 export interface UseTripAPI {
   trips: Trip[];
   loading: boolean;
-  addTrip: (tripData: TripFormData) => Promise<void>;
-  editTrip: (id: string, tripData: TripFormData) => Promise<void>;
+  addTrip: (tripData: TripFormInput) => Promise<void>;
+  editTrip: (id: string, tripData: TripFormInput) => Promise<void>;
   removeTrip: (id: string) => Promise<void>;
   getTripById: (id: string) => Promise<Trip | null>;
   searchTrip: (filters: TripSearchParams) => Promise<void>;
@@ -239,7 +255,7 @@ export interface UseUserAPI {
   error: string | null;
   getUserProfile: () => Promise<User | null>;
   updateUserProfile: (payload: UpdateUserPayload) => Promise<User | null>;
-  confirmMembership: (param:ConfirmMemberRequest) => Promise<ConfirmMembershipResponse>;
+  confirmMembership: (param: ConfirmMemberRequest) => Promise<ConfirmMembershipResponse>;
   getAllUsers: () => Promise<User[] | null>;
   getUserById: (id: string) => Promise<User | null>;
   updateUserById: (id: string, payload: UpdateUserPayload) => Promise<User | null>;
@@ -287,7 +303,7 @@ export interface AddBookinResponse {
   bookingDate: string;
   paymentDone: boolean;
   reference: string;
-  status: "pending" |"confirm";
+  status: "pending" | "confirm";
 }
 export interface PaymentOptions {
   key: string;
@@ -396,7 +412,7 @@ export interface PaymentVerifyResponse {
 }
 
 export interface IUser {
-  role:  "user" | "admin",
+  role: "user" | "admin",
   _id: string,
   name: string
 }
@@ -411,11 +427,11 @@ export interface User {
   bookings: string[];
   address?: string;
   isEmailConfirmed: boolean;
-  dateJoined: string; 
+  dateJoined: string;
   age?: number;
   isMember: boolean;
   image?: string;
-  recentTrip?: string; 
+  recentTrip?: string;
   nextRenewalDate?: string;
   latestPaymentDate?: string;
   latestPaymentAmount?: number;
@@ -423,7 +439,7 @@ export interface User {
   hasDiscount: boolean;
   idCard?: string;
   active: boolean;
-  createdAt: string; 
+  createdAt: string;
   updatedAt: string;
 }
 

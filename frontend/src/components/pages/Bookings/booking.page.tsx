@@ -124,6 +124,7 @@ const BookingPage: React.FC = () => {
                             data={formData.personalInfo}
                         />
                     )}
+
                     {currentStep === 2 && (
                         <TravelDetailsComponent
                             nextStep={nextStep}
@@ -133,6 +134,7 @@ const BookingPage: React.FC = () => {
                             updateData={(data) => updateFormData("travelDetails", data)}
                         />
                     )}
+                    
                     {currentStep === 3 && (
                         <ReviewConfirm formData={formData} trip={trip} selectedDate={selectedDate} />
                     )}

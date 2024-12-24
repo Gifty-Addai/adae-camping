@@ -5,9 +5,10 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { toast } from "react-toastify";
-import { Trip, TripFormData } from "@/core/interfaces";
+import { Trip,} from "@/core/interfaces";
 import { useTripAPI } from "@/hooks/api.hook";
 import TripForm from "./tripForm";
+import { TripFormInput } from "@/core/interfaces/zod";
 
 const AdminTripFormPage: React.FC = () => {
   const navigate = useNavigate();
@@ -26,7 +27,7 @@ const AdminTripFormPage: React.FC = () => {
           setTrip(fetchedTrip);
         } catch (error: any) {
           toast.error("Failed to fetch trip data.");
-          navigate("/admin/trips"); // Redirect back to trips list on error
+          navigate("/admin/trips");
         }
       }
       setLoading(false);
@@ -34,18 +35,11 @@ const AdminTripFormPage: React.FC = () => {
     fetchTrip();
   }, [id, getTripById, navigate]);
 
-  const handleFormSubmit = async (tripData: TripFormData, isEdit: boolean) => {
-    try {
-      if (isEdit && id) {
-        await editTrip(id, tripData);
-        toast.success("Trip updated successfully!");
-      } else {
-        await addTrip(tripData);
-        toast.success("Trip added successfully!");
-      }
-      navigate("/admin/trips"); // Navigate back to the trips list after submission
-    } catch (error: any) {
-      toast.error(error.message || "An error occurred while submitting the form.");
+  const handleFormSubmit = async (tripData: TripFormInput, isEdit: boolean) => {
+    if (isEdit && id) {
+      await editTrip(id, tripData);
+    } else {
+      await addTrip(tripData);
     }
   };
 

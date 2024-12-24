@@ -14,14 +14,14 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Trip, DateSchedule, BookingFormData, ConfirmMembershipResponse } from "@/core/interfaces";
+import { Trip, BookingFormData, ConfirmMembershipResponse,  ScheduleDate } from "@/core/interfaces";
 import { format, parseISO } from "date-fns";
 import BookConfirmModal from "./BookingComponents/confirm.personal.modal";
 import { useUserAPI } from "@/hooks/user.hook";
 
 interface PersonalInfoProps {
   trip: Trip | null;
-  selectedDate: DateSchedule | undefined;
+  selectedDate: ScheduleDate | undefined;
   updateData: (data: Partial<BookingFormData["personalInfo"]>) => void;
   nextStep: () => void;
   data: BookingFormData["personalInfo"];
@@ -206,7 +206,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({
           <div className="flex items-start gap-4">
             <div className="w-24 h-24 overflow-hidden rounded-md">
               <img
-                src={(trip && trip.images && trip.images[0]) || "/default-placeholder.jpg"}
+                src={(trip && trip.images && trip.images[0].url) || "/default-placeholder.jpg"}
                 alt={trip?.name || "Trip Image"}
                 className="w-full h-full object-cover"
               />
@@ -218,8 +218,8 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({
               <p className="text-xs text-muted-foreground">
                 {selectedDate?.startDate ? (
                   <>
-                    {format(parseISO(selectedDate.startDate), "MMM d, yyyy")} –
-                    {format(parseISO(selectedDate.endDate), "MMM d, yyyy")}
+                    {format(parseISO(selectedDate.startDate.toString()), "MMM d, yyyy")} –
+                    {format(parseISO(selectedDate.endDate.toString()), "MMM d, yyyy")}
                   </>
                 ) : (
                   <span>No date selected</span>

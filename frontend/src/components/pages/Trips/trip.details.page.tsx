@@ -53,6 +53,8 @@ const TripDetail: React.FC = () => {
     fetchTripDetails();
   }, [id]);
 
+  console.info("images",trip?.images)
+
   if (loading) return (
     <Page
       renderBody={() => (
@@ -119,9 +121,9 @@ const TripDetail: React.FC = () => {
               {trip?.images?.map((image, index) => (
                 <SwiperSlide key={index} style={{ width: "100%", height: "100%" }}>
                   <img
-                    src={image}
+                    src={image.url}
                     alt={`Trip Image ${index + 1}`}
-                    className="object-cover w-full h-full"
+                    className="object-contain w-full h-full"
                   />
                 </SwiperSlide>
               ))}

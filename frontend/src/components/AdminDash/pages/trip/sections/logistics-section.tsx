@@ -1,58 +1,109 @@
-// src/components/TripForm/sections/logistics-section.tsx
-
+// src/components/TripForm/sections/LogisticsSection.tsx
 import React from "react";
-import { Label } from "@/components/ui/label";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useFormContext } from "react-hook-form";
-import { TripFormInput } from "@/core/interfaces/zod";
+import { Label } from "@/components/ui/label";
 import ErrorMessage from "@/components/ui/error-message";
+import { Tooltip, TooltipContent } from "@/components/ui/tooltip";
+import { Switch } from "@/components/ui/switch";
+import { LogisticsInput, logisticsSchema } from "@/core/interfaces/zod";
 
-const LogisticsSection: React.FC = () => {
+interface LogisticsSectionProps {
+  data: {
+    transportation: string;
+    gearProvided: boolean;
+    accommodation: string;
+  };
+  onNext: (data: LogisticsInput) => void;
+}
+
+const LogisticsSection: React.FC<LogisticsSectionProps> = ({ data, onNext }) => {
   const {
     register,
+    handleSubmit,
     formState: { errors },
-  } = useFormContext<TripFormInput>();
+  } = useForm<LogisticsInput>({
+    resolver: zodResolver(logisticsSchema),
+    defaultValues: {
+      transportation: data.transportation,
+      gearProvided: data.gearProvided,
+      accommodation: data.accommodation,
+    },
+  });
+
+  const onSubmit = (formData: LogisticsInput) => {
+    onNext(formData);
+  };
 
   return (
-    <div className="flex flex-col space-y-4">
+    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col space-y-4">
       {/* Transportation */}
       <div className="flex flex-col space-y-2">
-        <Label htmlFor="logistics.transportation">Transportation</Label>
+        <div className="flex items-center justify-between">
+          <Label htmlFor="transportation">
+            Transportation <span className="text-red-500">*</span>
+          </Label>
+          <Tooltip>
+            <TooltipContent>
+              Enter details about transportation arrangements for the trip.
+            </TooltipContent>
+          </Tooltip>
+        </div>
         <Input
-          id="logistics.transportation"
+          id="transportation"
           placeholder="Enter transportation details"
-          {...register("logistics.transportation")}
+          {...register("transportation")}
+          className="border rounded-md px-4 py-2 focus:ring focus:ring-blue-300"
+          aria-invalid={errors.transportation ? "true" : "false"}
         />
-        {errors.logistics?.transportation?.message && (
-          <ErrorMessage message={errors.logistics.transportation.message} />
-        )}
+        {errors.transportation && <ErrorMessage message={errors.transportation.message} />}
       </div>
 
       {/* Gear Provided */}
-      <div className="flex items-center space-x-2">
-        <Label htmlFor="logistics.gearProvided">Gear Provided</Label>
-        <input
-          type="checkbox"
-          id="logistics.gearProvided"
-          {...register("logistics.gearProvided")}
-          className="h-4 w-4 text-blue-600 border-gray-300 rounded"
+      <div className="flex items-center justify-between">
+        <Label htmlFor="gearProvided">Gear Provided</Label>
+        <Tooltip>
+          <TooltipContent>
+            Toggle to indicate whether gear is provided as part of the trip.
+          </TooltipContent>
+        </Tooltip>
+        <Switch
+          id="gearProvided"
+          {...register("gearProvided")}
+          className="focus:ring focus:ring-blue-300"
         />
       </div>
 
       {/* Accommodation */}
       <div className="flex flex-col space-y-2">
-        <Label htmlFor="logistics.accommodation">Accommodation</Label>
+        <div className="flex items-center justify-between">
+          <Label htmlFor="accommodation">
+            Accommodation <span className="text-red-500">*</span>
+          </Label>
+          <Tooltip>
+            <TooltipContent>
+              Provide details about accommodation arrangements during the trip.
+            </TooltipContent>
+          </Tooltip>
+        </div>
         <Input
-          id="logistics.accommodation"
+          id="accommodation"
           placeholder="Enter accommodation details"
-          {...register("logistics.accommodation")}
+          {...register("accommodation")}
+          className="border rounded-md px-4 py-2 focus:ring focus:ring-blue-300"
+          aria-invalid={errors.accommodation ? "true" : "false"}
         />
-        {errors.logistics?.accommodation?.message && (
-          <ErrorMessage message={errors.logistics.accommodation.message} />
-        )}
+        {errors.accommodation && <ErrorMessage message={errors.accommodation.message} />}
       </div>
-    </div>
+
+      {/* Continue Button */}
+      <div className="flex justify-end">
+        <Button type="submit">Continue</Button>
+      </div>
+    </form>
   );
 };
 
-export default LogisticsSection;
+export default React.memo(LogisticsSection);

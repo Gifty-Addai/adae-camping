@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { format } from "date-fns";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { DateSchedule, Trip } from "@/core/interfaces";
+import { ScheduleDate, Trip } from "@/core/interfaces";
 import { Link } from "react-router-dom";
 
 /** Modal component interface */
@@ -10,9 +10,9 @@ interface TripDatesModalProps {
   tripName: string;
   cost: number;
   tripId: string | undefined;
-  departures: DateSchedule[];
-  selectedDate: DateSchedule | null;
-  setSelectedDate: (date: DateSchedule) => void;
+  departures: ScheduleDate[];
+  selectedDate: ScheduleDate | null;
+  setSelectedDate: (date: ScheduleDate) => void;
   onClose: () => void;
   groupSizeMin: number;
 }
@@ -196,7 +196,7 @@ const TripHeaderCTA: React.FC<Props> = ({
   trip
 }) => {
   const [showModal, setShowModal] = useState(false);
-  const [selectedDate, setSelectedDate] = useState<DateSchedule | null>(null);
+  const [selectedDate, setSelectedDate] = useState<ScheduleDate | null>(null);
 
   // Automatically select first available date, if any, on mount or whenever `departures` changes
   useEffect(() => {
