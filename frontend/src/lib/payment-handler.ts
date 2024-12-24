@@ -28,7 +28,7 @@ export const initializePayment = async ({
 
 
         const paymentOptions: PaymentOptions = {
-            key: 'pk_test_2a9d02701fc28f595123210b9bebc13c324b9c0d',
+            key: 'pk_live_c8527e2f21c94ad8cbb07b2e10a881f556fc025c',
             email: formData.email,
             amount: response?.amount || 0,
             phone: formData.phone,
