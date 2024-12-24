@@ -1,6 +1,6 @@
 // src/components/booking/ReviewConfirm.tsx
 import React from "react";
-import { BookingFormData, DateSchedule, Trip } from "@/core/interfaces";
+import { BookingFormData, ScheduleDate, Trip } from "@/core/interfaces";
 import { format, parseISO } from "date-fns";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -14,7 +14,7 @@ import { useBookingAPI } from "@/hooks/booking.hook";
 interface ReviewConfirmProps {
   formData: BookingFormData;
   trip: Trip | null | undefined;
-  selectedDate: DateSchedule | undefined;
+  selectedDate: ScheduleDate | undefined;
 }
 
 const ReviewConfirm: React.FC<ReviewConfirmProps> = ({ formData, trip, selectedDate }) => {
@@ -24,8 +24,8 @@ const ReviewConfirm: React.FC<ReviewConfirmProps> = ({ formData, trip, selectedD
   const { confirmMembership } = useUserAPI()
   // const [disable, setDisable] = useState<boolean>(false)
 
-  const startDateFormatted = format(parseISO(selectedDate.startDate), "MMM d, yyyy");
-  const endDateFormatted = format(parseISO(selectedDate.endDate), "MMM d, yyyy");
+  const startDateFormatted = format(parseISO(selectedDate.startDate.toString()), "MMM d, yyyy");
+  const endDateFormatted = format(parseISO(selectedDate.endDate.toString()), "MMM d, yyyy");
 
   const basePrice = trip.cost.basePrice;
   const tripDiscount = trip.cost.discount;
@@ -98,9 +98,9 @@ const ReviewConfirm: React.FC<ReviewConfirmProps> = ({ formData, trip, selectedD
         {trip.images && trip.images[0] && (
           <div className="w-full md:w-auto md:flex-shrink-0">
             <img
-              src={trip.images[0]}
+              src={trip.images[0].url}
               alt={trip.name}
-              className="w-full md:w-64 h-40 object-cover rounded-md border"
+              className="w-full md:w-64 h-40 object-fill rounded-md border"
             />
           </div>
         )}

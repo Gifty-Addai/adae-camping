@@ -43,11 +43,18 @@ const CostSection: React.FC<CostSectionProps> = ({ data, onNext }) => {
   }, [basePrice, setValue, watch]);
 
   const onSubmit = (formData: CostInput) => {
+    console.log("CostInput",formData)
     onNext(formData);
   };
 
+  const safeMax = Number.isFinite(basePrice) ? basePrice : undefined;
+
+
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+      <h3 className="text-center text-yellow-400 text-2xl font-semibold">
+        Pricing
+      </h3>
       {/* Base Price */}
       <div className="flex flex-col space-y-1">
         <div className="flex items-center justify-between">
@@ -66,6 +73,7 @@ const CostSection: React.FC<CostSectionProps> = ({ data, onNext }) => {
           placeholder="Enter base price"
           {...register("basePrice", { valueAsNumber: true })}
           min={0}
+          max={safeMax}
           className="border rounded-md px-4 py-2 focus:ring focus:ring-blue-300"
           aria-invalid={errors.basePrice ? "true" : "false"}
         />

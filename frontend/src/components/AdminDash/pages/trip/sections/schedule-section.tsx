@@ -1,67 +1,76 @@
-// src/components/AdminDash/pages/trip/sections/ScheduleSection.tsx
-
 import React from "react";
 import { useForm, Controller, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  tripSchema,
-  TripFormInput,  // the full trip shape
-} from "@/core/interfaces/zod";
-
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import ErrorMessage from "@/components/ui/error-message";
 import { Tooltip, TooltipContent } from "@/components/ui/tooltip";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Input } from "@/components/ui/input";
+import ErrorMessage from "@/components/ui/error-message";
+import { ScheduleInput, scheduleSchema } from "@/core/interfaces/zod";
+import { toast } from "react-toastify";
 
 interface ScheduleSectionProps {
-  // We'll assume "data" is the full TripFormInput,
-  // but maybe only the schedule portion is filled in.
-  data: TripFormInput;
-  onNext: (data: TripFormInput) => void;
-  onBack?: () => void; // Optional back button handler
+  data: ScheduleInput;
+  onNext: (data: ScheduleInput) => void;
+  duration: number;
+  onBack?: () => void;
 }
 
 const ScheduleSection: React.FC<ScheduleSectionProps> = ({
   data,
   onNext,
+  duration,
   onBack,
 }) => {
-  // useForm with the FULL tripSchema
+  // 1) Use your zod schema as the resolver
   const {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm<TripFormInput>({
-    resolver: zodResolver(tripSchema),
+  } = useForm<ScheduleInput>({
+    resolver: zodResolver(scheduleSchema),
     defaultValues: data,
-
-    // Validate onSubmit so we see all errors when user clicks "Continue"
     mode: "onSubmit",
   });
 
-  // Setup field arrays for "schedule.dates" and "schedule.itinerary"
+  // 2) Field array for "dates"
   const {
     fields: dateFields,
     append: appendDate,
     remove: removeDate,
   } = useFieldArray({
     control,
-    name: "schedule.dates",
+    name: "dates",
   });
 
+  // 3) Field array for "itinerary"
   const {
     fields: itineraryFields,
     append: appendItinerary,
     remove: removeItinerary,
   } = useFieldArray({
     control,
-    name: "schedule.itinerary",
+    name: "itinerary",
   });
 
-  // Handle submit
-  const onSubmit = (formData: TripFormInput) => {
-    // If no validation errors, call onNext
+  // 4) Submit handler
+  const onSubmit = (formData: ScheduleInput) => {
+    const isValid = formData.dates.every((date) => {
+      const startDate = new Date(date.startDate);
+      const endDate = new Date(date.endDate);
+      const actualDuration = Math.ceil(
+        (endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24) + 1
+      );
+
+      return actualDuration === duration;
+    });
+
+    if (!isValid) {
+      toast.info(`Each date range must exactly match the duration of ${duration} days.`);
+      return;
+    }
+
     onNext(formData);
   };
 
@@ -71,10 +80,11 @@ const ScheduleSection: React.FC<ScheduleSectionProps> = ({
         Schedule Information
       </h3>
 
-      {/* DATES SECTION */}
+      {/** =============== DATES SECTION =============== **/}
       <div className="flex flex-col space-y-4">
         <div className="flex justify-between items-center">
-          <Label className="text-lg">Trip Dates</Label>
+          <Label className="text-xl">Trip Dates</Label>
+          <Label className="text-lg text-blue-500">Duration Set- {duration}</Label>
           <Tooltip>
             <TooltipContent>
               Add the dates for the trip, including availability and slots.
@@ -84,105 +94,116 @@ const ScheduleSection: React.FC<ScheduleSectionProps> = ({
 
         {dateFields.map((field, index) => (
           <div key={field.id} className="border p-4 rounded-md space-y-4">
+            {/* <Label className="text-lg text-blue-500">Duration Set- {duration}</Label> */}
             {/* Start / End Dates */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
               {/* Start Date */}
               <div className="flex flex-col">
-                <Label htmlFor={`schedule.dates.${index}.startDate`}>
-                  Start Date
-                </Label>
+
+                <Label htmlFor={`dates.${index}.startDate`}>Start Date</Label>
                 <Controller
                   control={control}
-                  name={`schedule.dates.${index}.startDate`}
+                  name={`dates.${index}.startDate`}
                   render={({ field }) => (
-                    <input
+                    <Input
                       type="date"
-                      id={`schedule.dates.${index}.startDate`}
-                      {...field}
-                      className="border rounded-md px-4 py-2 focus:ring focus:ring-blue-300"
+                      // Convert Date -> YYYY-MM-DD for display
+                      value={
+                        field.value ? new Date(field.value).toISOString().split("T")[0] : ""
+                      }
+                      onChange={(e) => {
+                        // Convert the string back into a Date
+                        const dateString = e.target.value;
+                        field.onChange(dateString ? new Date(dateString) : null);
+                      }}
+                      aria-invalid={errors.dates?.[index]?.startDate ? "true" : "false"}
                     />
                   )}
                 />
-                {errors.schedule?.dates?.[index]?.startDate && (
+                {errors.dates?.[index]?.startDate && (
                   <ErrorMessage
-                    message={errors.schedule.dates[index].startDate?.message}
+                    message={errors.dates[index].startDate?.message}
                   />
                 )}
               </div>
 
               {/* End Date */}
               <div className="flex flex-col">
-                <Label htmlFor={`schedule.dates.${index}.endDate`}>
-                  End Date
-                </Label>
+                <Label htmlFor={`dates.${index}.endDate`}>End Date</Label>
                 <Controller
                   control={control}
-                  name={`schedule.dates.${index}.endDate`}
+                  name={`dates.${index}.endDate`}
                   render={({ field }) => (
-                    <input
+                    <Input
                       type="date"
-                      id={`schedule.dates.${index}.endDate`}
-                      {...field}
-                      className="border rounded-md px-4 py-2 focus:ring focus:ring-blue-300"
+                      // Convert Date -> YYYY-MM-DD for display
+                      value={
+                        field.value ? new Date(field.value).toISOString().split("T")[0] : ""
+                      }
+                      onChange={(e) => {
+                        // Convert the string back into a Date
+                        const dateString = e.target.value;
+                        field.onChange(dateString ? new Date(dateString) : null);
+                      }}
+                      aria-invalid={errors.dates?.[index]?.endDate ? "true" : "false"}
                     />
                   )}
                 />
-                {errors.schedule?.dates?.[index]?.endDate && (
+                {errors.dates?.[index]?.endDate && (
                   <ErrorMessage
-                    message={errors.schedule.dates[index].endDate?.message}
+                    message={errors.dates[index].endDate?.message}
                   />
                 )}
               </div>
             </div>
 
-            {/* Availability + Slots */}
+            {/* Availability & Slots */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {/* isAvailable */}
               <div className="flex items-center space-x-2">
-                <Label
-                  htmlFor={`schedule.dates.${index}.isAvailable`}
-                >
-                  Available
-                </Label>
+                <Label htmlFor={`dates.${index}.isAvailable`}>Available</Label>
                 <Controller
                   control={control}
-                  name={`schedule.dates.${index}.isAvailable`}
+                  name={`dates.${index}.isAvailable`}
                   render={({ field }) => (
                     <Checkbox
-                      id={`schedule.dates.${index}.isAvailable`}
+                      id={`dates.${index}.isAvailable`}
                       checked={field.value}
                       onCheckedChange={(checked) => field.onChange(!!checked)}
                     />
                   )}
                 />
+                {errors.dates?.[index]?.isAvailable && (
+                  <ErrorMessage
+                    message={errors.dates[index].isAvailable?.message}
+                  />
+                )}
               </div>
 
               {/* slotsRemaining */}
-              <div className="flex flex-col">
-                <Label htmlFor={`schedule.dates.${index}.slotsRemaining`}>
+              {/* <div className="flex flex-col">
+                <Label htmlFor={`dates.${index}.slotsRemaining`}>
                   Slots Remaining
                 </Label>
                 <Controller
                   control={control}
-                  name={`schedule.dates.${index}.slotsRemaining`}
+                  name={`dates.${index}.slotsRemaining`}
                   render={({ field }) => (
-                    <input
+                    <Input
                       type="number"
                       min={0}
-                      id={`schedule.dates.${index}.slotsRemaining`}
+                      id={`dates.${index}.slotsRemaining`}
                       {...field}
-                      className="border rounded-md px-4 py-2 focus:ring focus:ring-blue-300"
                     />
                   )}
                 />
-                {errors.schedule?.dates?.[index]?.slotsRemaining && (
+                {errors.dates?.[index]?.slotsRemaining && (
                   <ErrorMessage
-                    message={
-                      errors.schedule.dates[index].slotsRemaining?.message
-                    }
+                    message={errors.dates[index].slotsRemaining?.message}
                   />
                 )}
-              </div>
+              </div> */}
             </div>
 
             {/* Remove Date Button */}
@@ -191,7 +212,6 @@ const ScheduleSection: React.FC<ScheduleSectionProps> = ({
               type="button"
               onClick={() => removeDate(index)}
               disabled={dateFields.length === 1}
-              className="w-full sm:w-auto"
             >
               Remove Date
             </Button>
@@ -204,19 +224,18 @@ const ScheduleSection: React.FC<ScheduleSectionProps> = ({
           type="button"
           onClick={() =>
             appendDate({
-              startDate: "",
-              endDate: "",
+              startDate: new Date(),
+              endDate: new Date(),
               isAvailable: true,
               slotsRemaining: 10,
             })
           }
-          className="self-start"
         >
           Add Date
         </Button>
       </div>
 
-      {/* ITINERARY SECTION */}
+      {/** ============== ITINERARY SECTION ============== **/}
       <div className="flex flex-col space-y-4">
         <div className="flex justify-between items-center">
           <Label className="text-lg">Itinerary</Label>
@@ -232,63 +251,56 @@ const ScheduleSection: React.FC<ScheduleSectionProps> = ({
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {/* Day */}
               <div className="flex flex-col">
-                <Label htmlFor={`schedule.itinerary.${index}.day`}>
-                  Day
-                </Label>
+                <Label htmlFor={`itinerary.${index}.day`}>Day</Label>
                 <Controller
                   control={control}
-                  name={`schedule.itinerary.${index}.day`}
+                  name={`itinerary.${index}.day`}
                   render={({ field }) => (
-                    <input
+                    <Input
                       type="number"
-                      id={`schedule.itinerary.${index}.day`}
-                      {...field}
                       min={1}
-                      className="border rounded-md px-4 py-2 focus:ring focus:ring-blue-300"
+                      id={`itinerary.${index}.day`}
+                      {...field}
                     />
                   )}
                 />
-                {errors.schedule?.itinerary?.[index]?.day && (
+                {errors.itinerary?.[index]?.day && (
                   <ErrorMessage
-                    message={errors.schedule.itinerary[index].day?.message}
+                    message={errors.itinerary[index].day?.message}
                   />
                 )}
               </div>
 
               {/* Activities */}
               <div className="flex flex-col">
-                <Label htmlFor={`schedule.itinerary.${index}.activities`}>
+                <Label htmlFor={`itinerary.${index}.activities`}>
                   Activities
                 </Label>
                 <Controller
                   control={control}
-                  name={`schedule.itinerary.${index}.activities`}
+                  name={`itinerary.${index}.activities`}
                   render={({ field }) => (
-                    <input
+                    <Input
                       type="text"
-                      id={`schedule.itinerary.${index}.activities`}
-                      {...field}
+                      id={`itinerary.${index}.activities`}
                       placeholder="Describe activities"
-                      className="border rounded-md px-4 py-2 focus:ring focus:ring-blue-300"
+                      {...field}
                     />
                   )}
                 />
-                {errors.schedule?.itinerary?.[index]?.activities && (
+                {errors.itinerary?.[index]?.activities && (
                   <ErrorMessage
-                    message={
-                      errors.schedule.itinerary[index].activities?.message
-                    }
+                    message={errors.itinerary[index].activities?.message}
                   />
                 )}
               </div>
             </div>
 
-            {/* Remove Itinerary Item */}
+            {/* Remove Itinerary Item Button */}
             <Button
               variant="outline"
               type="button"
               onClick={() => removeItinerary(index)}
-              className="w-full sm:w-auto"
             >
               Remove Itinerary Item
             </Button>
@@ -305,13 +317,12 @@ const ScheduleSection: React.FC<ScheduleSectionProps> = ({
               activities: "",
             })
           }
-          className="self-start"
         >
           Add Itinerary Item
         </Button>
       </div>
 
-      {/* NAVIGATION BUTTONS */}
+      {/** ============== NAVIGATION BUTTONS ============== **/}
       <div className="flex justify-between">
         {onBack && (
           <Button variant="ghost" type="button" onClick={onBack}>

@@ -2,11 +2,12 @@
 
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { TripFormOutput } from "@/core/interfaces/zod";
+// import { } from "@/core/interfaces/zod";
 import { Button } from "@/components/ui/button";
 import { toast } from "react-toastify";
 import ErrorMessage from "@/components/ui/error-message";
 import TripForm from "./tripForm";
+import { TripFormInput } from "@/core/interfaces/zod";
 
 const AddTripPage: React.FC = () => {
   const navigate = useNavigate();
@@ -14,7 +15,7 @@ const AddTripPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   // Handler for form submission
-  const handleAddTrip = async (tripData: TripFormOutput) => {
+  const handleAddTrip = async (tripData: TripFormInput) => {
     setIsLoading(true);
     setSubmissionError(null); // Reset previous errors
 

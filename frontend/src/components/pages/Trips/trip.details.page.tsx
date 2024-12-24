@@ -53,6 +53,8 @@ const TripDetail: React.FC = () => {
     fetchTripDetails();
   }, [id]);
 
+  console.info("images",trip?.images)
+
   if (loading) return (
     <Page
       renderBody={() => (
@@ -121,7 +123,7 @@ const TripDetail: React.FC = () => {
                   <img
                     src={image.url}
                     alt={`Trip Image ${index + 1}`}
-                    className="object-cover w-full h-full"
+                    className="object-contain w-full h-full"
                   />
                 </SwiperSlide>
               ))}
@@ -138,7 +140,7 @@ const TripDetail: React.FC = () => {
             <h2 className="text-xl font-bold text-primary">Trip Highlights</h2>
             <ul className="list-disc list-inside text-card-foreground">
               {trip?.location?.pointsOfInterest?.map((poi, index) => (
-                <li className="text-card-foreground" key={index}>{poi.value}</li>
+                <li className="text-card-foreground" key={index}>{poi}</li>
               ))}
             </ul>
           </section>

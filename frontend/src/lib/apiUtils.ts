@@ -1,6 +1,6 @@
-import { ConfirmMemberRequest, ConfirmMembershipResponse, SignInResponse, Trip, TripFormData, TripSearchParams, UpdateUserPayload, User, VerifyPaymentResponse } from "@/core/interfaces";
-import { deleteRequest, getRequest, postRequest, putRequest } from "./api-Request/api-requests";
-import { TripFormOutput } from "@/core/interfaces/zod";
+import { ConfirmMemberRequest, ConfirmMembershipResponse, SignInResponse, Trip, TripSearchParams, UpdateUserPayload, User, VerifyPaymentResponse } from "@/core/interfaces";
+import { deleteRequest, getRequest, patchRequest, postRequest, putRequest } from "./api-Request/api-requests";
+import { TripFormInput } from "@/core/interfaces/zod";
 
 export class ApiError extends Error {
   public statusCode: number;
@@ -73,7 +73,7 @@ export const createTrips = async (trips: Trip[]): Promise<{
   return data;
 };
 
-export const createTrip = async (tripData: TripFormOutput): Promise<{
+export const createTrip = async (tripData: TripFormInput): Promise<{
   message: string;
   trip?: Trip;
   errors?: any[];
@@ -82,7 +82,7 @@ export const createTrip = async (tripData: TripFormOutput): Promise<{
     message: string;
     trip?: Trip;
     errors?: any[];
-  }>("/api/trip", tripData);
+  }>("/api/trip/createTrip", tripData);
   return data;
 };
 
@@ -91,20 +91,17 @@ export const fetchTripById = async (id: string): Promise<Trip> => {
   return data;
 };
 
-export const updateTrip = async (id: string, tripData: TripFormOutput): Promise<{
+export const updateTrip = async (id: string, tripData: TripFormInput): Promise<{
   message: string;
   trip?: Trip;
   errors?: any[];
 }> => {
-  const data = await fetch(`/api/trip/${id}`, {
-    method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(tripData),
-  });
-  if (!data.ok) {
-    throw new Error("Failed to update trip");
-  }
-  return data.json();
+  const data = await patchRequest<{
+    message: string;
+    trip?: Trip;
+    errors?: any[];
+  }>(`/api/trip/${id}`, { tripData });
+  return data;
 };
 
 export const deleteTrip = async (id: string): Promise<{

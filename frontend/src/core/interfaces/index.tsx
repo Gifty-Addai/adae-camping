@@ -1,4 +1,4 @@
-import { bookingSchema, TypeAndDifficultyInput } from "./zod";
+import { bookingSchema, TripFormInput, TypeAndDifficultyInput } from "./zod";
 import { z } from "zod";
 
 
@@ -71,8 +71,8 @@ export interface Location {
 }
 
 export interface ScheduleDate {
-  startDate: string;
-  endDate: string;
+  startDate: Date;
+  endDate: Date;
   isAvailable: boolean;
   slotsRemaining: number;
   _id?: string;
@@ -185,8 +185,8 @@ export interface TripSearchParams {
 export interface UseTripAPI {
   trips: Trip[];
   loading: boolean;
-  addTrip: (tripData: TripFormData) => Promise<void>;
-  editTrip: (id: string, tripData: TripFormData) => Promise<void>;
+  addTrip: (tripData: TripFormInput) => Promise<void>;
+  editTrip: (id: string, tripData: TripFormInput) => Promise<void>;
   removeTrip: (id: string) => Promise<void>;
   getTripById: (id: string) => Promise<Trip | null>;
   searchTrip: (filters: TripSearchParams) => Promise<void>;

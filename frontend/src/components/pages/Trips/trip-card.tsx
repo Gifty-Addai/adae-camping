@@ -26,7 +26,7 @@ const TripCard: React.FC<TripCardProps> = ({
       <CardHeader className="p-0 relative">
         <img
           className="w-full h-36 object-cover"
-          src={trip?.images?.[0] || "/placeholder.jpg"}
+          src={trip?.images?.[0].url || "/placeholder.jpg"}
           alt={trip?.name || "Trip Image"}
         />
         {/* Gradient Overlay */}

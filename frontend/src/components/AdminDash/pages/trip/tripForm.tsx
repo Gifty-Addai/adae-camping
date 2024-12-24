@@ -81,10 +81,10 @@ const TripForm: React.FC<TripFormProps> = ({
     schedule: {
       dates: [
         {
-          startDate: "",
-          endDate: "",
+          startDate: new Date(),
+          endDate: new Date(),
           isAvailable: true,
-          slotsRemaining: 10,
+          slotsRemaining: defaultTrip?.groupSize.max || 1,
         },
       ],
       itinerary: [],
@@ -94,7 +94,7 @@ const TripForm: React.FC<TripFormProps> = ({
       gearProvided: false,
       accommodation: "",
     },
-    images: defaultTrip?.images.length! > 0 ? defaultTrip?.images! : [{ url: "" }],
+    images: defaultTrip?.images.length! > 0 ? defaultTrip?.images! : [],
   });
 
   const totalSteps: number = steps.length;
@@ -113,7 +113,7 @@ const TripForm: React.FC<TripFormProps> = ({
         duration: defaultTrip.duration,
         cost: defaultTrip.cost,
         groupSize: defaultTrip.groupSize,
-        activityLevel: { activityLevel: defaultTrip.activityLevel }, // Wrapped in object
+        activityLevel: { activityLevel: defaultTrip.activityLevel },
         location: {
           mainLocation: defaultTrip.location.mainLocation,
           pointsOfInterest:
@@ -128,34 +128,44 @@ const TripForm: React.FC<TripFormProps> = ({
             defaultTrip.schedule.dates.length > 0
               ? defaultTrip.schedule.dates.map((date) => ({
                 ...date,
-                startDate: new Date(date.startDate).toISOString().split("T")[0],
-                endDate: new Date(date.endDate).toISOString().split("T")[0],
+                startDate: date.startDate,
+                endDate: date.endDate,
               }))
               : [
                 {
-                  startDate: "",
-                  endDate: "",
+                  startDate: new Date(),
+                  endDate: new Date(),
                   isAvailable: true,
-                  slotsRemaining: 10,
+                  slotsRemaining: defaultTrip.groupSize.max,
                 },
               ],
           itinerary: defaultTrip.schedule.itinerary || [],
         },
         logistics: defaultTrip.logistics,
-        images: defaultTrip.images.length > 0 ? defaultTrip.images : [{ url: "" }], // Ensure at least one image
+        images: defaultTrip.images.length > 0 ? defaultTrip.images : [], // Ensure at least one image
       });
     }
   }, [defaultTrip]);
 
+  console.log("defaultTrip",(formData?.images?.length! > 0))
   // Handle form submission
   const handleFinalSubmit = async () => {
+    formData.schedule.dates.every((date) => {
+      const startDate = new Date(date.startDate);
+      const endDate = new Date(date.endDate);
+      const actualDuration = Math.ceil(
+        (endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24) + 1
+      );
+
+      alert(actualDuration);
+    });
+
     try {
       // Validate the entire form data before submission
       const validatedData = tripSchema.parse(formData);
       // No transformation needed as pointsOfInterest is already { value: string }[]
       const transformedData: TripFormInput = validatedData;
       await onSubmit(transformedData, isEdit);
-      alert("Trip successfully submitted!");
     } catch (error) {
       if (error instanceof z.ZodError) {
         // Handle validation errors
@@ -243,14 +253,14 @@ const TripForm: React.FC<TripFormProps> = ({
     ),
     8: (
       <ScheduleSection
-      data={formData} 
-      onNext={(validatedData) =>
-        handleNextStep({
-          // Only store the updated schedule portion
-          schedule: validatedData.schedule,
-        })
-      }
-    />
+        data={formData.schedule}
+        duration={formData.duration.days}
+        onNext={(validatedData: ScheduleInput) =>
+          handleNextStep({
+            schedule: validatedData,
+          })
+        }
+      />
     ),
     9: (
       <LogisticsSection
@@ -289,10 +299,22 @@ const TripForm: React.FC<TripFormProps> = ({
       );
     }
 
-    setFormData((prev) => ({
-      ...prev,
-      ...updatedFields,
-    }));
+    setFormData((prev) => {
+      const updatedForm = {
+        ...prev,
+        ...updatedFields,
+      };
+
+      // Update isRemaining based on the new groupSize.max
+      if (updatedFields.groupSize) {
+        updatedForm.schedule.dates = updatedForm.schedule.dates.map((date) => ({
+          ...date,
+          slotsRemaining: updatedFields.groupSize?.max || date.slotsRemaining,
+        }));
+      }
+
+      return updatedForm;
+    });
     setCurrentStep((prev) => prev + 1);
   };
 

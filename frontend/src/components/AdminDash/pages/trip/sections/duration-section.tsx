@@ -66,6 +66,9 @@ const DurationSection: React.FC<DurationSectionProps> = ({ data, onNext }) => {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+      <h3 className="text-center text-yellow-400 text-2xl font-semibold">
+        Duration Information
+      </h3>
       {/* Days */}
       <div className="flex flex-col space-y-1">
         <div className="flex items-center justify-between">

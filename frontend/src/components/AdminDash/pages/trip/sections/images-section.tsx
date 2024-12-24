@@ -14,7 +14,7 @@ import { z } from "zod";
 
 // Define a wrapper schema that includes the images array
 const imagesSectionSchema = z.object({
-  images: imagesSchema.min(1, "At least one image is required"), // Ensure at least one image
+  images: imagesSchema.min(1, "At least one image is required"),
 });
 
 // Infer the new type from the wrapper schema
@@ -33,7 +33,7 @@ const ImagesSection: React.FC<ImagesSectionProps> = ({ data, onNext }) => {
   } = useForm<ImagesSectionInput>({
     resolver: zodResolver(imagesSectionSchema),
     defaultValues: {
-      images: data.length > 0 ? data : [], // Start with an empty array
+      images: data.length > 0 ? data : [],
     },
   });
 
@@ -41,7 +41,6 @@ const ImagesSection: React.FC<ImagesSectionProps> = ({ data, onNext }) => {
     control,
     name: "images",
   });
-
   const [imageUploads, setImageUploads] = useState<ImageUpload[]>([]);
 
   // Watch the images array for debugging
@@ -75,7 +74,7 @@ const ImagesSection: React.FC<ImagesSectionProps> = ({ data, onNext }) => {
       "image/png": [".png"],
       "image/gif": [".gif"],
     },
-    maxSize: 5 * 1024 * 1024, // 5 MB
+    maxSize: 5 * 1024 * 1024,
   });
 
   const uploadImage = async (upload: ImageUpload) => {
@@ -152,9 +151,9 @@ const ImagesSection: React.FC<ImagesSectionProps> = ({ data, onNext }) => {
     // setImageUploads((prev) => prev.filter((u) => u.id !== fields[index].id));
   };
 
-  const handleRetry = (upload: ImageUpload) => {
-    uploadImage(upload);
-  };
+  // const handleRetry = (upload: ImageUpload) => {
+  //   uploadImage(upload);
+  // };
 
   useEffect(() => {
     // Cleanup: Revoke data URIs to avoid memory leaks
@@ -183,8 +182,8 @@ const ImagesSection: React.FC<ImagesSectionProps> = ({ data, onNext }) => {
       <div
         {...getRootProps()}
         className={`flex flex-col items-center justify-center border-2 border-dashed rounded-lg p-6 cursor-pointer transition-colors ${isDragActive
-            ? "border-blue-500 bg-blue-50"
-            : "border-gray-300"
+          ? "border-blue-500 bg-blue-50"
+          : "border-gray-300"
           }`}
       >
         <input {...getInputProps()} />

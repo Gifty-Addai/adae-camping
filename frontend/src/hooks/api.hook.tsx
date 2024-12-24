@@ -1,6 +1,7 @@
-import {Trip, TripFormData, TripSearchParams, UseTripAPI } from "@/core/interfaces";
-import { TripFormOutput } from "@/core/interfaces/zod";
-import {createTrip, deleteTrip, fetchTripById, fetchTrips,  searchTrips, updateTrip } from "@/lib/apiUtils";
+import { Trip, TripSearchParams, UseTripAPI } from "@/core/interfaces";
+import { isApiError } from "@/core/interfaces/guards";
+import { TripFormInput } from "@/core/interfaces/zod";
+import { createTrip, deleteTrip, fetchTripById, fetchTrips, searchTrips, updateTrip } from "@/lib/apiUtils";
 import { useState, useEffect, useCallback } from "react";
 import { toast } from "react-toastify";
 
@@ -51,18 +52,24 @@ export function useTripAPI(defaultType?: string, defaultDifficulty?: string): Us
   }, []);
 
   // CREATE a new trip
-  const addTrip = async (tripData: TripFormOutput): Promise<void> => {
+  const addTrip = async (tripData: TripFormInput): Promise<void> => {
     try {
       await createTrip(tripData);
-      await getTrips();
+      // await getTrips();
       toast.success("Trip created successfully!");
     } catch (error) {
-      toast.error("Failed to create trip");
+      if (isApiError(error)) {
+        toast.error(`${error.message}`);
+      } else {
+        console.error("Unexpected error:", error);
+        toast.error('An unexpected error occurred while creating the booking.');
+      }
+      throw error;
     }
   };
 
   // UPDATE an existing trip
-  const editTrip = async (id: string, tripData: TripFormOutput): Promise<void> => {
+  const editTrip = async (id: string, tripData: TripFormInput): Promise<void> => {
     try {
       await updateTrip(id, tripData);
       await getTrips(); // Refresh list

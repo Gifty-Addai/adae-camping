@@ -9,6 +9,7 @@ import { differenceInDays, isAfter, isBefore } from "date-fns";
 export const bookingSchema = z.object({
   name: z.string().min(1, "Name is required"),
   email: z.string().email("Invalid email address"),
+  address: z.string().email("Invalid address"),
   phone: z
     .string()
     .regex(/^\d+$/, "Phone number must contain only digits")
@@ -27,7 +28,7 @@ export type BookingInput = z.infer<typeof bookingSchema>;
 /* -------------------------------------------------------------------------- */
 export const basicInfoSchema = z.object({
   name: z.string().min(1, "Trip name is required"),
-  description: z.string().optional(),
+  description: z.string().min(10, "Trip name is required with 10 characters above"),
 });
 
 export type BasicInfoInput = z.infer<typeof basicInfoSchema>;
@@ -112,14 +113,20 @@ export type LocationInput = z.infer<typeof locationSchema>;
 /*                            Schedule Date Schema                             */
 /* -------------------------------------------------------------------------- */
 export const scheduleDateSchema = z.object({
-  startDate: z.string().refine((date) => !isNaN(Date.parse(date)), {
-    message: "Invalid start date",
-  }),
-  endDate: z.string().refine((date) => !isNaN(Date.parse(date)), {
-    message: "Invalid end date",
-  }),
+  startDate: z.date(),
+  endDate: z.date(),
   isAvailable: z.boolean(),
   slotsRemaining: z.number().min(0, "Slots remaining cannot be negative"),
+}).superRefine((date, ctx) =>{
+
+  console.log("Date validation")
+  if (isAfter(date.startDate, date.endDate)) {
+    ctx.addIssue({
+      code: ZodIssueCode.custom,
+      path: ["startDate"],
+      message: "Start date cannot be after end date",
+    });
+  }
 });
 
 /* -------------------------------------------------------------------------- */
@@ -184,15 +191,18 @@ export const tripSchema = z
   })
   .superRefine((data, ctx) => {
     // The trip duration in days
-    const tripDuration = data.duration.days;
 
     // Validate each date range
     data.schedule.dates.forEach((date, index) => {
       const start = new Date(date.startDate);
       const end = new Date(date.endDate);
-      const actualDuration = differenceInDays(end, start) + 1;
+      const actualDuration = differenceInDays(end, start);
 
+      console.log("actualDuration",actualDuration)
+
+      // ----------------------------
       // 1. Start date cannot be after end date
+      // ----------------------------
       if (isAfter(start, end)) {
         ctx.addIssue({
           code: ZodIssueCode.custom,
@@ -201,16 +211,10 @@ export const tripSchema = z
         });
       }
 
-      // 2. Date range must match EXACTLY the trip duration
-      if (actualDuration !== tripDuration) {
-        ctx.addIssue({
-          code: ZodIssueCode.custom,
-          path: ["schedule", "dates", index, "startDate"],
-          message: `Date range must exactly match the trip duration of ${tripDuration} day(s)`,
-        });
-      }
 
+      // ----------------------------
       // 3. Check for overlapping dates with other entries
+      // ----------------------------
       for (let i = 0; i < data.schedule.dates.length; i++) {
         if (i === index) continue;
         const otherStart = new Date(data.schedule.dates[i].startDate);
@@ -232,8 +236,20 @@ export const tripSchema = z
           break;
         }
       }
+
+      // ----------------------------
+      // 4. Ensure slotsRemaining == groupSize.max
+      // ----------------------------
+      if (date.slotsRemaining !== data.groupSize.max) {
+        ctx.addIssue({
+          code: ZodIssueCode.custom,
+          path: ["schedule", "dates", index, "slotsRemaining"],
+          message: `Slots remaining must equal the max group size of ${data.groupSize.max}`,
+        });
+      }
     });
   });
+
 
 // This type is the entire shape of a "Trip".
 export type TripFormInput = z.infer<typeof tripSchema>;
