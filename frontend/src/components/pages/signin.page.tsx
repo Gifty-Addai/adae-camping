@@ -35,7 +35,7 @@ const SignInPage = () => {
 
   const onSubmit = async (data: SignInFormValues) => {
     try {
-      const signInResponse = await dispatch(signIn(data)).unwrap(); // Type-safe dispatch
+      const signInResponse = await dispatch(signIn(data)).unwrap();
 
       console.log("Sign In Response:", signInResponse);
 
@@ -45,7 +45,7 @@ const SignInPage = () => {
       }
 
       // Redirect to admin dashboard
-      navigate("/admin/productDash");
+      navigate("/admin/products");
     } catch (error: unknown) { // Handle error as unknown
       console.error("Error:", error);
       if (error instanceof Error) {
