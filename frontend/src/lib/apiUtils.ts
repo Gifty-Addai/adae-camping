@@ -100,14 +100,14 @@ export const updateTrip = async (id: string, tripData: TripFormInput): Promise<{
     message: string;
     trip?: Trip;
     errors?: any[];
-  }>(`/api/trip/${id}`, { tripData });
+  }>(`/api/trip/updateTrip/${id}`, { tripData });
   return data;
 };
 
 export const deleteTrip = async (id: string): Promise<{
   message: string;
 }> => {
-  const data = await deleteRequest<{ message: string }>(`/api/trip/${id}`);
+  const data = await deleteRequest<{ message: string }>(`/api/trip/deleteTrip/${id}`);
   return data;
 };
 
