@@ -1,5 +1,4 @@
-// src/components/TripForm/sections/BasicInfoSection.tsx
-import React from "react";
+import React, { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
@@ -20,6 +19,7 @@ const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({ data, onNext }) => 
     control,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm<BasicInfoInput>({
     resolver: zodResolver(basicInfoSchema),
     defaultValues: {
@@ -28,7 +28,14 @@ const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({ data, onNext }) => 
     },
   });
 
-  console.log("basic info", data.name)
+  // Reset form whenever `data` changes
+  useEffect(() => {
+    reset({
+      name: data.name,
+      description: data.description || "",
+    });
+  }, [data, reset]);
+
   const onSubmit = (formData: BasicInfoInput) => {
     onNext(formData);
   };
@@ -50,18 +57,11 @@ const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({ data, onNext }) => 
               id="name"
               placeholder="Enter title"
               {...field}
-              value={field.value || ""} // Ensure value is not undefined
               className="border rounded-md px-4 py-2 focus:ring focus:ring-blue-300"
               aria-invalid={errors.name ? "true" : "false"}
             />
           )}
         />
-        {/* <Input
-          id="name"
-          placeholder="Enter trip name"
-          {...register("name")}
-          aria-invalid={errors.name ? "true" : "false"}
-        /> */}
         {errors.name && <ErrorMessage message={errors.name.message} />}
       </div>
 

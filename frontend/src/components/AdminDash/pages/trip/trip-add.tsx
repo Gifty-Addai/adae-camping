@@ -55,7 +55,7 @@ const AddTripPage: React.FC = () => {
     <div className="container mx-auto py-8 px-4">
       {/* Header */}
       <div className="flex flex-col sm:flex-row items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold">Add New Trip</h1>
+        <h1 className="text-2xl font-bold text-card-foreground">Add New Trip</h1>
         <Button
           className="flex items-center space-x-2"
           onClick={() => navigate("/admin/trips")}

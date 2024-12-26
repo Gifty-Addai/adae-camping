@@ -43,7 +43,7 @@ const CostSection: React.FC<CostSectionProps> = ({ data, onNext }) => {
   }, [basePrice, setValue, watch]);
 
   const onSubmit = (formData: CostInput) => {
-    console.log("CostInput",formData)
+    console.log("CostInput", formData)
     onNext(formData);
   };
 
@@ -69,6 +69,7 @@ const CostSection: React.FC<CostSectionProps> = ({ data, onNext }) => {
         </div>
         <Input
           type="number"
+          step={"0.01"}
           id="basePrice"
           placeholder="Enter base price"
           {...register("basePrice", { valueAsNumber: true })}
@@ -93,6 +94,7 @@ const CostSection: React.FC<CostSectionProps> = ({ data, onNext }) => {
         <Input
           type="number"
           id="discount"
+          step={"0.01"}
           placeholder="Enter discount"
           {...register("discount", { valueAsNumber: true })}
           min={0}

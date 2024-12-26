@@ -24,7 +24,7 @@ const LocationSection: React.FC<LocationSectionProps> = ({ data, onNext, onBack 
   } = useForm<LocationInput>({
     resolver: zodResolver(locationSchema),
     defaultValues: data,
-    mode: "onBlur", // Validation mode
+    mode: "onBlur",
   });
 
   const { fields, append, remove } = useFieldArray({

@@ -150,16 +150,6 @@ const TripForm: React.FC<TripFormProps> = ({
   console.log("defaultTrip",(formData?.images?.length! > 0))
   // Handle form submission
   const handleFinalSubmit = async () => {
-    formData.schedule.dates.every((date) => {
-      const startDate = new Date(date.startDate);
-      const endDate = new Date(date.endDate);
-      const actualDuration = Math.ceil(
-        (endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24) + 1
-      );
-
-      alert(actualDuration);
-    });
-
     try {
       // Validate the entire form data before submission
       const validatedData = tripSchema.parse(formData);
