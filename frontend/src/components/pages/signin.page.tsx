@@ -1,5 +1,3 @@
-// src/components/pages/signin.page.tsx
-
 "use client";
 
 import { Input } from "@/components/ui/input";

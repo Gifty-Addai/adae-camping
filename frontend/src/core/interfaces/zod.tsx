@@ -113,8 +113,8 @@ export type LocationInput = z.infer<typeof locationSchema>;
 /*                            Schedule Date Schema                             */
 /* -------------------------------------------------------------------------- */
 export const scheduleDateSchema = z.object({
-  startDate: z.date(),
-  endDate: z.date(),
+  startDate: z.coerce.date(),
+  endDate: z.coerce.date(),
   isAvailable: z.boolean(),
   slotsRemaining: z.number().min(0, "Slots remaining cannot be negative"),
 }).superRefine((date, ctx) =>{

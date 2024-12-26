@@ -115,6 +115,7 @@ const ScheduleSection: React.FC<ScheduleSectionProps> = ({
                       onChange={(e) => {
                         // Convert the string back into a Date
                         const dateString = e.target.value;
+                        alert(dateString)
                         field.onChange(dateString ? new Date(dateString) : null);
                       }}
                       aria-invalid={errors.dates?.[index]?.startDate ? "true" : "false"}
