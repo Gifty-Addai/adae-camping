@@ -153,7 +153,7 @@ export interface Trip extends TripFormData {
 //   logistics: Logistics;
 // }
 
-export type TripType = 'hiking' | 'camping' | 'mountaineering' | 'other';
+export type TripType = 'hiking' | 'camping' | 'mountaineering' | 'camping & hiking' | 'other';
 export type DifficultyLevel = 'easy' | 'moderate' | 'hard' | 'expert';
 export type TripStatus = 'open' | 'closed' | 'completed' | 'cancelled';
 export type SortOrder = 'asc' | 'desc';
@@ -284,6 +284,7 @@ export interface UserSearchParams {
 }
 export type BookingFormValues = z.infer<typeof bookingSchema>;
 
+export type CartFormValues = z.infer<typeof bookingSchema>;
 export interface PaymentData {
   name: string;
   email: string;

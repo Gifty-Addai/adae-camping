@@ -16,8 +16,8 @@ import {
 } from '@/components/ui/form';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { bookingSchema } from '@/core/interfaces/zod';
-import { BookingFormValues } from '@/core/interfaces';
+import { CartSchema } from '@/core/interfaces/zod';
+import { CartFormValues } from '@/core/interfaces';
 import { Input } from '@/components/ui/input';
 import { toast } from 'react-toastify';
 import InvoiceModal from './payment_instruction_modal';
@@ -25,8 +25,8 @@ import TransactionModal from './transaction.modal';
 import { initializePayment } from '@/lib/payment-handler';
 
 const CartPage: React.FC = () => {
-    const form = useForm<BookingFormValues>({
-        resolver: zodResolver(bookingSchema),
+    const form = useForm<CartFormValues>({
+        resolver: zodResolver(CartSchema),
         defaultValues: {
             name: "",
             email: "",
@@ -40,7 +40,7 @@ const CartPage: React.FC = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isVerify, setIsVerifyModal] = useState(false);
     const [isSucces, setIsSuccess] = useState(false);
-    const [formData, setFormData] = useState<BookingFormValues | null>(null);
+    const [formData, setFormData] = useState<CartFormValues | null>(null);
     const [isFirstLoad, setIsFirstLoad] = useState(true);
 
     useEffect(() => {
@@ -53,10 +53,12 @@ const CartPage: React.FC = () => {
         }
     }, [isFirstLoad]);
 
-    const onSubmit = (data: BookingFormValues) => {
+    const onSubmit = (data: CartFormValues) => {
+        console.log("Invoice (direct from onSubmit)", data);
         setFormData(data);
         setIsModalOpen(true);
     };
+
 
     // const verifyPayment = async (reference: string) => {
     //     try {
@@ -73,19 +75,19 @@ const CartPage: React.FC = () => {
     //     }
     // };
 
-    const handleCheckout = async (formData: BookingFormValues) => {
+    const handleCheckout = async (formData: CartFormValues) => {
 
         await initializePayment({
-            formData : {
-                name : formData.name,
-                email : formData.email,
-                phone : formData.phone,
-                address : formData.address,
-                preferences : formData.preferences
+            formData: {
+                name: formData.name,
+                email: formData.email,
+                phone: formData.phone,
+                address: formData.address,
+                preferences: formData.preferences
             },
             totalAmount: cart.totalPrice,
             onSuccess: (tranx) => {
-                console.info("tranx data",tranx);
+                console.info("tranx data", tranx);
                 setIsVerifyModal(true);
                 setIsSuccess(true);
             },

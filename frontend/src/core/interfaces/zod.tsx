@@ -9,7 +9,7 @@ import { differenceInDays, isAfter, isBefore } from "date-fns";
 export const bookingSchema = z.object({
   name: z.string().min(1, "Name is required"),
   email: z.string().email("Invalid email address"),
-  address: z.string().email("Invalid address"),
+  address: z.string().min(5, " Address must be 5 above characters long"),
   phone: z
     .string()
     .regex(/^\d+$/, "Phone number must contain only digits")
@@ -22,6 +22,19 @@ export const bookingSchema = z.object({
 });
 
 export type BookingInput = z.infer<typeof bookingSchema>;
+
+
+export const CartSchema = z.object({
+  name: z.string().min(1, "Name is required"),
+  email: z.string().email("Invalid email address"),
+  address: z.string().min(5, " Address must be 5 above characters long"),
+  phone: z
+  .string()
+  .regex(/^\d+$/, "Phone number must contain only digits")
+  .min(10, "Phone number must be at least 10 digits"),
+  groupSize: z.number().positive("Group size must be greater than zero").optional(),
+  preferences: z.string().optional(),
+});
 
 /* -------------------------------------------------------------------------- */
 /*                          Basic Information Schema                           */
@@ -37,7 +50,7 @@ export type BasicInfoInput = z.infer<typeof basicInfoSchema>;
 /*                         Type and Difficulty Schema                          */
 /* -------------------------------------------------------------------------- */
 export const typeAndDifficultySchema = z.object({
-  type: z.enum(["hiking", "camping", "mountaineering", "other"]),
+  type: z.enum(["hiking", "camping", "mountaineering", "camping & hiking", "other"]),
   difficulty: z.enum(["easy", "moderate", "hard", "expert"]),
 });
 
@@ -117,7 +130,7 @@ export const scheduleDateSchema = z.object({
   endDate: z.coerce.date(),
   isAvailable: z.boolean(),
   slotsRemaining: z.number().min(0, "Slots remaining cannot be negative"),
-}).superRefine((date, ctx) =>{
+}).superRefine((date, ctx) => {
 
   console.log("Date validation")
   if (isAfter(date.startDate, date.endDate)) {
@@ -198,7 +211,7 @@ export const tripSchema = z
       const end = new Date(date.endDate);
       const actualDuration = differenceInDays(end, start);
 
-      console.log("actualDuration",actualDuration)
+      console.log("actualDuration", actualDuration)
 
       // ----------------------------
       // 1. Start date cannot be after end date
