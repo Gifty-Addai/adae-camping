@@ -8,7 +8,7 @@ import { useTripAPI } from "@/hooks/api.hook";
 import { useNavigate } from "react-router-dom";
 import { Plus } from "lucide-react";
 import TripCard from "@/components/pages/Trips/trip-card";
-import Pagination from "@/components/pages/product/pagination";
+import Pagination from "@/components/ui/pagination";
 
 const AdminTripPage: React.FC = () => {
   const navigate = useNavigate();

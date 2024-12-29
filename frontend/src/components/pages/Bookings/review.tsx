@@ -65,11 +65,10 @@ const ReviewConfirm: React.FC<ReviewConfirmProps> = ({ formData, trip, selectedD
 
       },
       totalAmount: finalPrice,
-      onSuccess: async (tranx) => {
+      onSuccess: async () => {
         await editBooking(booking.bookingId,{
-          payment:true
+          payment:true,
         })
-        console.info("Transaction successful:", tranx);
       },
       onCancel: () => {
         toast.error("Transaction was cancelled");

@@ -7,7 +7,7 @@ import ProductCard from './product.card';
 import { Product } from '@/core/interfaces';
 import { Button } from '@/components/ui/button';
 import { Page } from '@/components/ui/page';
-import Pagination from './pagination';
+import Pagination from '../../ui/pagination';
 import { ShoppingCart } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';

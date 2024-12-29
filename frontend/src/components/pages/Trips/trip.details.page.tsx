@@ -53,7 +53,7 @@ const TripDetail: React.FC = () => {
     fetchTripDetails();
   }, [id]);
 
-  console.info("images",trip?.images)
+  console.info("images", trip?.images)
 
   if (loading) return (
     <Page
@@ -160,7 +160,19 @@ const TripDetail: React.FC = () => {
             {activeTab === "Overview" && (
               <div>
                 <h2 className="text-xl font-bold text-primary">Trip Overview</h2>
-                <p className="text-muted-foreground mt-2">{trip?.description}</p>
+                <div className="text-muted-foreground mt-2">
+                  {trip?.description?.split('\n').map((paragraph, index) => (
+                    paragraph.trim() && (
+                      <p
+                        className="text-muted-foreground mb-4"
+                        key={index}
+                      >
+                        {paragraph.trim()}
+                      </p>
+                    )
+                  ))}
+                </div>
+
               </div>
             )}
 

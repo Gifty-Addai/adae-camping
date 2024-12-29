@@ -86,6 +86,18 @@ export const createTrip = async (tripData: TripFormInput): Promise<{
   return data;
 };
 
+
+export const sendBookingConfirm = async (bookingId: string): Promise<{
+  message: string;
+  success: boolean;
+}> => {
+  const data = await postRequest<{
+    message: string;
+    success: boolean;
+  }>("/api/booking/bookingMail", { confirm: true, pending: false, reschedule: false, cancel: false, bookingId });
+  return data;
+};
+
 export const fetchTripById = async (id: string): Promise<Trip> => {
   const data = await getRequest<Trip>(`/api/trip/getTripById/${id}`);
   return data;

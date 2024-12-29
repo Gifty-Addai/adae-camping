@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import AdminProductCard from "../../AdComponents/admin_product_card";
 import { cn } from "@/lib/utils";
 import { Spinner } from "@/components/ui/loader/_spinner";
-import Pagination from "@/components/pages/product/pagination";
+import Pagination from "@/components/ui/pagination";
 import { useProductAPI } from "@/hooks/product.hook";
 
 const AdminProductDash: React.FC = () => {

@@ -14,7 +14,6 @@ const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
     }
 );
 
-// Optional: Set a display name for better debugging and React DevTools integration
 Textarea.displayName = "Textarea";
 
 export default Textarea;

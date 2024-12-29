@@ -73,13 +73,7 @@ export const breadcrumbConfig: BreadcrumbConfigItem[] = [
                 title: "All Bookings",
                 url: "/admin/bookings",
                 breadcrumb: "All Bookings",
-            },
-            {
-                title: "New Booking",
-                url: "/admin/bookings/new",
-                breadcrumb: "New Booking",
-            },
-            // Add more booking routes if needed
+            }
         ],
     },
     {

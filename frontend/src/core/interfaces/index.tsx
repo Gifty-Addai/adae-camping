@@ -102,8 +102,8 @@ export interface Image {
 export interface TripFormData {
   name: string;
   description?: string;
-  type: TypeAndDifficultyInput["type"]; // "hiking" | "camping" | "mountaineering" | "other"
-  difficulty: TypeAndDifficultyInput["difficulty"]; // "easy" | "moderate" | "hard" | "expert"
+  type: TypeAndDifficultyInput["type"];
+  difficulty: TypeAndDifficultyInput["difficulty"];
   duration: Duration;
   cost: Cost;
   groupSize: GroupSize;
@@ -195,11 +195,17 @@ export interface UseTripAPI {
   goToPage: (page: number) => void;
   getTrips: (page?: number, type?: string, difficulty?: string) => Promise<void>;
 }
+export interface UseMailAPI {
+  loading: boolean;
+  bookingConfirm: (id: string) => Promise<void>;
+  bookingCancel: (id: string) => Promise<void>;
+  bookingReschedule: (id: string) => Promise<void>;
+}
 
 export interface Booking {
   _id: string;
-  tempUser: string; // Assuming it's a user ID
-  trip: string; // Assuming it's a trip ID
+  user: User;
+  trip: Trip;
   selectedDateId: string;
   participing: boolean;
   numberOfPeople: number;
@@ -207,10 +213,18 @@ export interface Booking {
   payment: boolean;
   status: 'pending' | 'confirmed' | 'cancelled' | 'reschedule';
   rescheduleDate?: Date;
+  reference: string;
   createdAt: Date;
   updatedAt: Date;
 }
 
+export interface SendBookingMailParams {
+  confirm: boolean,
+  pending: boolean,
+  reschedule: boolean,
+  cancel: boolean,
+  bookingId: string
+}
 
 export interface BookingSearchParams {
   tempUser?: string;
@@ -283,6 +297,27 @@ export interface UserSearchParams {
   role?: string;
 }
 export type BookingFormValues = z.infer<typeof bookingSchema>;
+
+export interface BookingCardProps {
+  bookingId: string;
+  status: 'Confirmed' | 'Pending' | 'Cancelled';
+  destination: string;
+  startDate: string;
+  endDate: string;
+  duration: number;
+  customerName: string;
+  email: string;
+  phone: string;
+  travelers: string;
+  paymentStatus: 'Paid' | 'Pending Payment' | 'Unpaid';
+  totalAmount: number;
+  itinerary: string;
+  specialRequests: string;
+  onViewDetails: () => void;
+  onEdit: () => void;
+  onCancel: () => void;
+  onSendNotification: () => void;
+}
 
 export type CartFormValues = z.infer<typeof bookingSchema>;
 export interface PaymentData {

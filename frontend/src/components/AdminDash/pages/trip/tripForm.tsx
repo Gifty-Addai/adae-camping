@@ -151,7 +151,6 @@ const TripForm: React.FC<TripFormProps> = ({
   // Handle form submission
   const handleFinalSubmit = async () => {
     try {
-      // Validate the entire form data before submission
       const validatedData = tripSchema.parse(formData);
       // No transformation needed as pointsOfInterest is already { value: string }[]
       const transformedData: TripFormInput = validatedData;

@@ -1,6 +1,7 @@
-import { Trip, TripSearchParams, UseTripAPI } from "@/core/interfaces";
+import { Trip, TripSearchParams, UseMailAPI, UseTripAPI } from "@/core/interfaces";
 import { isApiError } from "@/core/interfaces/guards";
 import { TripFormInput } from "@/core/interfaces/zod";
+import { postRequest } from "@/lib/api-Request/api-requests";
 import { createTrip, deleteTrip, fetchTripById, fetchTrips, searchTrips, updateTrip } from "@/lib/apiUtils";
 import { useState, useEffect, useCallback } from "react";
 import { toast } from "react-toastify";
@@ -131,6 +132,70 @@ export function useTripAPI(defaultType?: string, defaultDifficulty?: string): Us
     totalPages,
     goToPage,
     getTrips,
+  };
+}
+
+export function useMailAPI(): UseMailAPI {
+  const [loading, setLoading] = useState<boolean>(false);
+
+  const handleMailRequest = async (
+    endpointFn: (id: string) => Promise<void>,
+    id: string,
+    successMessage: string,
+    errorMessage: string
+  ): Promise<void> => {
+    setLoading(true);
+    try {
+      await endpointFn(id);
+      toast.success(successMessage);
+    } catch (error) {
+      if (isApiError(error)) {
+        toast.error(`${error.message}`);
+      } else {
+        console.error("Unexpected error:", error);
+        toast.error(errorMessage);
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const bookingConfirm = async (id: string): Promise<void> =>
+    handleMailRequest(
+      async (bookingId) =>
+        postRequest("/api/mail/bookingMail", { confirm: true, bookingId }),
+      id,
+      "Booking confirmed successfully! 🎉",
+      "An error occurred while confirming the booking. 😞"
+    );
+
+  const bookingCancel = async (id: string): Promise<void> =>
+    handleMailRequest(
+      async (bookingId) =>
+        postRequest("/api/mail/bookingMail", { cancel: true, bookingId }),
+      id,
+      "Booking cancelled successfully. ❌",
+      "An error occurred while cancelling the booking. 😞"
+    );
+
+  const bookingReschedule = async (id: string): Promise<void> =>
+    handleMailRequest(
+      async (bookingId) =>
+        postRequest("/api/mail/bookingMail", {
+          reschedule: true,
+          bookingId,
+          newDate: new Date().toISOString(),
+        }),
+      id,
+      "Booking rescheduled successfully! ⏰",
+      "An error occurred while rescheduling the booking. 😞"
+    );
+
+  return {
+    loading,
+    bookingConfirm,
+    bookingCancel,
+    bookingReschedule,
   };
 }
 

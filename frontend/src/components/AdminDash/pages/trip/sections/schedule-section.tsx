@@ -60,7 +60,7 @@ const ScheduleSection: React.FC<ScheduleSectionProps> = ({
       const startDate = new Date(date.startDate);
       const endDate = new Date(date.endDate);
       const actualDuration = Math.ceil(
-        (endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24) + 1
+        (endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)
       );
 
       return actualDuration === duration;

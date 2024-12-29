@@ -1,15 +1,13 @@
-// src/components/SearchBar.tsx
 
 import React from 'react';
-import { useTranslation } from 'react-i18next';
 
 interface SearchBarProps {
+  placeholder?:string;
   onSearch: (query: string) => void;
 }
 
-const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
+const SearchBar: React.FC<SearchBarProps> = ({ onSearch,placeholder }) => {
   const [query, setQuery] = React.useState('');
-  const { t } = useTranslation();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(e.target.value);
@@ -21,7 +19,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
       <input
         type="text"
         className="w-full px-4 py-2 border rounded-md"
-        placeholder={t('Search products...')}
+        placeholder={placeholder || "Search ..."}
         value={query}
         onChange={handleInputChange}
       />

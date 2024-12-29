@@ -2,6 +2,7 @@ export const typeOptions = [
     { label: "Hiking", value: "hiking" },
     { label: "Camping", value: "camping" },
     { label: "Mountaineering", value: "mountaineering" },
+    { label: "Camping & Hiking", value: "capming & hiking" },
     { label: "Other", value: "other" },
 ];
 

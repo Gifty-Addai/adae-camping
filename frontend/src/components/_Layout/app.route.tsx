@@ -20,6 +20,8 @@ import { TripPage } from "../pages/Trips/trip.page";
 import TripDetail from "../pages/Trips/trip.details.page";
 import BookingPage from "../pages/Bookings/booking.page";
 import AddTripPage from "../AdminDash/pages/trip/trip-add";
+import AdminBookingPage from "../AdminDash/pages/booking/admin.booking.page";
+import BookingDetailPage from "../AdminDash/pages/booking/booking-detail";
 
 export const AppRoute = () => {
   const { user, isLoading: userLoading } = useSelector((state: RootState) => state.userSlice);
@@ -77,8 +79,12 @@ export const AppRoute = () => {
           {/* Add more product routes if needed */}
         </Route>
 
+
         {/* Bookings Routes */}
         <Route path="bookings" element={<Outlet />}>
+          <Route index element={<AdminBookingPage />} />
+          <Route path="bookingsDetail/:bookingId" element={<BookingDetailPage />} />
+
           {/* <Route index element={<AllBookingsPage />} />
           <Route path="new" element={<NewBookingPage />} /> */}
           {/* Add more booking routes if needed */}
