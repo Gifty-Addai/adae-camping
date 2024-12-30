@@ -22,11 +22,10 @@ import BookingPage from "../pages/Bookings/booking.page";
 import AddTripPage from "../AdminDash/pages/trip/trip-add";
 import AdminBookingPage from "../AdminDash/pages/booking/admin.booking.page";
 import BookingDetailPage from "../AdminDash/pages/booking/booking-detail";
-import BecomeMemberPage from "../pages/fie-member-form";
 import ProductDetailPage from "../pages/product/product-detail";
 
 export const AppRoute = () => {
-  const { user, isLoading: userLoading } = useSelector((state: RootState) => state.userSlice);
+  const { user} = useSelector((state: RootState) => state.userSlice);
   const { isLoading: appLoading } = useSelector((state: RootState) => state.appSlice);
 
   const isAuthenticated = !!user;
@@ -56,8 +55,8 @@ export const AppRoute = () => {
         <Route path="/ASGSDWSDZ-234ADFSDAS/booking/:id/:date" element={<BookingPage />} />
         <Route path="/ASGSDWSDZ-234ADFSDAS/trip" element={<TripPage />} />
         <Route path="/ASGSDWSDZ-234ADFSDAS/trip/:id" element={<TripDetail />} />
-        <Route path="/ASGSDWSDZ-234ADFSDAS/member" element={<BecomeMemberPage />} />
-        <Route path="/ASGSDWSDZ-234ADFSDAS/member" element={<BecomeMemberPage />} />
+        {/* <Route path="/ASGSDWSDZ-234ADFSDAS/member" element={<BecomeMemberPage />} />
+        <Route path="/ASGSDWSDZ-234ADFSDAS/member" element={<BecomeMemberPage />} /> */}
         <Route path="/product/:produtName/:productId" element={<ProductDetailPage />} />
         {/* <Route path="/gallery" element={<GalleryPage />} /> */}
         <Route path="/cart" element={<CartPage />} />

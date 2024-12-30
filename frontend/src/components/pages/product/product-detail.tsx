@@ -1,6 +1,6 @@
 // ProductDetailPage.tsx
 import React, { useEffect, useState } from 'react';
-import { Navigate, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { addToCart } from '@/core/store/slice/cart.slice';
 import { toast, ToastContainer } from 'react-toastify';
