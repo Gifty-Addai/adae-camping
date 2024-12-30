@@ -25,7 +25,6 @@ const ProductDetailPage: React.FC = () => {
     const incrementQuantity = () => setQuantity((prev) => prev + 1);
     const decrementQuantity = () => setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
 
-
     useEffect(() => {
         const fetchProduct = async () => {
             if (productId) {
@@ -58,7 +57,6 @@ const ProductDetailPage: React.FC = () => {
 
     const navigate = useNavigate();
 
-
     const handleBuy = () => {
         if (product) {
             dispatch(addToCart({ product, quantity: quantity }));
@@ -66,13 +64,13 @@ const ProductDetailPage: React.FC = () => {
         }
     };
 
-    const renderer: CountdownRendererFn = ({ days, hours, minutes, seconds, completed }) => {
+    const renderer: CountdownRendererFn = ({ completed }) => {
         if (completed) {
             return <span className="text-green-600 font-semibold">Sale Ended</span>;
         } else {
             return (
-                <div className="text-red-600 font-bold text-xl">
-                    {days}d {hours}h {minutes}m {seconds}s
+                <div className="text-red-600 font-bold text-xl md:text-2xl">
+                    {0}d {0}h {0}m {0}s
                 </div>
             );
         }
@@ -84,7 +82,7 @@ const ProductDetailPage: React.FC = () => {
             // isLoading={loading}
             pageTitle={product ? product.name : 'Product Details'}
             renderBody={() => (
-                <div className="max-w-6xl mx-auto bg-muted rounded-lg shadow-lg p-6 md:p-12">
+                <div className="max-w-6xl mx-auto bg-muted rounded-lg shadow-lg p-4 md:p-6 lg:p-12">
                     <div className="flex flex-col md:flex-row">
                         {/* Product Images Carousel */}
                         <div className="w-full md:w-1/2 flex rounded-lg flex-col gap-4">
@@ -92,29 +90,32 @@ const ProductDetailPage: React.FC = () => {
                                 key={productId}
                                 src={product?.imageUrl}
                                 alt={product?.name}
-                                className="rounded-lg object-contain w-full h-64 md:h-96"
+                                className="rounded-lg object-cover w-full h-64 md:h-80 lg:h-96"
                             />
+                            {/* If you have multiple images, consider adding a carousel here */}
                         </div>
 
                         {/* Product Details */}
-                        <div className="w-full md:w-1/2 md:pl-10 mt-6 md:mt-0">
+                        <div className="w-full md:w-1/2 md:pl-8 lg:pl-12 mt-6 md:mt-0">
                             {!loading && products?.length! > 0 ? (
                                 <div>
-                                    <h1 className="text-4xl font-extrabold text-card-foreground mb-4">
+                                    <h1 className="text-3xl md:text-4xl font-extrabold text-card-foreground mb-3 md:mb-4">
                                         {product?.name}
                                     </h1>
-                                    <p className="text-white mb-6">{product?.description}</p>
+                                    <p className="text-base md:text-lg text-white mb-4 md:mb-6">
+                                        {product?.description}
+                                    </p>
 
-                                    <div className="flex items-center mb-6">
-                                        <p className="text-3xl font-bold text-yellow-400 mr-4">
+                                    <div className="flex items-center mb-4 md:mb-6">
+                                        <p className="text-2xl md:text-3xl font-bold text-yellow-400 mr-3 md:mr-4">
                                             GHS {product?.price.toLocaleString()}
                                         </p>
                                         {product?.oldPrice && product?.oldPrice > product?.price && (
                                             <>
-                                                <p className="text-card-foreground line-through text-lg">
+                                                <p className="text-sm md:text-base text-card-foreground line-through">
                                                     GHS {product?.oldPrice.toLocaleString()}
                                                 </p>
-                                                <span className="bg-red-500 text-white text-sm px-2 py-1 rounded-md ml-4">
+                                                <span className="bg-red-500 text-white text-xs md:text-sm px-2 py-1 rounded-md ml-2 md:ml-4">
                                                     {(
                                                         ((product?.oldPrice - product?.price) /
                                                             product?.oldPrice) *
@@ -126,11 +127,11 @@ const ProductDetailPage: React.FC = () => {
                                         )}
                                     </div>
 
-                                    <div className="flex items-center space-x-4 mb-6">
+                                    <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-4 sm:space-y-0 sm:space-x-4 mb-4 md:mb-6">
                                         <div className="flex items-center">
                                             <Button
                                                 variant="secondary"
-                                                className="h-6 w-6 p-0 flex items-center justify-center"
+                                                className="h-8 w-8 p-0 flex items-center justify-center"
                                                 onClick={(e) => {
                                                     e.preventDefault();
                                                     e.stopPropagation();
@@ -139,9 +140,9 @@ const ProductDetailPage: React.FC = () => {
                                             >
                                                 <MinusIcon className="h-4 w-4" />
                                             </Button>
-                                            <p className="mx-3 text-sm font-medium text-card-foreground">{quantity}</p>
+                                            <p className="mx-3 text-md font-medium text-card-foreground">{quantity}</p>
                                             <Button
-                                                className="h-6 w-6 bg-yellow-400 p-0 flex items-center justify-center"
+                                                className="h-8 w-8 bg-yellow-400 p-0 flex items-center justify-center"
                                                 onClick={(e) => {
                                                     e.preventDefault();
                                                     e.stopPropagation();
@@ -151,51 +152,53 @@ const ProductDetailPage: React.FC = () => {
                                                 <PlusIcon className="h-4 w-4" />
                                             </Button>
                                         </div>
-                                        <Button
-                                            onClick={handleAddToCart}
-                                        >
-                                            Add to Cart
-                                        </Button>
-                                        <Button
-                                            variant="secondary"
-                                            onClick={handleBuy}
-                                        >
-                                            Buy Now
-                                        </Button>
+                                        <div className="flex space-x-4">
+                                            <Button
+                                                onClick={handleAddToCart}
+                                                className="w-full sm:w-auto"
+                                            >
+                                                Add to Cart
+                                            </Button>
+                                            <Button
+                                                variant="secondary"
+                                                onClick={handleBuy}
+                                                className="w-full sm:w-auto"
+                                            >
+                                                Buy Now
+                                            </Button>
+                                        </div>
                                     </div>
 
                                     {/* Timer for Sales Countdown */}
-
-                                    <div className="mt-4 mb-6">
-                                        <h3 className="text-lg font-semibold text-card-foreground mb-2">
+                                    <div className="mt-4 mb-4 md:mb-6">
+                                        <h3 className="text-md md:text-lg font-semibold text-card-foreground mb-1 md:mb-2">
                                             Sale Ends In:
                                         </h3>
                                         <Countdown
-                                            date={new Date()}
+                                            date={new Date().getTime() + 1000 * 60 * 60 * 24} // Example: 24 hours from now
                                             renderer={renderer}
                                         />
                                     </div>
 
-
                                     {/* Return and Delivery Details */}
-                                    <div className="border-t pt-6 mt-6">
-                                        <h3 className="text-lg font-semibold text-card-foreground mb-2">
+                                    <div className="border-t pt-4 md:pt-6 mt-4 md:mt-6">
+                                        <h3 className="text-md md:text-lg font-semibold text-card-foreground mb-2">
                                             Delivery & Returns
                                         </h3>
-                                        <ul className="list-disc list-inside ">
-                                            <li className='text-white'>Delivery: Within 4-7 days</li>
-                                            <li className='text-white'>Returns: Item is not refundable</li>
+                                        <ul className="list-disc list-inside text-sm md:text-base text-white">
+                                            <li className='text-card-foreground'>Delivery: Within 4-7 days</li>
+                                            <li className='text-card-foreground'>Returns: Item is not refundable</li>
                                         </ul>
                                     </div>
 
                                     {/* Product Details */}
-                                    <div className="border-t pt-6 mt-6">
-                                        <h3 className="text-lg font-semibold text-card-foreground mb-2">
+                                    <div className="border-t pt-4 md:pt-6 mt-4 md:mt-6">
+                                        <h3 className="text-md md:text-lg font-semibold text-card-foreground mb-2">
                                             Product Details
                                         </h3>
-                                        <ul className="list-disc list-inside text-white">
-                                            <li className='text-white'>Category: {product?.category}</li>
-                                            <li className='text-white'>Available: {product?.isAvailable ? 'Yes' : 'No'}</li>
+                                        <ul className="list-disc list-inside text-sm md:text-base text-white">
+                                            <li className='text-card-foreground'>Category: {product?.category}</li>
+                                            <li className='text-card-foreground'>Available: {product?.isAvailable ? 'Yes' : 'No'}</li>
                                         </ul>
                                     </div>
                                 </div>
@@ -214,8 +217,8 @@ const ProductDetailPage: React.FC = () => {
 
                     {/* People Also View Section */}
                     {products?.length! > 0 && (
-                        <div className="mt-12">
-                            <h2 className="text-2xl font-semibold text-card-foreground mb-6">
+                        <div className="mt-8 md:mt-12">
+                            <h2 className="text-xl md:text-2xl font-semibold text-card-foreground mb-4 md:mb-6">
                                 People Also View
                             </h2>
 
@@ -223,7 +226,7 @@ const ProductDetailPage: React.FC = () => {
                             <div className="flex space-x-4 overflow-x-auto pb-4 flex-nowrap">
                                 {products?.map((relatedProduct) => (
                                     // Wrap ProductCard in a div with fixed/min width and prevent shrinking
-                                    <div key={relatedProduct._id} className="flex-shrink-0 w-64">
+                                    <div key={relatedProduct._id} className="flex-shrink-0 w-48 sm:w-56 md:w-64">
                                         <ProductCard
                                             product={relatedProduct}
                                             onOpenModal={() => { }}
