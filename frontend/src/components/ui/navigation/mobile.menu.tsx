@@ -17,81 +17,84 @@ const MobileMenu: React.FC = () => {
   };
 
   return (
-    <div className="flex justify-between w-full">
-      <Link to="/" className="no-underline items-center">
-        <div className="flex justify-center items-center rounded-lg bg-yellow-300">
-          {/* <img
-      // src={Images.AcsLogo}
-      alt="Logo"
-      className="h-8 w-8"
-    /> */}
-          <Label className="text-lg w-28 font-bold text-black text-center">
-            FieNeFie
-          </Label>
+    <div className="flex justify-between items-center w-full px-4 py-3 bg-transparent shadow-md">
+      {/* Logo Section */}
+      <Link to="/" className="flex items-center no-underline">
+        <div className="flex items-center h-10 justify-center rounded-lg bg-yellow-300 px-3 py-2">
+          <Label className="text-lg font-bold text-black">FieNeFie</Label>
         </div>
       </Link>
 
-      <div className="flex items-center space-x-4 ml-auto">
-        {/* <Link to={"/cart"}>
-          <Button
-            onClick={() => setIsOpen(false)}
-            size={"icon"}
-            className="bg-gray-400"
-          >
-            <ShoppingCart size={12} />
-          </Button>
-        </Link> */}
-        <Button
-          className="text-white focus:outline-none"
-          onClick={() => setIsOpen(true)}
-          size={"icon"}
-        >
-          <Menu className="h-3 w-3" />
-        </Button>
-      </div>
+      {/* Menu Button */}
+      <Button
+        className="text-gray-800 focus:outline-none"
+        onClick={() => setIsOpen(!isOpen)}
+        size="icon"
+      >
+        <Menu className="h-6 w-6" />
+      </Button>
 
+      {/* Mobile Menu Overlay */}
       {isOpen && (
-        <div className="fixed inset-0 bg-card bg-opacity-95 z-50 text-white flex justify-center items-center">
-          {/* Cart Icon on the top-left */}
-          <Link to={"/cart"}>
+        <div className="fixed inset-0 bg-gray-900 bg-opacity-95 z-50 text-white flex flex-col">
+          {/* Close Button */}
+          <div className="flex justify-between items-center px-6 py-4">
+            <Link to="/cart">
+              <Button
+                className="text-white focus:outline-none"
+                onClick={() => setIsOpen(false)}
+              >
+                <ShoppingCart size={24} />
+              </Button>
+            </Link>
             <Button
+              className="text-white focus:outline-none"
               onClick={() => setIsOpen(false)}
-
-              className="absolute bg-gray-400 top-4 left-4 p-2 "
+              size="icon"
             >
-              <ShoppingCart size={24} />
+              <X className="h-6 w-6" />
             </Button>
-          </Link>
+          </div>
 
-          {/* Close Button on the top-right */}
-          <Button
-            className="absolute top-4 right-4 focus:outline-none"
-            onClick={() => setIsOpen(false)}
-            size={"icon"}
-          >
-            <X className="h-3 w-3" />
-          </Button>
-
-          <div className="flex flex-col space-y-6 p-6 text-lg">
-            {/* Navigation Menu */}
+          {/* Navigation Menu */}
+          <nav className="flex-grow flex flex-col items-center justify-center space-y-6 text-lg">
             <NavigationMenu>
-              <NavigationMenuList className="flex flex-col space-y-4">
+              <NavigationMenuList className="flex flex-col items-center space-y-6">
                 {/* <NavigationMenuItem>
-                  <Link to="/gallery" onClick={handleLinkClick}>
-                    <Button className="w-full sm:w-auto">
-                      Gallery
+                  <Link to="/features" onClick={handleLinkClick} className="text-center">
+                    <Button className="w-40 py-2 px-4 rounded-full" variant={"secondary"}>
+                      Shop Gears
+                    </Button>
+                  </Link>
+                </NavigationMenuItem>
+                <NavigationMenuItem>
+                  <Link to="/use-cases" onClick={handleLinkClick} className="text-center">
+                    <Button className="w-40 bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-full">
+                      Use Cases
+                    </Button>
+                  </Link>
+                </NavigationMenuItem>
+                <NavigationMenuItem>
+                  <Link to="/about-us" onClick={handleLinkClick} className="text-center">
+                    <Button className="w-40 bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-full">
+                      About Us
                     </Button>
                   </Link>
                 </NavigationMenuItem> */}
                 <NavigationMenuItem>
-                  <Link to="/products" onClick={handleLinkClick}>
-                    <Button className="w-full sm:w-auto">
-                      Shop Gears
+                  <Link to="/products" onClick={handleLinkClick} className="text-center">
+                    <Button className="w-40  py-2 px-4 rounded-full" variant={"secondary"}>
+                      Products
                     </Button>
                   </Link>
                 </NavigationMenuItem>
               </NavigationMenuList>
             </NavigationMenu>
+          </nav>
+
+          {/* Footer Section */}
+          <div className="py-4 text-center text-sm text-gray-400">
+            &copy; {new Date().getFullYear()} FieNeFie. All Rights Reserved.
           </div>
         </div>
       )}

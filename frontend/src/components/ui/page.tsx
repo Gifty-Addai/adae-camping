@@ -42,6 +42,7 @@ export const Page = ({
   const appState = useSelector((state: RootState) => state.appSlice);
 
   useEffect(() => {
+    console.log("Page is loading",isLoading)
     dispatch(setAppLoading(isLoading));
   }, [isLoading]);
 

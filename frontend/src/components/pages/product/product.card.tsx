@@ -1,3 +1,4 @@
+// ProductCard.tsx
 import React, { useState } from 'react';
 import { MinusIcon, PlusIcon } from 'lucide-react';
 import { useDispatch } from 'react-redux';
@@ -7,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { addToCart } from '@/core/store/slice/cart.slice';
+import { Link } from 'react-router-dom';
 
 interface ProductCardProps {
   product: Product;
@@ -18,7 +20,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onOpenModal }) => {
   const [quantity, setQuantity] = useState(1);
 
   const handleAddToCart = () => {
-    console.info("product adding", product)
+    console.info("product adding", product);
     dispatch(addToCart({ product, quantity }));
     toast.success(`${product.name} added to cart!`);
   };
@@ -31,17 +33,21 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onOpenModal }) => {
 
       {/* Product Image */}
       <div className="relative h-40 pt-4 px-4" onClick={() => onOpenModal(product)}>
-        <img
-          src={product.imageUrl}
-          alt={product.name}
-          className="w-full h-full object-contain"
-        />
+        <Link to={`/product/${encodeURIComponent(product.name.substring(0, 30))}/${product._id}`}>
+          <img
+            src={product.imageUrl}
+            alt={product.name}
+            className="w-full h-full object-contain"
+          />
+        </Link>
       </div>
 
       <CardContent className="px-4 flex flex-col justify-between flex-grow">
         {/* Title and Description */}
         <CardHeader className="px-0 py-1">
-          <CardTitle className="text-sm font-semibold text-card-foreground">{product.name}</CardTitle>
+          <Link to={`/product/${encodeURIComponent(product.name.substring(0, 30))}/${product._id}`}>
+            <CardTitle className="text-sm font-semibold text-card-foreground">{product.name}</CardTitle>
+          </Link>
           <CardDescription className="text-xs line-clamp-2">{product.description}</CardDescription>
         </CardHeader>
       </CardContent>
@@ -59,6 +65,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onOpenModal }) => {
             variant="secondary"
             className="h-6 w-6 p-0 flex items-center justify-center"
             onClick={(e) => {
+              e.preventDefault();
               e.stopPropagation();
               decrementQuantity();
             }}
@@ -69,6 +76,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onOpenModal }) => {
           <Button
             className="h-6 w-6 bg-yellow-400 p-0 flex items-center justify-center"
             onClick={(e) => {
+              e.preventDefault();
               e.stopPropagation();
               incrementQuantity();
             }}
@@ -83,6 +91,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onOpenModal }) => {
         <Button
           variant="default"
           onClick={(e) => {
+            e.preventDefault();
             e.stopPropagation();
             handleAddToCart();
           }}

@@ -1,18 +1,23 @@
 import { ApiResponse, Product, ProductFormData, UseProductAPI } from "@/core/interfaces";
-import { deleteRequest, postRequest } from "@/lib/api-Request/api-requests";
+import { deleteRequest, getRequest, postRequest } from "@/lib/api-Request/api-requests";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 
 
-export const fetchProducts = async (page: number, limit: number, isAvailable: boolean | undefined): Promise<{ products: Product[], totalPages: number, currentPage: number, totalProducts: number, isSuggestion: boolean }> => {
-  const data = await postRequest<{ products: Product[], totalPages: number, currentPage: number, totalProducts: number, isSuggestion: boolean }>('/api/product/searchProducts', { page, limit, isAvailable });
+export const fetchProducts = async (page: number, limit: number, isAvailable: boolean | undefined): Promise<{ products: Product[], totalPages: number, currentPage: number, totalProducts: number, isSuggestion: boolean, activeProducts: number, inActiveProducts: number, }> => {
+  const data = await postRequest<{ products: Product[], totalPages: number, currentPage: number, totalProducts: number, activeProducts: number, inActiveProducts: number, isSuggestion: boolean }>('/api/product/searchProducts', { page, limit, isAvailable });
   return data;
 };
 
 export const createProduct = async (productData: ProductFormData): Promise<Product> => {
   console.log("Creating product with data:", productData);
   const data = await postRequest<Product>('/api/product/createProduct', productData);
+  return data;
+};
+
+export const fetchProductById = async (id: string): Promise<Product | null> => {
+  const data = await getRequest<Product>(`/api/product/getProductById/${id}`,);
   return data;
 };
 
@@ -39,6 +44,9 @@ export const useProductAPI = (defaultAvailability: boolean | undefined = undefin
   const [loading, setLoading] = useState<boolean>(false);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
+  const [totalProducts, setTotalProducts] = useState<number>(0);
+  const [inActiveProducts, setInActiveProducts] = useState<number>(0);
+  const [activeProducts, setActiveProducts] = useState<number>(0);
   const [isSuggestion, setIsSuggestion] = useState<boolean>(false);
 
   const limit = 12;
@@ -48,66 +56,92 @@ export const useProductAPI = (defaultAvailability: boolean | undefined = undefin
 
     try {
       const response = await fetchProducts(page, limit, isAvailable);
-      setProducts(response.products!);
-      setTotalPages(response.totalPages!);
-      setIsSuggestion(response.isSuggestion!);
-      // localStorage.setItem(cacheKey, JSON.stringify({
-      //   products: data.products,
-      //   totalPages: data.totalPages,
-      //   timestamp: Date.now(), 
-      // }));
+      setProducts(response.products || []);
+      setTotalPages(response.totalPages || 1);
+      setIsSuggestion(response.isSuggestion || false);
+      setTotalProducts(response.totalProducts || 0);
+      setActiveProducts(response.activeProducts || 0);
+      setInActiveProducts(response.inActiveProducts || 0);
     } catch (error) {
-      toast.error("Failed to load products");
+      console.error("Error fetching products:", error);
+      toast.error("Failed to load products. Check your internet connection and try again.");
     } finally {
       setLoading(false);
     }
   };
 
   const addProduct = async (productData: ProductFormData): Promise<void> => {
+    setLoading(true);
     try {
       await createProduct(productData);
       await getProducts(undefined);
-
       toast.success("Product added successfully!");
     } catch (error) {
-      toast.error("Failed to add product");
-    }
-  };
-
-  const editProduct = async (id: string, productData: ProductFormData): Promise<void> => {
-    try {
-      await updateProduct(id, productData);
-      await getProducts(undefined);
-      toast.success("Product updated successfully!");
-    } catch (error) {
-      toast.error("Failed to update product");
-    }
-  };
-
-  const removeProduct = async (id: string): Promise<void> => {
-    try {
-      await deleteProduct(id);
-      await getProducts(undefined);
-      toast.success("Product deleted successfully!");
-    } catch (error) {
-      toast.error("Failed to delete product");
-    }
-  };
-
-  const searchProduct = async (filters: Record<string, any>, isAvailable: boolean | undefined, page: number = currentPage): Promise<void> => {
-    setLoading(true);
-    try {
-      const result = await searchProducts(filters, page, limit, isAvailable);
-      setProducts(result.products!);
-      setTotalPages(result.totalPages!);
-      setIsSuggestion(result.isSuggestion!);
-    } catch (error) {
-      toast.error("Failed to search products");
+      console.error("Error adding product:", error);
+      toast.error("Failed to add product.");
     } finally {
       setLoading(false);
     }
   };
 
+  const editProduct = async (id: string, productData: ProductFormData): Promise<void> => {
+    setLoading(true);
+    try {
+      await updateProduct(id, productData);
+      await getProducts(undefined);
+      toast.success("Product updated successfully!");
+    } catch (error) {
+      console.error("Error updating product:", error);
+      toast.error("Failed to update product.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const removeProduct = async (id: string): Promise<void> => {
+    setLoading(true);
+    try {
+      await deleteProduct(id);
+      await getProducts(undefined);
+      toast.success("Product deleted successfully!");
+    } catch (error) {
+      console.error("Error deleting product:", error);
+      toast.error("Failed to delete product.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const searchProduct = async (filters: Record<string, any>, isAvailable: boolean | undefined, page: number = currentPage): Promise<Product[] | void> => {
+    setLoading(true);
+    try {
+      const result = await searchProducts(filters, page, limit, isAvailable);
+      setProducts(result.products || []);
+      setTotalPages(result.totalPages || 1);
+      setIsSuggestion(result.isSuggestion || false);
+
+      return result.products;
+    } catch (error) {
+      console.error("Error searching products:", error);
+      toast.error("Failed to search products.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getProductById = async (id: string): Promise<Product | null> => {
+    setLoading(true);
+    try {
+      const result = await fetchProductById(id);
+      return result;
+    } catch (error) {
+      console.error("Error fetching product by ID:", error);
+      toast.error("Failed to fetch product details.");
+      return null;
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const goToPage = (page: number): void => {
     if (page >= 1 && page <= totalPages) {
@@ -118,6 +152,7 @@ export const useProductAPI = (defaultAvailability: boolean | undefined = undefin
 
   useEffect(() => {
     getProducts(undefined);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return {
@@ -130,6 +165,10 @@ export const useProductAPI = (defaultAvailability: boolean | undefined = undefin
     currentPage,
     totalPages,
     isSuggestion,
+    getProductById,
+    activeProducts,
+    inActiveProducts,
+    totalProducts,
     goToPage,
   };
 };

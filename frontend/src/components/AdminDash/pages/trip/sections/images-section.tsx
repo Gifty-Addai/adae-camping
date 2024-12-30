@@ -1,4 +1,3 @@
-// src/components/TripForm/sections/ImagesSection.tsx
 import React, { useCallback, useState, useEffect } from "react";
 import { useForm, useFieldArray, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -43,7 +42,6 @@ const ImagesSection: React.FC<ImagesSectionProps> = ({ data, onNext }) => {
   });
   const [imageUploads, setImageUploads] = useState<ImageUpload[]>([]);
 
-  // Watch the images array for debugging
   const watchedImages = useWatch({ control, name: "images" });
 
   useEffect(() => {
@@ -53,7 +51,7 @@ const ImagesSection: React.FC<ImagesSectionProps> = ({ data, onNext }) => {
   const onDrop = useCallback((acceptedFiles: File[]) => {
     const newUploads = acceptedFiles.map((file) => ({
       id: uuidv4(),
-      file,
+      file : file || null,
       preview: URL.createObjectURL(file),
       uploading: false,
       progress: 0,
@@ -85,7 +83,7 @@ const ImagesSection: React.FC<ImagesSectionProps> = ({ data, onNext }) => {
     );
 
     const formData = new FormData();
-    formData.append("file", upload.file);
+    formData.append("file", upload.file!);
 
     try {
       const response = await postRequest<UploadImageResponse>(
@@ -147,13 +145,7 @@ const ImagesSection: React.FC<ImagesSectionProps> = ({ data, onNext }) => {
 
   const handleRemove = (index: number) => {
     remove(index);
-    // Optionally remove from imageUploads if necessary
-    // setImageUploads((prev) => prev.filter((u) => u.id !== fields[index].id));
   };
-
-  // const handleRetry = (upload: ImageUpload) => {
-  //   uploadImage(upload);
-  // };
 
   useEffect(() => {
     // Cleanup: Revoke data URIs to avoid memory leaks
@@ -182,7 +174,7 @@ const ImagesSection: React.FC<ImagesSectionProps> = ({ data, onNext }) => {
       <div
         {...getRootProps()}
         className={`flex flex-col items-center justify-center border-2 border-dashed rounded-lg p-6 cursor-pointer transition-colors ${isDragActive
-          ? "border-blue-500 bg-blue-50"
+          ? "border-yellow-400 bg-blue-50"
           : "border-gray-300"
           }`}
       >

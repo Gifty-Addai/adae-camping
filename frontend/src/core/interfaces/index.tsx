@@ -116,13 +116,14 @@ export interface TripFormData {
 
 export interface ImageUpload {
   id: string;
-  file: File;
+  file: File | null;
   preview: string;
   uploading: boolean;
   progress: number;
   error: string | null;
   url: string | null;
 }
+
 export interface UploadImageResponse {
   url: string
 }
@@ -414,10 +415,14 @@ export interface UseProductAPI {
   loading: boolean;
   addProduct: (productData: ProductFormData) => void;
   editProduct: (id: string, productData: ProductFormData) => void;
+  getProductById: (id: string) => Promise<Product | null>;
   removeProduct: (id: string) => void;
-  searchProduct: (filters: Record<string, any>, isAvailable: boolean | undefined) => void;
+  searchProduct: (filters: Record<string, any>, isAvailable: boolean | undefined) => Promise<Product[] | void>;
   currentPage: number,
+  activeProducts: number,
+  inActiveProducts: number,
   totalPages: number,
+  totalProducts: number,
   isSuggestion: boolean,
   goToPage: (page: number) => void;
 }

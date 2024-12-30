@@ -266,3 +266,22 @@ export const tripSchema = z
 
 // This type is the entire shape of a "Trip".
 export type TripFormInput = z.infer<typeof tripSchema>;
+
+
+export const becomeMemberSchema = z.object({
+  name: z.string().min(2, "Name must be at least 2 characters."),
+  email: z.string().email("Invalid email address."),
+  password: z
+    .string()
+    .min(6, "Password must be at least 6 characters."),
+  phone: z.string().regex(/^[0-9]{10,15}$/, "Invalid phone number."),
+  streetAddress: z.string().optional(),
+  address2: z.string().optional(),
+  city: z.string().optional(),
+  zipCode: z.string().optional(),
+  dob: z.string().optional(),
+  gender: z.enum(["Male", "Female", "Other"]).optional(),
+  image: z.string().optional(),
+  idCardImages: imagesSchema.min(1, "At least one image is required").max(2,"At most two images is accepted"),
+
+});
