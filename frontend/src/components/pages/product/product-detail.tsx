@@ -104,7 +104,7 @@ const ProductDetailPage: React.FC = () => {
                                     zoomType="hover"
                                     zoomPreload={true}
                                     fadeDuration={150}
-                                    className="rounded-2xl object-fill w-full h-64 md:h-80 lg:h-96"
+                                    className="rounded-2xl object-fill w-full h-74 md:h-80 lg:h-96"
                                 />
                             )}
                         </div>
