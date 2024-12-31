@@ -113,7 +113,7 @@ const ProductDetailPage: React.FC = () => {
                         <div className="w-full md:w-1/2 md:pl-8 lg:pl-12 mt-6 md:mt-0">
                             {!loading && products?.length! > 0 ? (
                                 <div>
-                                    <h1 className="text-3xl md:text-4xl font-extrabold text-card-foreground mb-3 md:mb-4">
+                                    <h1 className="text-3xl text-center md:text-4xl font-extrabold text-card-foreground mb-3 md:mb-4">
                                         {product?.name}
                                     </h1>
 
