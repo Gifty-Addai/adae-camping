@@ -31,7 +31,7 @@ export const CartSchema = z.object({
     .string()
     .regex(
       /^GH-[A-Za-z\s]+-[A-Za-z\s]+$/,
-      "Address must follow the pattern GH-Region-City, e.g. GH-Kumasi-Suame"
+      "Address must follow the pattern GH-Region-City, e.g. GH-Ashanti-Suame"
     )
     .min(5, "Address must be at least 5 characters long"),
   phone: z
