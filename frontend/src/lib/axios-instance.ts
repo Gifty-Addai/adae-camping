@@ -14,14 +14,24 @@ const axiosInstance = axios.create({
 });
 
 axiosRetry(axiosInstance, {
-  retries: 3,
+  retries: 5,
+
   retryDelay: (retryCount) => {
-    logger.warn(`Retry attempt: ${retryCount}`);
-    return retryCount * 1000;
+    const delay = Math.pow(2, retryCount) * 1000;
+    logger.warn(`Retry attempt #${retryCount} (waiting ${delay}ms)`);
+    return delay;
   },
   retryCondition: (error) => {
-    return axiosRetry.isNetworkError(error) || axiosRetry.isRetryableError(error);
+    return Boolean(
+      axiosRetry.isNetworkError(error) ||
+      axiosRetry.isRetryableError(error) ||
+      (error.response && error.response.status >= 500)
+    );
   },
+
+  // retryCondition: (error) => {
+  //   return axiosRetry.isNetworkError(error) || axiosRetry.isRetryableError(error);
+  // },
 });
 
 // Request interceptor for adding authentication tokens or other headers
