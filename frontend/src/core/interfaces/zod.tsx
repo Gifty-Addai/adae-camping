@@ -27,11 +27,17 @@ export type BookingInput = z.infer<typeof bookingSchema>;
 export const CartSchema = z.object({
   name: z.string().min(1, "Name is required"),
   email: z.string().email("Invalid email address"),
-  address: z.string().min(5, " Address must be 5 above characters long"),
+  address: z
+    .string()
+    .regex(
+      /^GH-[A-Za-z\s]+-[A-Za-z\s]+$/,
+      "Address must follow the pattern GH-Region-City, e.g. GH-Kumasi-Suame"
+    )
+    .min(5, "Address must be at least 5 characters long"),
   phone: z
-  .string()
-  .regex(/^\d+$/, "Phone number must contain only digits")
-  .min(10, "Phone number must be at least 10 digits"),
+    .string()
+    .regex(/^\d+$/, "Phone number must contain only digits")
+    .min(10, "Phone number must be at least 10 digits"),
   groupSize: z.number().positive("Group size must be greater than zero").optional(),
   preferences: z.string().optional(),
 });
@@ -282,6 +288,6 @@ export const becomeMemberSchema = z.object({
   dob: z.string().optional(),
   gender: z.enum(["Male", "Female", "Other"]).optional(),
   image: z.string().optional(),
-  idCardImages: imagesSchema.min(1, "At least one image is required").max(2,"At most two images is accepted"),
+  idCardImages: imagesSchema.min(1, "At least one image is required").max(2, "At most two images is accepted"),
 
 });

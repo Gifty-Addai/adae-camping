@@ -31,7 +31,7 @@ const CartPage: React.FC = () => {
             name: "",
             email: "",
             phone: "",
-            address: "",
+            address: "GH-",
             preferences: "",
         },
     });
@@ -152,7 +152,7 @@ const CartPage: React.FC = () => {
                                 name="name"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel className='text-card-foreground'>Full Name</FormLabel>
+                                        <FormLabel className='text-card-foreground'>Full Name *</FormLabel>
                                         <FormControl>
                                             <Input
                                                 placeholder="Enter your name"
@@ -168,7 +168,7 @@ const CartPage: React.FC = () => {
                                 name="address"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel className='text-card-foreground'>Address</FormLabel>
+                                        <FormLabel className='text-card-foreground'>Address(GH-Region-City/Town) *</FormLabel>
                                         <FormControl>
                                             <Input
                                                 placeholder="Enter specific address"
@@ -185,7 +185,7 @@ const CartPage: React.FC = () => {
                                 name="phone"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel className='text-card-foreground'>Phone</FormLabel>
+                                        <FormLabel className='text-card-foreground'>Phone *</FormLabel>
                                         <FormControl>
                                             <Input
                                                 placeholder="Enter your phone number"
@@ -202,7 +202,7 @@ const CartPage: React.FC = () => {
                                 name="email"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel className='text-card-foreground'>Email</FormLabel>
+                                        <FormLabel className='text-card-foreground'>Email *</FormLabel>
                                         <FormControl>
                                             <Input
                                                 placeholder="Enter your email"
