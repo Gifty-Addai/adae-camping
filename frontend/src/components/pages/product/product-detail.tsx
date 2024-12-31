@@ -82,8 +82,6 @@ const ProductDetailPage: React.FC = () => {
     const shareUrl = `${baseUrl}/product/${encodeURIComponent((product?.name || '').substring(0, 30))}/${product?._id ?? ''}`;
     const productTitle = product?.name || 'Product Details';
 
-    // -- TRUNCATION LOGIC:
-    // If description is longer than MAX_DESC_LENGTH, show partial plus '...'
     const truncatedDesc =
         product?.description && product.description.length > MAX_DESC_LENGTH
             ? product.description.substring(0, MAX_DESC_LENGTH) + '...'
@@ -121,7 +119,7 @@ const ProductDetailPage: React.FC = () => {
 
                                     {/* DESCRIPTION WITH VIEW MORE/LESS */}
                                     {product?.description && (
-                                        <p className="text-base md:text-lg text-muted-foreground mb-4 md:mb-6">
+                                        <p className="text-xs text-muted-foreground mb-4 md:mb-6">
                                             {showFullDesc ? product.description : truncatedDesc}
 
                                             {/* If description is long AND we're not showing the full text, show "View More" */}
