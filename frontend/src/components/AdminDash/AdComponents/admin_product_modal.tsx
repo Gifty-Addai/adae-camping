@@ -202,7 +202,7 @@ const AdminProductModal: React.FC<AdminProductModalProps> = ({ product, onOpen, 
                                         <SelectItem value="accessories">Outdoor accessory</SelectItem>
                                         <SelectItem value="camping light">Camping Light</SelectItem>
                                         <SelectItem value="cookwear">Cookwear</SelectItem>
-                                        {/* <SelectItem value="others">Others</SelectItem> */}
+                                        <SelectItem value="others">Other</SelectItem>
                                     </SelectContent>
                                 </Select>
                                 <FormMessage />

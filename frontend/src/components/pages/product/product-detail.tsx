@@ -13,6 +13,9 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import ProductCard from './product.card';
 import { MinusIcon, PlusIcon } from 'lucide-react';
+import { ShareButtons } from '@/components/ui/share-button';
+import InnerImageZoom from 'react-inner-image-zoom';
+import 'react-inner-image-zoom/lib/InnerImageZoom/styles.css';
 
 const ProductDetailPage: React.FC = () => {
     const { productId } = useParams<{ productId: string }>();
@@ -21,6 +24,11 @@ const ProductDetailPage: React.FC = () => {
     const [products, setProducts] = useState<Product[] | void>();
     const [quantity, setQuantity] = useState(1);
     const { loading, searchProduct, getProductById } = useProductAPI();
+    const navigate = useNavigate();
+
+    // -- ADD THESE STATE/CONSTANTS:
+    const [showFullDesc, setShowFullDesc] = useState(false);
+    const MAX_DESC_LENGTH = 200; // Adjust this limit as you like
 
     const incrementQuantity = () => setQuantity((prev) => prev + 1);
     const decrementQuantity = () => setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
@@ -28,10 +36,7 @@ const ProductDetailPage: React.FC = () => {
     useEffect(() => {
         const fetchProduct = async () => {
             if (productId) {
-                window.scrollTo({
-                    top: 0,
-                    behavior: 'smooth',
-                });
+                window.scrollTo({ top: 0, behavior: 'smooth' });
                 try {
                     const res = await searchProduct({}, true);
                     setProducts(res);
@@ -46,24 +51,21 @@ const ProductDetailPage: React.FC = () => {
         fetchProduct();
     }, [productId]);
 
-    console.log("Page loading in detail", loading)
-
     const handleAddToCart = () => {
         if (product) {
-            dispatch(addToCart({ product, quantity: quantity }));
+            dispatch(addToCart({ product, quantity }));
             toast.success(`${product.name} added to cart!`);
         }
     };
 
-    const navigate = useNavigate();
-
     const handleBuy = () => {
         if (product) {
-            dispatch(addToCart({ product, quantity: quantity }));
-            navigate("/cart")
+            dispatch(addToCart({ product, quantity }));
+            navigate('/cart');
         }
     };
 
+    // Simple countdown renderer
     const renderer: CountdownRendererFn = ({ completed }) => {
         if (completed) {
             return <span className="text-green-600 font-semibold">Sale Ended</span>;
@@ -76,23 +78,37 @@ const ProductDetailPage: React.FC = () => {
         }
     };
 
+    const baseUrl = import.meta.env.VITE_APP_BASE_URL || window.location.origin;
+    const shareUrl = `${baseUrl}/product/${encodeURIComponent((product?.name || '').substring(0, 30))}/${product?._id ?? ''}`;
+    const productTitle = product?.name || 'Product Details';
+
+    // -- TRUNCATION LOGIC:
+    // If description is longer than MAX_DESC_LENGTH, show partial plus '...'
+    const truncatedDesc =
+        product?.description && product.description.length > MAX_DESC_LENGTH
+            ? product.description.substring(0, MAX_DESC_LENGTH) + '...'
+            : product?.description;
+
     return (
         <Page
             key={product?._id}
-            // isLoading={loading}
             pageTitle={product ? product.name : 'Product Details'}
             renderBody={() => (
                 <div className="max-w-6xl mx-auto bg-muted rounded-lg shadow-lg p-4 md:p-6 lg:p-12">
                     <div className="flex flex-col md:flex-row">
-                        {/* Product Images Carousel */}
+
+                        {/* Product Image with Zoom */}
                         <div className="w-full md:w-1/2 flex rounded-lg flex-col gap-4">
-                            <img
-                                key={productId}
-                                src={product?.imageUrl}
-                                alt={product?.name}
-                                className="rounded-lg object-cover w-full h-64 md:h-80 lg:h-96"
-                            />
-                            {/* If you have multiple images, consider adding a carousel here */}
+                            {product && (
+                                <InnerImageZoom
+                                    src={product.imageUrl}
+                                    zoomSrc={product.imageUrl}
+                                    zoomType="hover"
+                                    zoomPreload={true}
+                                    fadeDuration={150}
+                                    className="rounded-2xl object-fill w-full h-64 md:h-80 lg:h-96"
+                                />
+                            )}
                         </div>
 
                         {/* Product Details */}
@@ -102,29 +118,46 @@ const ProductDetailPage: React.FC = () => {
                                     <h1 className="text-3xl md:text-4xl font-extrabold text-card-foreground mb-3 md:mb-4">
                                         {product?.name}
                                     </h1>
-                                    <p className="text-base md:text-lg text-white mb-4 md:mb-6">
-                                        {product?.description}
-                                    </p>
+
+                                    {/* DESCRIPTION WITH VIEW MORE/LESS */}
+                                    {product?.description && (
+                                        <p className="text-base md:text-lg text-muted-foreground mb-4 md:mb-6">
+                                            {showFullDesc ? product.description : truncatedDesc}
+
+                                            {/* If description is long AND we're not showing the full text, show "View More" */}
+                                            {!showFullDesc && product.description.length > MAX_DESC_LENGTH && (
+                                                <span
+                                                    onClick={() => setShowFullDesc(true)}
+                                                    className="ml-2 text-yellow-400 cursor-pointer text-sm font-semibold"
+                                                >
+                                                    View More
+                                                </span>
+                                            )}
+
+                                            {/* If we're showing the full text AND it's long, show "View Less" */}
+                                            {showFullDesc && product.description.length > MAX_DESC_LENGTH && (
+                                                <span
+                                                    onClick={() => setShowFullDesc(false)}
+                                                    className="ml-2 text-yellow-400 cursor-pointer text-sm font-semibold"
+                                                >
+                                                    View Less
+                                                </span>
+                                            )}
+                                        </p>
+                                    )}
 
                                     <div className="flex items-center mb-4 md:mb-6">
                                         <p className="text-2xl md:text-3xl font-bold text-yellow-400 mr-3 md:mr-4">
                                             GHS {product?.price.toLocaleString()}
                                         </p>
-                                        {product?.oldPrice && product?.oldPrice > product?.price && (
-                                            <>
-                                                <p className="text-sm md:text-base text-card-foreground line-through">
-                                                    GHS {product?.oldPrice.toLocaleString()}
-                                                </p>
-                                                <span className="bg-red-500 text-white text-xs md:text-sm px-2 py-1 rounded-md ml-2 md:ml-4">
-                                                    {(
-                                                        ((product?.oldPrice - product?.price) /
-                                                            product?.oldPrice) *
-                                                        100
-                                                    ).toFixed(0)}
-                                                    % OFF
-                                                </span>
-                                            </>
-                                        )}
+                                        <>
+                                            <p className="text-sm md:text-base text-card-foreground line-through">
+                                                GHS {0}
+                                            </p>
+                                            <span className="bg-red-500 text-white text-xs md:text-sm px-2 py-1 rounded-md ml-2 md:ml-4">
+                                                {0}% OFF
+                                            </span>
+                                        </>
                                     </div>
 
                                     <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-4 sm:space-y-0 sm:space-x-4 mb-4 md:mb-6">
@@ -153,20 +186,18 @@ const ProductDetailPage: React.FC = () => {
                                             </Button>
                                         </div>
                                         <div className="flex space-x-4">
-                                            <Button
-                                                onClick={handleAddToCart}
-                                                className="w-full sm:w-auto"
-                                            >
+                                            <Button onClick={handleAddToCart} className="w-full sm:w-auto">
                                                 Add to Cart
                                             </Button>
-                                            <Button
-                                                variant="secondary"
-                                                onClick={handleBuy}
-                                                className="w-full sm:w-auto"
-                                            >
+                                            <Button variant="secondary" onClick={handleBuy} className="w-full sm:w-auto">
                                                 Buy Now
                                             </Button>
                                         </div>
+                                    </div>
+
+                                    {/* SHARE FEATURE */}
+                                    <div className="mt-4 mb-6">
+                                        <ShareButtons url={shareUrl} title={productTitle} />
                                     </div>
 
                                     {/* Timer for Sales Countdown */}
@@ -175,19 +206,19 @@ const ProductDetailPage: React.FC = () => {
                                             Sale Ends In:
                                         </h3>
                                         <Countdown
-                                            date={new Date().getTime() + 1000 * 60 * 60 * 24} // Example: 24 hours from now
+                                            date={new Date().getTime() + 1000 * 60 * 60 * 24}
                                             renderer={renderer}
                                         />
                                     </div>
 
-                                    {/* Return and Delivery Details */}
+                                    {/* Delivery & Returns */}
                                     <div className="border-t pt-4 md:pt-6 mt-4 md:mt-6">
                                         <h3 className="text-md md:text-lg font-semibold text-card-foreground mb-2">
                                             Delivery & Returns
                                         </h3>
                                         <ul className="list-disc list-inside text-sm md:text-base text-white">
-                                            <li className='text-card-foreground'>Delivery: Within 4-7 days</li>
-                                            <li className='text-card-foreground'>Returns: Item is not refundable</li>
+                                            <li className="text-card-foreground">Delivery: Within 4-7 working days</li>
+                                            <li className="text-card-foreground">Returns: Item is not refundable</li>
                                         </ul>
                                     </div>
 
@@ -197,12 +228,13 @@ const ProductDetailPage: React.FC = () => {
                                             Product Details
                                         </h3>
                                         <ul className="list-disc list-inside text-sm md:text-base text-white">
-                                            <li className='text-card-foreground'>Category: {product?.category}</li>
-                                            <li className='text-card-foreground'>Available: {product?.isAvailable ? 'Yes' : 'No'}</li>
+                                            <li className="text-card-foreground">Category: {product?.category}</li>
+                                            <li className="text-card-foreground">
+                                                Available: {product?.isAvailable ? 'Yes' : 'No'}
+                                            </li>
                                         </ul>
                                     </div>
                                 </div>
-
                             ) : (
                                 <div className="space-y-4">
                                     <Skeleton className="h-8 w-3/4" />
@@ -221,16 +253,10 @@ const ProductDetailPage: React.FC = () => {
                             <h2 className="text-xl md:text-2xl font-semibold text-card-foreground mb-4 md:mb-6">
                                 People Also View
                             </h2>
-
-                            {/* Flex Container with fixed-width children */}
                             <div className="flex space-x-4 overflow-x-auto pb-4 flex-nowrap">
                                 {products?.map((relatedProduct) => (
-                                    // Wrap ProductCard in a div with fixed/min width and prevent shrinking
                                     <div key={relatedProduct._id} className="flex-shrink-0 w-48 sm:w-56 md:w-64">
-                                        <ProductCard
-                                            product={relatedProduct}
-                                            onOpenModal={() => { }}
-                                        />
+                                        <ProductCard product={relatedProduct} onOpenModal={() => { }} />
                                     </div>
                                 ))}
                             </div>

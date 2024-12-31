@@ -40,6 +40,7 @@ const Filters: React.FC<FilterProps> = ({ onFilterChange, onSearchChange, catego
             <SelectItem value="accessories">Outdoor accessories</SelectItem>
             <SelectItem value="camping light">Camping Lights</SelectItem>
             <SelectItem value="cookwear">Cookwears</SelectItem>
+            <SelectItem value="others">Other</SelectItem>
           </SelectGroup>
         </SelectContent>
       </Select>

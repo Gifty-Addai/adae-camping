@@ -23,6 +23,7 @@ import AddTripPage from "../AdminDash/pages/trip/trip-add";
 import AdminBookingPage from "../AdminDash/pages/booking/admin.booking.page";
 import BookingDetailPage from "../AdminDash/pages/booking/booking-detail";
 import ProductDetailPage from "../pages/product/product-detail";
+import BecomeMemberPage from "../pages/fie-member-form";
 
 export const AppRoute = () => {
   const { user} = useSelector((state: RootState) => state.userSlice);
@@ -55,8 +56,8 @@ export const AppRoute = () => {
         <Route path="/ASGSDWSDZ-234ADFSDAS/booking/:id/:date" element={<BookingPage />} />
         <Route path="/ASGSDWSDZ-234ADFSDAS/trip" element={<TripPage />} />
         <Route path="/ASGSDWSDZ-234ADFSDAS/trip/:id" element={<TripDetail />} />
-        {/* <Route path="/ASGSDWSDZ-234ADFSDAS/member" element={<BecomeMemberPage />} />
-        <Route path="/ASGSDWSDZ-234ADFSDAS/member" element={<BecomeMemberPage />} /> */}
+        {/* <Route path="/ASGSDWSDZ-234ADFSDAS/member" element={<BecomeMemberPage />} /> */}
+        <Route path="/ASGSDWSDZ-234ADFSDAS/member" element={<BecomeMemberPage />} />
         <Route path="/product/:produtName/:productId" element={<ProductDetailPage />} />
         {/* <Route path="/gallery" element={<GalleryPage />} /> */}
         <Route path="/cart" element={<CartPage />} />

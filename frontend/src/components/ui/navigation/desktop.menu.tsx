@@ -47,11 +47,11 @@ const DesktopMenu: React.FC = () => {
           </NavigationMenuItem> */}
 
           <NavigationMenuItem>
-          <Link to="/products" className="no-underline font-medium text-yellow-400">
+            <Link to="/products" className="no-underline font-medium text-yellow-400">
               Products
             </Link>
           </NavigationMenuItem>
-{/* 
+          {/* 
           <NavigationMenuItem>
             <Link to="/customers" className="no-underline font-medium text-gray-700">
               Customers
@@ -80,8 +80,8 @@ const DesktopMenu: React.FC = () => {
         </Link>
 
         {/* <Link to="/ASGSDWSDZ-234ADFSDAS/member">
-          <Button className="bg-blue-600 text-white px-6 py-2 rounded-full font-medium hover:bg-blue-700">
-            Get Started
+          <Button className="ml-10">
+            Become a Fie Member
           </Button>
         </Link> */}
       </div>

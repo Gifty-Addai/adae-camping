@@ -144,7 +144,7 @@ const CartPage: React.FC = () => {
 
                 {/* Booking Form */}
                 <div className="col-span-1 bg-card rounded-lg shadow-lg p-6">
-                    <h3 className="text-xl text-white font-bold mb-4">One step away to have your gears</h3>
+                    <h3 className="text-xl text-center text-white font-bold mb-4">One step away to have your product(s)</h3>
                     <Form {...form}>
                         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                             <FormField
