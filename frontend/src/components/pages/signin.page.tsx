@@ -8,8 +8,10 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate, Navigate } from "react-router-dom";
 import { Page } from "../ui/page";
-import { signIn } from "@/core/store/slice/user_slice";
-import { useAppDispatch, useAppSelector } from "@/core/constants";
+import { login } from "@/core/store/slice/user_slice";
+import { useAppDispatch } from "@/core/constants";
+import { useSelector } from "react-redux";
+import { RootState } from "@/core/store/store";
 
 const signInSchema = z.object({
   email: z.string().email("Invalid email address"),
@@ -20,8 +22,8 @@ type SignInFormValues = z.infer<typeof signInSchema>;
 
 const SignInPage = () => {
   const dispatch = useAppDispatch(); 
-  const navigate = useNavigate();
-  const { user, isLoading, error } = useAppSelector((state:any) => state.userSlice);
+  const { user, status, error } = useSelector((state:RootState) => state.userSlice);
+  const isLoading = status === 'loading';
 
   const form = useForm<SignInFormValues>({
     resolver: zodResolver(signInSchema),
@@ -32,33 +34,12 @@ const SignInPage = () => {
   });
 
   const onSubmit = async (data: SignInFormValues) => {
-    try {
-      const signInResponse = await dispatch(signIn(data)).unwrap();
-
-      console.log("Sign In Response:", signInResponse);
-
-      // Check if the user role is admin
-      if (signInResponse.role !== "admin") {
-        throw new Error("Access denied. Admins only.");
-      }
-
-      // Redirect to admin dashboard
-      navigate("/admin/products");
-    } catch (error: unknown) { // Handle error as unknown
-      console.error("Error:", error);
-      if (error instanceof Error) {
-        // Optionally, dispatch an error action or display a notification
-        // Example: dispatch(setError(error.message));
-      } else {
-        // Handle unexpected errors
-        // Example: dispatch(setError("An unexpected error occurred."));
-      }
-    }
+      dispatch(login(data)).unwrap();
   };
 
   // Redirect authenticated admin users away from sign-in page
   if (user && user.role === "admin") {
-    return <Navigate to="/admin/productDash" replace />;
+    return <Navigate to="/admin/products" replace />;
   }
 
   return (
@@ -107,7 +88,7 @@ const SignInPage = () => {
               />
 
               {/* Submit Button */}
-              <Button type="submit" className="w-full" disabled={isLoading}>
+              <Button  type="submit" className="w-full" disabled={isLoading}>
                 {isLoading ? "Signing In..." : "Sign In"}
               </Button>
             </form>

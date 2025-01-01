@@ -1,113 +1,148 @@
-import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
-import { IUserState, User } from '../../interfaces';
-import { postRequest } from '@/lib/api-Request/api-requests';
-import { fetchUserProfile, signin } from '@/lib/apiUtils';
+import { IUser, User } from '@/core/interfaces';
+import { getRequest, postRequest } from '@/lib/api-Request/api-requests';
+import { setAccessToken } from '@/lib/axios-instance';
+import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
+import { AxiosError } from 'axios';
 
-// Define the initial state
-const initialState: IUserState = {
+
+/**
+ * The shape of our User slice state.
+ */
+export interface UserState {
+  user: IUser | null;
+  status: 'idle' | 'loading' | 'succeeded' | 'failed';
+  error: string | null;
+}
+
+const initialState: UserState = {
   user: null,
-  isLoading: false,
+  status: 'idle',
   error: null,
 };
 
-// Asynchronous thunk for signing in
-export const signIn = createAsyncThunk(
-  'user/signIn',
-  async (credentials: { email: string; password: string }, { rejectWithValue }) => {
+/**
+ * LOGIN Thunk
+ */
+export const login = createAsyncThunk(
+  '/api/auth/login',
+  async (
+    { email, password }: { email: string; password: string },
+    { rejectWithValue }
+  ) => {
     try {
-      const response = await signin(credentials);
-      return response.user;
-    } catch (error: any) {
-      return rejectWithValue(error.message);
+      const response = await postRequest<{ accessToken: string, user: IUser }>('/api/auth/login', { email, password });
+      setAccessToken(response.accessToken);
+
+      return response.user as IUser;
+    } catch (err) {
+      const error = err as AxiosError;
+      const errorMessage =
+        (error.response?.data as any)?.message ||
+        error.message ||
+        'Login failed';
+      return rejectWithValue(errorMessage);
     }
   }
 );
 
-// Asynchronous thunk for fetching authenticated user
-export const getAuthenticatedUser = createAsyncThunk(
-  'user/getAuthenticatedUser',
+/**
+ * FETCH PROFILE Thunk
+ */
+export const fetchUserProfile = createAsyncThunk(
+  'user/fetchUserProfile',
   async (_, { rejectWithValue }) => {
     try {
-      const user = await fetchUserProfile();
-      return user;
-    } catch (error: any) {
-      return rejectWithValue(error.message);
+      const response = await getRequest<User>('/api/user/getUserProfile');
+
+      return response as User;
+    } catch (err) {
+      const error = err as AxiosError;
+      const errorMessage =
+        (error.response?.data as any)?.message ||
+        error.message ||
+        'Profile fetch failed';
+      return rejectWithValue(errorMessage);
     }
   }
 );
 
-// Asynchronous thunk for signing out
-export const signOut = createAsyncThunk(
-  'user/signOut',
+/**
+ * LOGOUT Thunk
+ */
+export const logout = createAsyncThunk(
+  'user/logout',
   async (_, { rejectWithValue }) => {
     try {
-      // Implement sign-out logic, e.g., call backend to clear cookie
-      // Example: await axiosInstance.post('/api/auth/logout');
-      // Assuming a logout endpoint exists
       await postRequest('/api/auth/logout', {});
-      return;
-    } catch (error: any) {
-      return rejectWithValue(error.message);
+      setAccessToken(null);
+      return true;
+    } catch (err) {
+      const error = err as AxiosError;
+      const errorMessage =
+        (error.response?.data as any)?.message ||
+        error.message ||
+        'Logout failed';
+      return rejectWithValue(errorMessage);
     }
   }
 );
 
-// Create the slice
-const userSlice = createSlice({
+export const userSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {
-    // Synchronous reducers if needed
-    clearUser(state) {
-      state.user = null;
-      state.error = null;
+    setUser(state, action: PayloadAction<User | null>) {
+      state.user = action.payload;
     },
   },
   extraReducers: (builder) => {
-    // Handle sign-in
-    builder.addCase(signIn.pending, (state) => {
-      state.isLoading = true;
+    // login
+    builder.addCase(login.pending, (state) => {
+      state.status = 'loading';
       state.error = null;
     });
-    builder.addCase(signIn.fulfilled, (state, action: PayloadAction<User>) => {
-      state.isLoading = false;
+    builder.addCase(login.fulfilled, (state, action) => {
+      state.status = 'succeeded';
       state.user = action.payload;
+      state.error = null;
     });
-    builder.addCase(signIn.rejected, (state, action: PayloadAction<any>) => {
-      state.isLoading = false;
-      state.error = action.payload || 'Sign-in failed';
+    builder.addCase(login.rejected, (state, action) => {
+      state.status = 'failed';
+      state.error = action.payload as string;
     });
 
-    // Handle fetching authenticated user
-    builder.addCase(getAuthenticatedUser.pending, (state) => {
-      state.isLoading = true;
+    // fetchUserProfile
+    builder.addCase(fetchUserProfile.pending, (state) => {
+      state.status = 'loading';
       state.error = null;
     });
-    builder.addCase(getAuthenticatedUser.fulfilled, (state, action: PayloadAction<User>) => {
-      state.isLoading = false;
+    builder.addCase(fetchUserProfile.fulfilled, (state, action) => {
+      state.status = 'succeeded';
       state.user = action.payload;
+      state.error = null;
     });
-    builder.addCase(getAuthenticatedUser.rejected, (state, action: PayloadAction<any>) => {
-      state.isLoading = false;
-      state.error = action.payload || 'Failed to fetch user data';
-      state.user = null;
+    builder.addCase(fetchUserProfile.rejected, (state, action) => {
+      state.status = 'failed';
+      state.error = action.payload as string;
     });
 
-    // Handle sign-out
-    builder.addCase(signOut.pending, (state) => {
-      state.isLoading = true;
+    // logout
+    builder.addCase(logout.pending, (state) => {
+      state.status = 'loading';
       state.error = null;
     });
-    builder.addCase(signOut.fulfilled, (state) => {
-      state.isLoading = false;
+    builder.addCase(logout.fulfilled, (state) => {
+      // On logout, clear user
+      state.status = 'idle';
       state.user = null;
+      state.error = null;
     });
-    builder.addCase(signOut.rejected, (state, action: PayloadAction<any>) => {
-      state.isLoading = false;
-      state.error = action.payload || 'Sign-out failed';
+    builder.addCase(logout.rejected, (state, action) => {
+      state.status = 'failed';
+      state.error = action.payload as string;
     });
   },
 });
 
-export const { clearUser } = userSlice.actions;
+export const { setUser } = userSlice.actions;
 export default userSlice.reducer;

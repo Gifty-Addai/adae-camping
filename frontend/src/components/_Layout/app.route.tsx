@@ -1,37 +1,55 @@
 // AppRoute.tsx
-
-import { Routes, Route, Navigate, Outlet } from "react-router-dom";
+import { useEffect } from "react";
+import { Routes, Route } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { RootState } from "@/core/store/store";
+
 import { VerifiedLayout } from "./pages.layout";
-import { PageNotFound } from "../pages/not_found.page";
+import AdminLayout from "./admin.layout";
+
+// Components / Pages
 import LandingPage from "../pages/landing";
 import StorePage from "../pages/product/products";
-// import GalleryPage from "../pages/Gallery/gallery";
 import SignInPage from "../pages/signin.page";
 import CartPage from "../pages/Cart/cart.page";
-import AdminProductDash from "../AdminDash/pages/Dashboard/productDash";
+import { PageNotFound } from "../pages/not_found.page";
 import { Spinner } from "../ui/loader/_spinner";
 import { cn } from "@/lib/utils";
-import AdminLayout from "./admin.layout";
+
+// Admin Pages
+import AdminProductDash from "../AdminDash/pages/Dashboard/productDash";
 import AdminTripPage from "../AdminDash/pages/trip/admin-trip.page";
 import AdminTripFormPage from "../AdminDash/pages/trip/tripFormPage";
-import { TripPage } from "../pages/Trips/trip.page";
-import TripDetail from "../pages/Trips/trip.details.page";
-import BookingPage from "../pages/Bookings/booking.page";
 import AddTripPage from "../AdminDash/pages/trip/trip-add";
 import AdminBookingPage from "../AdminDash/pages/booking/admin.booking.page";
 import BookingDetailPage from "../AdminDash/pages/booking/booking-detail";
+
+// Other pages
+import { TripPage } from "../pages/Trips/trip.page";
+import TripDetail from "../pages/Trips/trip.details.page";
+import BookingPage from "../pages/Bookings/booking.page";
 import ProductDetailPage from "../pages/product/product-detail";
 import BecomeMemberPage from "../pages/fie-member-form";
+import { RequireAdmin } from "./requireAdmin";
+import { useAppDispatch } from "@/core/constants";
+import { fetchUserProfile } from "@/core/store/slice/user_slice";
+
+// Route Guards
+// import { RequireAuth } from "./RequireAuth";
 
 export const AppRoute = () => {
-  const { user} = useSelector((state: RootState) => state.userSlice);
+
+  const dispatch = useAppDispatch();
+
+  const { user } = useSelector((state: RootState) => state.userSlice);
   const { isLoading: appLoading } = useSelector((state: RootState) => state.appSlice);
 
-  const isAuthenticated = !!user;
-  const isAdmin = user?.role === "admin";
+  useEffect(() => {
+    // Attempt to refresh or fetch user info on app load
+    dispatch(fetchUserProfile());
+  }, [dispatch]);
 
+  // If your entire app is loading (e.g., verifying token), show overlay
   if (appLoading) {
     return (
       <div
@@ -49,101 +67,93 @@ export const AppRoute = () => {
 
   return (
     <Routes>
-      {/* Public Routes */}
-      <Route element={<VerifiedLayout auth={isAuthenticated} />}>
+      {/* ---------------------------------------
+          Public / Unauthenticated Routes
+      --------------------------------------- */}
+      <Route element={<VerifiedLayout auth={!!user} />}>
         <Route path="/" element={<LandingPage />} />
         <Route path="/products" element={<StorePage />} />
-        <Route path="/ASGSDWSDZ-234ADFSDAS/booking/:id/:date" element={<BookingPage />} />
+
+        {/* Trip & Booking Pages */}
         <Route path="/ASGSDWSDZ-234ADFSDAS/trip" element={<TripPage />} />
         <Route path="/ASGSDWSDZ-234ADFSDAS/trip/:id" element={<TripDetail />} />
-        {/* <Route path="/ASGSDWSDZ-234ADFSDAS/member" element={<BecomeMemberPage />} /> */}
+        <Route path="/ASGSDWSDZ-234ADFSDAS/booking/:id/:date" element={<BookingPage />} />
+
+        {/* Membership Form */}
         <Route path="/ASGSDWSDZ-234ADFSDAS/member" element={<BecomeMemberPage />} />
+
+        {/* Product Detail */}
         <Route path="/product/:produtName/:productId" element={<ProductDetailPage />} />
-        {/* <Route path="/gallery" element={<GalleryPage />} /> */}
+
+        {/* Cart */}
         <Route path="/cart" element={<CartPage />} />
+
+        {/* Catch-All 404 */}
         <Route path="*" element={<PageNotFound />} />
       </Route>
 
-      {/* Admin Routes */}
-      <Route
-        path="/admin/*"
-        element={
-          isAdmin ? <AdminLayout /> : <Navigate to="/admin/signin" replace />
-        }
-      >
-        {/* Authentication Routes */}
-        <Route path="auth" element={<Outlet />}>
-          <Route path="signin" element={<SignInPage />} />
-          {/* Add more auth routes if needed */}
-        </Route>
-
-        {/* Products Routes */}
-        <Route path="products" element={<Outlet />}>
-          <Route index element={<AdminProductDash />} />
-          <Route path="new" element={<AdminProductDash />} />
-          {/* Add more product routes if needed */}
-        </Route>
-
-
-        {/* Bookings Routes */}
-        <Route path="bookings" element={<Outlet />}>
-          <Route index element={<AdminBookingPage />} />
-          <Route path="bookingsDetail/:bookingId" element={<BookingDetailPage />} />
-
-          {/* <Route index element={<AllBookingsPage />} />
-          <Route path="new" element={<NewBookingPage />} /> */}
-          {/* Add more booking routes if needed */}
-        </Route>
-
-        {/* Users Routes */}
-        <Route path="users" element={<Outlet />}>
-          {/* <Route index element={<AllUsersPage />} />
-          <Route path="new" element={<CreateUserPage />} /> */}
-          {/* Add more user routes if needed */}
-        </Route>
-
-        {/* Trips Routes */}
-        <Route path="trips" element={<Outlet />}>
-          <Route index element={<AdminTripPage />} />
-          <Route path="new" element={<AdminTripFormPage />} />
-          <Route path="edit/:id" element={<AdminTripFormPage />} />
-          <Route path="add" element={<AddTripPage />} />
-
-          {/* Add more trip routes if needed */}
-        </Route>
-
-        {/* Gallery Routes */}
-        <Route path="gallery" element={<Outlet />}>
-          {/* <Route index element={<AllGalleryItemsPage />} />
-          <Route path="new" element={<AddGalleryItemPage />} /> */}
-          {/* Add more gallery routes if needed */}
-        </Route>
-
-        {/* Videos Routes */}
-        <Route path="videos" element={<Outlet />}>
-          {/* <Route index element={<AllVideosPage />} />
-          <Route path="new" element={<UploadVideoPage />} /> */}
-          {/* Add more video routes if needed */}
-        </Route>
-
-        {/* Testimonies Routes */}
-        <Route path="testimonies" element={<Outlet />}>
-          {/* <Route index element={<AllTestimoniesPage />} />
-          <Route path="new" element={<AddTestimonyPage />} /> */}
-          {/* Add more testimony routes if needed */}
-        </Route>
-
-        {/* Additional Admin Routes */}
-        {/* <Route path="profile" element={<ProfilePage />} /> */}
-        {/* Add other standalone admin routes if needed */}
-
-        {/* Fallback Route */}
-        <Route path="*" element={<PageNotFound />} />
-      </Route>
-
-
-      {/* Admin Sign-In */}
+      {/* ---------------------------------------
+          Admin Sign-In Route (Public)
+      --------------------------------------- */}
       <Route path="/admin/signin" element={<SignInPage />} />
+
+      {/* ---------------------------------------
+          Admin Routes (Protected by RequireAdmin)
+      --------------------------------------- */}
+      <Route element={<RequireAdmin />}>
+        <Route path="/admin" element={<AdminLayout />}>
+          {/* 
+            Admin child routes inside this layout. 
+            Because of <RequireAdmin />, only users with role="admin" can see these.
+          */}
+
+          {/* Product Management */}
+          <Route path="products">
+            <Route index element={<AdminProductDash />} />
+            <Route path="new" element={<AdminProductDash />} />
+            {/* Add more product routes if needed */}
+          </Route>
+
+          {/* Bookings Management */}
+          <Route path="bookings">
+            <Route index element={<AdminBookingPage />} />
+            <Route path="bookingsDetail/:bookingId" element={<BookingDetailPage />} />
+          </Route>
+
+          {/* Trips Management */}
+          <Route path="trips">
+            <Route index element={<AdminTripPage />} />
+            <Route path="new" element={<AdminTripFormPage />} />
+            <Route path="edit/:id" element={<AdminTripFormPage />} />
+            <Route path="add" element={<AddTripPage />} />
+          </Route>
+
+          {/* Example placeholders
+          <Route path="users">
+            <Route index element={<AllUsersPage />} />
+            <Route path="new" element={<CreateUserPage />} />
+          </Route>
+
+          <Route path="gallery">
+            <Route index element={<AllGalleryItemsPage />} />
+            <Route path="new" element={<AddGalleryItemPage />} />
+          </Route>
+
+          <Route path="videos">
+            <Route index element={<AllVideosPage />} />
+            <Route path="new" element={<UploadVideoPage />} />
+          </Route>
+
+          <Route path="testimonies">
+            <Route index element={<AllTestimoniesPage />} />
+            <Route path="new" element={<AddTestimonyPage />} />
+          </Route>
+          */}
+
+          {/* Fallback 404 for Admin */}
+          <Route path="*" element={<PageNotFound />} />
+        </Route>
+      </Route>
     </Routes>
   );
 };

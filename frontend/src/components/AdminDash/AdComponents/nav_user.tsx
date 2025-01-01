@@ -28,24 +28,24 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { useSelector} from "react-redux";
+import {  useSelector} from "react-redux";
 import { RootState } from "@/core/store/store";
+import { logout } from "@/core/store/slice/user_slice";
+import { useAppDispatch } from "@/core/constants";
+import { useNavigate } from "react-router-dom";
 
 export function NavUser() {
   const { isMobile } = useSidebar();
-  // const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
-  const { user, isLoading, error } = useSelector((state: RootState) => state.userSlice);
+  const navigate = useNavigate();
 
-  const handleLogout = async () => {
-    try {
-      // await dispatch(performSignOut()).unwrap();
-      // Optionally, navigate to a public route after logout
-      // navigate("/signin");
-    } catch (err) {
-      console.error("Logout failed:", err);
-      // Optionally, dispatch an error action or display a notification
-    }
+  const { user, status, error } = useSelector((state: RootState) => state.userSlice);
+
+  const handleLogout = () => {
+      dispatch(logout()).unwrap();
+      navigate("/admin/signin");
+    
   };
 
   return (
@@ -111,8 +111,8 @@ export function NavUser() {
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem disabled={isLoading} onClick={handleLogout}>
-                {isLoading ? <LoaderIcon className="mr-2 h-4 w-4 animate-spin" /> : <LogOut className="mr-2 h-4 w-4" />}
+              <DropdownMenuItem disabled={status === 'loading'} onClick={handleLogout}>
+                {status === 'loading' ? <LoaderIcon className="mr-2 h-4 w-4 animate-spin" /> : <LogOut className="mr-2 h-4 w-4" />}
                 Log out
               </DropdownMenuItem>
             </DropdownMenuGroup>
