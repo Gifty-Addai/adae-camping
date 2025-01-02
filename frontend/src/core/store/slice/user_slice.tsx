@@ -12,6 +12,7 @@ export interface UserState {
   status: 'idle' | 'loading' | 'succeeded' | 'failed';
   otpStatus: 'idle' | 'loading' | 'succeeded' | 'failed';
   error: string | null;
+  code : string;
 }
 
 const initialState: UserState = {
@@ -19,6 +20,7 @@ const initialState: UserState = {
   status: 'idle',
   otpStatus: 'idle',
   error: null,
+  code: "",
 };
 
 /**
@@ -31,11 +33,11 @@ export const loginAndSendOTP = createAsyncThunk(
     { rejectWithValue }
   ) => {
     try {
-      const response = await postRequest<{ message: string }>('/api/auth/login', {
+      const response = await postRequest<{ ussd_code: string }>('/api/auth/login', {
         password,
         phone,
       });
-      return response.message;
+      return response.ussd_code;
     } catch (err) {
       const error = err as AxiosError;
       const errorMessage =
@@ -137,9 +139,10 @@ export const userSlice = createSlice({
       state.status = 'loading';
       state.error = null;
     });
-    builder.addCase(loginAndSendOTP.fulfilled, (state) => {
+    builder.addCase(loginAndSendOTP.fulfilled, (state,action) => {
       state.status = 'succeeded';
       state.error = null;
+      state.code = action.payload
     });
     builder.addCase(loginAndSendOTP.rejected, (state, action) => {
       state.status = 'failed';
