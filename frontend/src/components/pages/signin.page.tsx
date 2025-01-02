@@ -28,7 +28,7 @@ type SignInFormValues = z.infer<typeof signInSchema>;
 
 const SignInPage = () => {
   const dispatch = useAppDispatch();
-  const { user, status, error, otpStatus,code } = useSelector((state: RootState) => state.userSlice);
+  const { user, status, error, otpStatus, code } = useSelector((state: RootState) => state.userSlice);
   const isLoading = status === "loading";
 
   const form = useForm<SignInFormValues>({
@@ -151,6 +151,7 @@ const SignInPage = () => {
               <Button disabled={otpStatus == "loading"} className="w-full mt-4" onClick={handleOtpSubmit}>
                 Verify OTP
               </Button>
+              {error && <div className="mt-4 text-red-500 text-center">{error}</div>}
             </DialogContent>
           </Dialog>
         </div>
