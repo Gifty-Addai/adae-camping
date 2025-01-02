@@ -11,7 +11,7 @@ import { loginAndSendOTP, verifyOTPAndLogin } from "@/core/store/slice/user_slic
 import { useAppDispatch } from "@/core/constants";
 import { useSelector } from "react-redux";
 import { RootState } from "@/core/store/store";
-import Otp from "@/components/ui/otp-input";
+import OtpInput from "@/components/ui/otp-input";
 import React from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
@@ -146,7 +146,7 @@ const SignInPage = () => {
               <DialogHeader>
                 <DialogTitle className="text-yellow-400">Verify OTP</DialogTitle>
               </DialogHeader>
-              <Otp length={6} otp={otp} onOtpChange={handleOtpChange} />
+              <OtpInput length={6} otpvalue={otp} onOtpChange={handleOtpChange} />
               <Button disabled={otpStatus == "loading"} className="w-full mt-4" onClick={handleOtpSubmit}>
                 Verify OTP
               </Button>

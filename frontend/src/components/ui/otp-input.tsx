@@ -3,13 +3,13 @@ import { useState, Fragment, useRef, useEffect } from "react";
 
 type OtpInputProps = {
   length: number;
-  otp: number;
+  otpvalue: number;
   onOtpChange: (otp: number) => void;
 };
 
 let currentOtpIndex: number = 0;
 
-const Otp = ({ length, otp, onOtpChange }: OtpInputProps): JSX.Element => {
+const OtpInput = ({ length, onOtpChange }: OtpInputProps): JSX.Element => {
   const [tempOtp, setTempOtp] = useState<string[]>(
     new Array(length || 6).fill("")
   );
@@ -30,7 +30,7 @@ const Otp = ({ length, otp, onOtpChange }: OtpInputProps): JSX.Element => {
     onOtpChange(
       isNaN(parseInt(newOtp.join(""))) ? 0 : parseInt(newOtp.join(""))
     );
-    otp = isNaN(parseInt(tempOtp.join(""))) ? 0 : parseInt(tempOtp.join(""));
+    // otpvalue = isNaN(parseInt(tempOtp.join(""))) ? 0 : parseInt(tempOtp.join(""));
   };
 
   const handleOnKeyDown = (
@@ -71,4 +71,4 @@ const Otp = ({ length, otp, onOtpChange }: OtpInputProps): JSX.Element => {
   );
 };
 
-export default Otp;
+export default OtpInput;
