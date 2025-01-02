@@ -4,49 +4,82 @@ import { setAccessToken } from '@/lib/axios-instance';
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { AxiosError } from 'axios';
 
-
 /**
  * The shape of our User slice state.
  */
 export interface UserState {
   user: IUser | null;
   status: 'idle' | 'loading' | 'succeeded' | 'failed';
+  otpStatus: 'idle' | 'loading' | 'succeeded' | 'failed';
   error: string | null;
 }
 
 const initialState: UserState = {
   user: null,
   status: 'idle',
+  otpStatus: 'idle',
   error: null,
 };
 
 /**
- * LOGIN Thunk
+ * LOGIN Thunk - Sends credentials and triggers OTP
  */
-export const login = createAsyncThunk(
-  '/api/auth/login',
+export const loginAndSendOTP = createAsyncThunk(
+  'user/loginAndSendOTP',
   async (
-    { email, password }: { email: string; password: string },
+    { password, phone }: { password: string; phone?: string | undefined },
     { rejectWithValue }
   ) => {
     try {
-      const response = await postRequest<{ accessToken: string, user: IUser }>('/api/auth/login', { email, password });
-      setAccessToken(response.accessToken);
-
-      return response.user as IUser;
+      const response = await postRequest<{ message: string }>('/api/auth/login', {
+        password,
+        phone,
+      });
+      return response.message;
     } catch (err) {
       const error = err as AxiosError;
       const errorMessage =
         (error.response?.data as any)?.message ||
         error.message ||
-        'Login failed';
+        'Failed to send OTP.';
       return rejectWithValue(errorMessage);
     }
   }
 );
 
 /**
- * FETCH PROFILE Thunk
+ * VERIFY OTP Thunk - Verifies OTP and logs in the user
+ */
+export const verifyOTPAndLogin = createAsyncThunk(
+  'user/verifyOTPAndLogin',
+  async (
+    { number, code }: { number: string; code: string },
+    { rejectWithValue }
+  ) => {
+    try {
+      const response = await postRequest<{
+        accessToken: string;
+        user: IUser;
+      }>('/api/user/verifyOTP', {
+        number,
+        code,
+      });
+
+      setAccessToken(response.accessToken);
+      return response.user as IUser;
+    } catch (err) {
+      const error = err as AxiosError;
+      const errorMessage =
+        (error.response?.data as any)?.message ||
+        error.message ||
+        'OTP verification failed.';
+      return rejectWithValue(errorMessage);
+    }
+  }
+);
+
+/**
+ * FETCH PROFILE Thunk - Retrieves user details
  */
 export const fetchUserProfile = createAsyncThunk(
   'user/fetchUserProfile',
@@ -60,7 +93,7 @@ export const fetchUserProfile = createAsyncThunk(
       const errorMessage =
         (error.response?.data as any)?.message ||
         error.message ||
-        'Profile fetch failed';
+        'Profile fetch failed.';
       return rejectWithValue(errorMessage);
     }
   }
@@ -81,7 +114,7 @@ export const logout = createAsyncThunk(
       const errorMessage =
         (error.response?.data as any)?.message ||
         error.message ||
-        'Logout failed';
+        'Logout failed.';
       return rejectWithValue(errorMessage);
     }
   }
@@ -91,23 +124,40 @@ export const userSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {
-    setUser(state, action: PayloadAction<User | null>) {
+    setUser(state, action: PayloadAction<IUser | null>) {
       state.user = action.payload;
+    },
+    clearError(state) {
+      state.error = null;
     },
   },
   extraReducers: (builder) => {
-    // login
-    builder.addCase(login.pending, (state) => {
+    // loginAndSendOTP
+    builder.addCase(loginAndSendOTP.pending, (state) => {
       state.status = 'loading';
       state.error = null;
     });
-    builder.addCase(login.fulfilled, (state, action) => {
+    builder.addCase(loginAndSendOTP.fulfilled, (state) => {
       state.status = 'succeeded';
+      state.error = null;
+    });
+    builder.addCase(loginAndSendOTP.rejected, (state, action) => {
+      state.status = 'failed';
+      state.error = action.payload as string;
+    });
+
+    // verifyOTPAndLogin
+    builder.addCase(verifyOTPAndLogin.pending, (state) => {
+      state.otpStatus = 'loading';
+      state.error = null;
+    });
+    builder.addCase(verifyOTPAndLogin.fulfilled, (state, action) => {
+      state.otpStatus = 'succeeded';
       state.user = action.payload;
       state.error = null;
     });
-    builder.addCase(login.rejected, (state, action) => {
-      state.status = 'failed';
+    builder.addCase(verifyOTPAndLogin.rejected, (state, action) => {
+      state.otpStatus = 'failed';
       state.error = action.payload as string;
     });
 
@@ -132,7 +182,6 @@ export const userSlice = createSlice({
       state.error = null;
     });
     builder.addCase(logout.fulfilled, (state) => {
-      // On logout, clear user
       state.status = 'idle';
       state.user = null;
       state.error = null;
@@ -144,5 +193,5 @@ export const userSlice = createSlice({
   },
 });
 
-export const { setUser } = userSlice.actions;
+export const { setUser, clearError } = userSlice.actions;
 export default userSlice.reducer;
