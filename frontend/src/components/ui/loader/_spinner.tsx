@@ -3,8 +3,6 @@
 import { cn } from "../../../lib/utils";
 import { VariantProps, cva } from "class-variance-authority";
 import React from "react";
-import Lottie from "lottie-react";
-import loadingAnimation from "@/assets/animation/loading.json";
 
 const spinnerVariants = cva(
   "relative flex items-center justify-center",
@@ -50,21 +48,6 @@ const Spinner = React.forwardRef<HTMLDivElement, SpinnerProps>(
             size === "xl" && "border-2"
           )}
         ></span>
-
-        {/* Lottie Animation */}
-        <div className="absolute inset-0 flex items-center justify-center">
-          <Lottie
-            animationData={animationData || loadingAnimation}
-            loop={loop}
-            className={cn(
-              size === "sm" && "w-2 h-2",
-              size === "default" && "w-5 h-5",
-              size === "md" && "w-4 h-4",
-              size === "lg" && "w-10 h-10",
-              size === "xl" && "w-16 h-16"
-            )}
-          />
-        </div>
       </div>
     );
   }
