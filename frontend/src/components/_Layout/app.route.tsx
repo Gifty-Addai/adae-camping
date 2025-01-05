@@ -11,7 +11,6 @@ import SignInPage from "../pages/signin.page";
 import CartPage from "../pages/Cart/cart.page";
 import { PageNotFound } from "../pages/not_found.page";
 import { Spinner } from "../ui/loader/_spinner";
-import { cn } from "@/lib/utils";
 
 // Admin Pages
 import AdminProductDash from "../AdminDash/pages/Dashboard/productDash";
