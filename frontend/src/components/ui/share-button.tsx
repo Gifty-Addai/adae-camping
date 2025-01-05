@@ -16,9 +16,10 @@ import { Share2Icon } from 'lucide-react';
 interface ShareButtonsProps {
     url: string;
     title: string;
+    buttonText?: string;
 }
 
-export const ShareButtons: React.FC<ShareButtonsProps> = ({ url, title }) => {
+export const ShareButtons: React.FC<ShareButtonsProps> = ({ url, buttonText = "Share", title }) => {
     const [showOptions, setShowOptions] = useState(false);
 
     const handleNativeShare = async () => {
@@ -30,12 +31,11 @@ export const ShareButtons: React.FC<ShareButtonsProps> = ({ url, title }) => {
                     url: url,
                 });
             } else {
-                // If the native API is not available, fallback to showing the share icons
                 setShowOptions(!showOptions);
             }
         } catch (err) {
             console.error('Error using native share:', err);
-            toast.error('Unable to share using native share.');
+            // toast.error('Unable to share using native share.');
         }
     };
 
@@ -52,9 +52,9 @@ export const ShareButtons: React.FC<ShareButtonsProps> = ({ url, title }) => {
     return (
         <div className="relative">
             {/* Primary share button (either tries native share or toggles fallback icons) */}
-            <Button variant="secondary" onClick={handleNativeShare}>
+            <Button variant="secondary" size={"sm"} onClick={handleNativeShare}>
                 <Share2Icon className="h-4 w-4 mr-2" />
-                Share
+                {buttonText}
             </Button>
 
             {/* If native share is not available, or user wants to see more options */}

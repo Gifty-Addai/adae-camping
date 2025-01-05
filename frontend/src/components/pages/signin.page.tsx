@@ -74,6 +74,7 @@ const SignInPage = () => {
 
   return (
     <Page
+      pageTitle="Sign In"
       renderBody={() => (
         <div className="max-w-md mx-auto p-6 bg-card rounded-lg shadow-md">
           <h2 className="text-center text-xl font-semibold text-card-foreground">Admin Sign In</h2>

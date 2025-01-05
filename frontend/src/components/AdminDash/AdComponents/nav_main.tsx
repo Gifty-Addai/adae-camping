@@ -43,7 +43,7 @@ export function NavMain({ items }: NavMainProps) {
                   {item.icon && <item.icon className="w-4 h-4 mr-2" />}
                   <span>{item.title}</span>
                   {item.children && (
-                    <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+                    <ChevronRight  className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
                   )}
                 </SidebarMenuButton>
               </CollapsibleTrigger>

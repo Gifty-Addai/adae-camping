@@ -4,10 +4,10 @@ import React, { useEffect, useState } from "react";
 import { Link, useLocation, matchPath } from "react-router-dom";
 import { useTripAPI } from "@/hooks/api.hook";
 import { Spinner } from "@/components/ui/loader/_spinner";
-import { HomeIcon } from "lucide-react";
+import { HomeIcon, ChevronRight } from "lucide-react";
 import { breadcrumbConfig } from "./breadcumbConfig";
 
-interface BreadcrumbProps {}
+interface BreadcrumbProps { }
 
 const Breadcrumbs: React.FC<BreadcrumbProps> = () => {
   const location = useLocation();
@@ -86,30 +86,20 @@ const Breadcrumbs: React.FC<BreadcrumbProps> = () => {
   }
 
   return (
-    <nav className="flex" aria-label="Breadcrumb">
+    <nav className="flex bg-yellow-300 rounded-lg p-2" aria-label="Breadcrumb">
       <ol className="inline-flex items-center space-x-1 md:space-x-3">
         {/* Home Breadcrumb */}
         <li className="inline-flex items-center">
           <Link
-            to="/admin"
-            className="flex items-center text-sm font-medium text-muted-foreground hover:text-yellow-400"
+            to="/admin/products"
+            className="flex items-center text-sm font-semibold text-black"
           >
-            <HomeIcon className="w-4 h-4 mr-1" />
+            <HomeIcon color="black" className="w-4 h-4 mr-1" />
             Admin
           </Link>
           {breadcrumbs.length > 0 && (
-            <svg
-              className="w-4 h-4 mx-2 text-muted-foreground hidden md:inline"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-              aria-hidden="true"
-            >
-              <path
-                fillRule="evenodd"
-                d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                clipRule="evenodd"
-              />
-            </svg>
+            <ChevronRight size={17} className="ml-2" />
+
           )}
         </li>
         {/* Dynamic Breadcrumbs */}
@@ -117,28 +107,17 @@ const Breadcrumbs: React.FC<BreadcrumbProps> = () => {
           <li key={index} className="inline-flex items-center">
             <Link
               to={crumb.path}
-              className={`text-sm font-medium text-card-foreground ${
-                index === breadcrumbs.length - 1
+              className={`text-sm text-black font-semibold ${index === breadcrumbs.length - 1
                   ? "text-gray-500 pointer-events-none"
                   : "text-gray-700 hover:text-blue-600"
-              } truncate max-w-xs flex items-center`}
+                } truncate max-w-xs flex items-center`}
               aria-current={index === breadcrumbs.length - 1 ? "page" : undefined}
             >
               {crumb.breadcrumb}
             </Link>
             {index < breadcrumbs.length - 1 && (
-              <svg
-                className="w-4 h-4 mx-2 text-card-foreground hidden md:inline"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-                aria-hidden="true"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                  clipRule="evenodd"
-                />
-              </svg>
+                         <ChevronRight size={17} className="ml-2" />
+
             )}
           </li>
         ))}

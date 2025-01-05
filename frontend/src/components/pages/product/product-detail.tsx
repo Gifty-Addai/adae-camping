@@ -1,7 +1,6 @@
-// ProductDetailPage.tsx
 import React, { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { Link, useNavigate, useParams } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import { addToCart } from '@/core/store/slice/cart.slice';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -12,14 +11,16 @@ import Countdown, { CountdownRendererFn } from 'react-countdown';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import ProductCard from './product.card';
-import { MinusIcon, PlusIcon } from 'lucide-react';
+import { MinusIcon, PlusIcon, ShoppingCart } from 'lucide-react';
 import { ShareButtons } from '@/components/ui/share-button';
 import InnerImageZoom from 'react-inner-image-zoom';
 import 'react-inner-image-zoom/lib/InnerImageZoom/styles.css';
+import { RootState } from '@/core/store/store';
 
 const ProductDetailPage: React.FC = () => {
     const { productId } = useParams<{ productId: string }>();
     const dispatch = useDispatch();
+    const totalItems = useSelector((state: RootState) => state.cart.totalItems);
     const [product, setProduct] = useState<Product | null>(null);
     const [products, setProducts] = useState<Product[] | void>();
     const [quantity, setQuantity] = useState(1);
@@ -68,7 +69,7 @@ const ProductDetailPage: React.FC = () => {
     // Simple countdown renderer
     const renderer: CountdownRendererFn = ({ completed }) => {
         if (completed) {
-            return <span className="text-green-600 font-semibold">Sale Ended</span>;
+            return <span className="text-green-600 font-semibold">Discount Ended</span>;
         } else {
             return (
                 <div className="text-red-600 font-bold text-xl md:text-2xl">
@@ -201,7 +202,7 @@ const ProductDetailPage: React.FC = () => {
                                     {/* Timer for Sales Countdown */}
                                     <div className="mt-4 mb-4 md:mb-6">
                                         <h3 className="text-md md:text-lg font-semibold text-card-foreground mb-1 md:mb-2">
-                                            Sale Ends In:
+                                            Discount Sale Ends In:
                                         </h3>
                                         <Countdown
                                             date={new Date().getTime() + 1000 * 60 * 60 * 24}
@@ -244,6 +245,19 @@ const ProductDetailPage: React.FC = () => {
                             )}
                         </div>
                     </div>
+
+                    <Link to="/cart">
+                        <Button className="fixed bottom-4 right-4 bg-gray-400 p-2 sm:hidden z-50 shadow-lg">
+                            <div className="relative">
+                                <ShoppingCart size={24} />
+                                {totalItems > 0 && (
+                                    <span className="absolute top-0 right-0 bg-accent text-white text-xs rounded-full w-5 h-5 flex items-center justify-center -mt-1 -mr-1">
+                                        {totalItems}
+                                    </span>
+                                )}
+                            </div>
+                        </Button>
+                    </Link>
 
                     {/* People Also View Section */}
                     {products?.length! > 0 && (

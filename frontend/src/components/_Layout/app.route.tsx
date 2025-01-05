@@ -1,4 +1,3 @@
-// AppRoute.tsx
 import { useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
 import { useSelector } from "react-redux";
@@ -6,8 +5,6 @@ import { RootState } from "@/core/store/store";
 
 import { VerifiedLayout } from "./pages.layout";
 import AdminLayout from "./admin.layout";
-
-// Components / Pages
 import LandingPage from "../pages/landing";
 import StorePage from "../pages/product/products";
 import SignInPage from "../pages/signin.page";
@@ -45,11 +42,9 @@ export const AppRoute = () => {
   const { isLoading: appLoading } = useSelector((state: RootState) => state.appSlice);
 
   useEffect(() => {
-    // Attempt to refresh or fetch user info on app load
     dispatch(fetchUserProfile());
   }, [dispatch]);
 
-  // If your entire app is loading (e.g., verifying token), show overlay
   if (appLoading) {
     return (
       <div

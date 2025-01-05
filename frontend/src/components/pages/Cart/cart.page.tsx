@@ -23,6 +23,7 @@ import { toast } from 'react-toastify';
 import InvoiceModal from './payment_instruction_modal';
 import TransactionModal from './transaction.modal';
 import { initializePayment } from '@/lib/payment-handler';
+import { Page } from '@/components/ui/page';
 
 const CartPage: React.FC = () => {
     const form = useForm<CartFormValues>({
@@ -107,155 +108,166 @@ const CartPage: React.FC = () => {
 
     if (cart.totalItems === 0) {
         return (
-            <div className="flex justify-center items-center flex-col text-center p-8 mt-24 h-screen">
-                <h3 className="text-xl font-semibold text-gray-700 mb-2">
-                    Your Cart is Empty! 🛒
-                </h3>
-                <p className="text-gray-500 mb-4">
-                    You have no items in your cart. Start shopping now and add products to your cart!
-                </p>
+            <Page
+                pageTitle='cart'
+                renderBody={() => (
+                    <div className='flex justify-center flex-col text-center mt-3'>
+                        <h3 className="text-xl font-semibold text-gray-700 mb-2">
+                            Your Cart is Empty! 🛒
+                        </h3>
+                        <p className="text-gray-500 mb-4">
+                            You have no items in your cart. Start shopping now and add products to your cart!
+                        </p>
 
-                <Link to="/products">
-                    <Button>
-                        Continue Shopping
-                    </Button>
-                </Link>
-            </div>
+                        <Link to="/products">
+                            <Button>
+                                Continue Shopping
+                            </Button>
+                        </Link>
+                    </div>
+                )}
+            />
+
         );
     }
 
     return (
-        <div className="container mx-auto p-6 mt-16">
-            <h2 className="text-2xl font-semibold text-card-foreground mb-6 text-center">Your Cart</h2>
-            {/* Cart Items and Invoice Section */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-8">
-                {/* Package Details */}
-                <div className="col-span-2 rounded-lg shadow-lg p-6">
-                    {cart.items.map((item) => (
-                        <CartItem key={item._id} item={item} />
-                    ))}
-                    <div className="flex justify-between items-center mt-6 p-4 bg-gray-100 rounded-lg">
-                        <div className="font-semibold text-lg">Total: </div>
-                        <div className="text-xl font-semibold text-gray-700">
-                            GHS {cart.totalPrice.toFixed(2)}
+        <Page
+            pageTitle='cart'
+            renderBody={() => (
+                <div className='container mx-auto mt-3'>
+                    <h2 className="text-2xl font-semibold text-card-foreground mb-6 text-center">Your Cart</h2>
+                    {/* Cart Items and Invoice Section */}
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-8">
+                        {/* Package Details */}
+                        <div className="col-span-2 rounded-lg shadow-lg p-6">
+                            {cart.items.map((item) => (
+                                <CartItem key={item._id} item={item} />
+                            ))}
+                            <div className="flex justify-between items-center mt-6 p-4 bg-gray-100 rounded-lg">
+                                <div className="font-semibold text-lg">Total: </div>
+                                <div className="text-xl font-semibold text-gray-700">
+                                    GHS {cart.totalPrice.toFixed(2)}
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Booking Form */}
+                        <div className="col-span-1 bg-card rounded-lg shadow-lg p-6">
+                            <h3 className="text-xl text-center text-white font-bold mb-4">One step away to have your product(s)</h3>
+                            <Form {...form}>
+                                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                                    <FormField
+                                        control={form.control}
+                                        name="name"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel className='text-card-foreground'>Full Name *</FormLabel>
+                                                <FormControl>
+                                                    <Input
+                                                        placeholder="Enter your name"
+                                                        {...field}
+                                                    />
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                    <FormField
+                                        control={form.control}
+                                        name="address"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel className='text-card-foreground'>Address(GH-Region-City/Town) *</FormLabel>
+                                                <FormControl>
+                                                    <Input
+                                                        placeholder="Enter specific address"
+                                                        {...field}
+                                                    />
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+
+                                    <FormField
+                                        control={form.control}
+                                        name="phone"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel className='text-card-foreground'>Phone *</FormLabel>
+                                                <FormControl>
+                                                    <Input
+                                                        placeholder="Enter your phone number"
+                                                        {...field}
+                                                    />
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+
+                                    <FormField
+                                        control={form.control}
+                                        name="email"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel className='text-card-foreground'>Email *</FormLabel>
+                                                <FormControl>
+                                                    <Input
+                                                        placeholder="Enter your email"
+                                                        {...field}
+                                                    />
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+
+                                    <FormField
+                                        control={form.control}
+                                        name="preferences"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel className='text-card-foreground'>Note(s)</FormLabel>
+                                                <FormControl>
+                                                    <Input
+                                                        placeholder="Enter preferences (optional)"
+                                                        {...field}
+                                                    />
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+
+                                    <Button type="submit" className="w-full">
+                                        View Invoice
+                                    </Button>
+                                </form>
+                            </Form>
                         </div>
                     </div>
+
+                    {/* Invoice Modal */}
+                    {formData && (
+                        <InvoiceModal
+                            isOpen={isModalOpen}
+                            onClose={() => setIsModalOpen(false)}
+                            totalPrice={cart.totalPrice}
+                            formData={formData}
+                            handleCheckout={handleCheckout}
+                        />
+                    )}
+                    <TransactionModal
+                        isOpen={isVerify}
+                        onClose={() => setIsVerifyModal(false)}
+                        isSuccess={isSucces}
+
+                    />
                 </div>
-
-                {/* Booking Form */}
-                <div className="col-span-1 bg-card rounded-lg shadow-lg p-6">
-                    <h3 className="text-xl text-center text-white font-bold mb-4">One step away to have your product(s)</h3>
-                    <Form {...form}>
-                        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                            <FormField
-                                control={form.control}
-                                name="name"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel className='text-card-foreground'>Full Name *</FormLabel>
-                                        <FormControl>
-                                            <Input
-                                                placeholder="Enter your name"
-                                                {...field}
-                                            />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                            <FormField
-                                control={form.control}
-                                name="address"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel className='text-card-foreground'>Address(GH-Region-City/Town) *</FormLabel>
-                                        <FormControl>
-                                            <Input
-                                                placeholder="Enter specific address"
-                                                {...field}
-                                            />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-
-                            <FormField
-                                control={form.control}
-                                name="phone"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel className='text-card-foreground'>Phone *</FormLabel>
-                                        <FormControl>
-                                            <Input
-                                                placeholder="Enter your phone number"
-                                                {...field}
-                                            />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-
-                            <FormField
-                                control={form.control}
-                                name="email"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel className='text-card-foreground'>Email *</FormLabel>
-                                        <FormControl>
-                                            <Input
-                                                placeholder="Enter your email"
-                                                {...field}
-                                            />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-
-                            <FormField
-                                control={form.control}
-                                name="preferences"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel className='text-card-foreground'>Note(s)</FormLabel>
-                                        <FormControl>
-                                            <Input
-                                                placeholder="Enter preferences (optional)"
-                                                {...field}
-                                            />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-
-                            <Button type="submit" className="w-full">
-                                View Invoice
-                            </Button>
-                        </form>
-                    </Form>
-                </div>
-            </div>
-
-            {/* Invoice Modal */}
-            {formData && (
-                <InvoiceModal
-                    isOpen={isModalOpen}
-                    onClose={() => setIsModalOpen(false)}
-                    totalPrice={cart.totalPrice}
-                    formData={formData}
-                    handleCheckout={handleCheckout}
-                />
             )}
-            <TransactionModal
-                isOpen={isVerify}
-                onClose={() => setIsVerifyModal(false)}
-                isSuccess={isSucces}
-
-            />
-        </div>
+        />
     );
 
 };

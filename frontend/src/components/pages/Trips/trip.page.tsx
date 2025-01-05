@@ -1,5 +1,3 @@
-// src/components/TripPage.tsx
-
 import React, { useState, useCallback } from 'react';
 import { useTripAPI } from '@/hooks/api.hook';
 import TripCard from './trip-card';
@@ -27,6 +25,7 @@ export const TripPage: React.FC = () => {
 
   return (
     <Page
+      pageTitle='trips'
       renderBody={() => (
         <div className="mt-3 px-4 flex flex-col lg:flex-row">
           {/* Left Filter Section for Large Screens */}
@@ -69,7 +68,7 @@ export const TripPage: React.FC = () => {
             {loading ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-x-2 gap-y-8">
                 {[...Array(4)].map((_, index) => (
-                  <div className="rounded-lg overflow-hidden mb-4">
+                  <div key={index} className="rounded-lg overflow-hidden mb-4">
                     <Skeleton key={index} className="w-full h-96" />
                   </div>
                   // <div

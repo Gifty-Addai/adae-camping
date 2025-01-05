@@ -1,4 +1,3 @@
-// src/components/booking/ReviewConfirm.tsx
 import React from "react";
 import { BookingFormData, ScheduleDate, Trip } from "@/core/interfaces";
 import { format, parseISO } from "date-fns";
@@ -13,11 +12,12 @@ import { useBookingAPI } from "@/hooks/booking.hook";
 
 interface ReviewConfirmProps {
   formData: BookingFormData;
+  isMember: boolean;
   trip: Trip | null | undefined;
   selectedDate: ScheduleDate | undefined;
 }
 
-const ReviewConfirm: React.FC<ReviewConfirmProps> = ({ formData, trip, selectedDate }) => {
+const ReviewConfirm: React.FC<ReviewConfirmProps> = ({ formData, trip,isMember, selectedDate }) => {
   if (!trip || !selectedDate) return null;
 
   const { loading, addBooking,editBooking } = useBookingAPI()
@@ -28,9 +28,8 @@ const ReviewConfirm: React.FC<ReviewConfirmProps> = ({ formData, trip, selectedD
   const endDateFormatted = format(parseISO(selectedDate.endDate.toString()), "MMM d, yyyy");
 
   const basePrice = trip.cost.basePrice;
-  const tripDiscount = trip.cost.discount;
+  const tripDiscount = isMember ? trip.cost.discount : 0;
   // const discount = trip.cost.discount ?? 0;
-  let discount = 0;
   const finalPrice = basePrice + tripDiscount;
 
   const fullName = `${formData.personalInfo.firstName} ${formData.personalInfo.lastName}`.trim();
@@ -180,13 +179,13 @@ const ReviewConfirm: React.FC<ReviewConfirmProps> = ({ formData, trip, selectedD
               </h2>
               <div className="text-sm space-y-1">
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">Base Price</span>
+                  <span className="text-muted-foreground">Price</span>
                   <span className="text-card-foreground">GHS {basePrice}</span>
                 </div>
 
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Discount</span>
-                  <span className="text-card-foreground">- GHS {discount}</span>
+                  <span className="text-card-foreground">- GHS {tripDiscount}</span>
                 </div>
 
                 <Separator className="my-" />

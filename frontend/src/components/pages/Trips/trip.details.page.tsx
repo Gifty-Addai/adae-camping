@@ -57,6 +57,7 @@ const TripDetail: React.FC = () => {
 
   if (loading) return (
     <Page
+    pageTitle="trip detail"
       renderBody={() => (
         <div className="mt-3">
           {/* Image Carousel Skeleton */}
@@ -106,6 +107,7 @@ const TripDetail: React.FC = () => {
   return (
 
     <Page
+      pageTitle={trip.name.substring(0, 20)}
       renderBody={() => (
         <div className="mt-3">
           {/* Image Carousel */}

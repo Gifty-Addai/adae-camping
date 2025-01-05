@@ -2,6 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/core/store/store';
 import { Navigate, Outlet } from 'react-router-dom';
+import { isDev } from '@/core/constants';
 
 /**
  * Route guard for admin users.
@@ -9,12 +10,10 @@ import { Navigate, Outlet } from 'react-router-dom';
 export const RequireAdmin: React.FC = () => {
   const { user } = useSelector((state: RootState) => state.userSlice);
 
-  // Check if user is authenticated and has role === 'admin'
-  if (!user || user.role !== 'admin') {
-    // Redirect if not admin
-    return <Navigate to="/admin/signin" replace />;
+
+  if (isDev || (user && user.role === 'admin')) {
+    return <Outlet />;
   }
 
-  // If admin, render child routes
-  return <Outlet />;
+  return <Navigate to="/admin/signin" replace />;
 };

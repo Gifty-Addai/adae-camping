@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ScheduleDate, Trip } from "@/core/interfaces";
 import { Link } from "react-router-dom";
+import { ShareButtons } from "@/components/ui/share-button";
 
 /** Modal component interface */
 interface TripDatesModalProps {
@@ -97,7 +98,7 @@ const TripDatesModal: React.FC<TripDatesModalProps> = ({
 
               const isLimited =
                 isAvailable && slotsRemaining > 0 && slotsRemaining <= groupSizeMin;
-                
+
 
               return (
                 <div
@@ -197,6 +198,10 @@ const TripHeaderCTA: React.FC<Props> = ({
 }) => {
   const [showModal, setShowModal] = useState(false);
   const [selectedDate, setSelectedDate] = useState<ScheduleDate | null>(null);
+  const baseUrl = import.meta.env.VITE_APP_BASE_URL || window.location.origin;
+  const shareUrl = `${baseUrl}/product/${encodeURIComponent((trip?.name || '').substring(0, 30))}/${trip?._id ?? ''}`;
+  const tripTitle = trip?.name || 'Trip Details';
+
 
   // Automatically select first available date, if any, on mount or whenever `departures` changes
   useEffect(() => {
@@ -223,17 +228,8 @@ const TripHeaderCTA: React.FC<Props> = ({
           </span>
         </div> */}
         {/* Share Links */}
-        <div className="flex space-x-3 text-white text-md font-medium">
-          <span className="text-card-foreground">Share this trip:</span>
-          <a href="#" className="hover:text-yellow-400">
-            Facebook
-          </a>
-          <a href="#" className="hover:text-primary">
-            TikTok
-          </a>
-          <a href="#" className="hover:text-blue-400">
-            Twitter
-          </a>
+        <div className="mb-6">
+          <ShareButtons buttonText="Share this trip" url={shareUrl} title={tripTitle} />
         </div>
         {/* Trip Stats */}
         <div className="grid grid-cols-2 lg:grid-cols-3 gap-8 mt-8 text-secondary">

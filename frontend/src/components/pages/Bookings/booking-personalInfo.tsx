@@ -14,13 +14,14 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Trip, BookingFormData, ConfirmMembershipResponse,  ScheduleDate } from "@/core/interfaces";
+import { Trip, BookingFormData, ConfirmMembershipResponse, ScheduleDate } from "@/core/interfaces";
 import { format, parseISO } from "date-fns";
 import BookConfirmModal from "./BookingComponents/confirm.personal.modal";
 import { useUserAPI } from "@/hooks/user.hook";
 
 interface PersonalInfoProps {
   trip: Trip | null;
+  setIsMember: React.Dispatch<React.SetStateAction<boolean>>;
   selectedDate: ScheduleDate | undefined;
   updateData: (data: Partial<BookingFormData["personalInfo"]>) => void;
   nextStep: () => void;
@@ -40,6 +41,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({
   trip,
   selectedDate,
   nextStep,
+  setIsMember,
   updateData,
   data
 }) => {
@@ -61,6 +63,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({
       }
     );
     setConfirmData(membershipResult || null);
+    setIsMember(membershipResult.isMember);
     updateData(values);
     setShowModal(true);
   };

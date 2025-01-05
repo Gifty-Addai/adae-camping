@@ -33,12 +33,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
   const updatedBreadcrumbConfig = React.useMemo(() => updateActiveState(breadcrumbConfig), [pathname]);
 
-  React.useEffect(() => {
-    console.log("sidebar initialized");
-  }, []);
-
   return (
-    <Sidebar collapsible="icon" variant="floating" {...props}>
+    <Sidebar collapsible="icon" variant="inset" {...props}>
       <SidebarContent>
         {/* Main Navigation using updated breadcrumbConfig */}
         <NavMain items={updatedBreadcrumbConfig} />

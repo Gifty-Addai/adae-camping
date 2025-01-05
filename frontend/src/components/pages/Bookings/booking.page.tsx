@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 import { Trip, BookingFormData } from "@/core/interfaces";
 import PersonalInfoComponent from "./booking-personalInfo";
 import TravelDetailsComponent from "./booking-travel-details";
-import ReviewConfirm from "./review";
+import ReviewConfirm from "./review-booking";
 import { useTripAPI } from "@/hooks/api.hook";
 import { Page } from "@/components/ui/page";
 import { ArrowLeft } from "lucide-react";
@@ -25,6 +25,7 @@ const BookingPage: React.FC = () => {
 
     const [currentStep, setCurrentStep] = useState(1);
     const [trip, setTrip] = useState<Trip | null>(null);
+    const [isMember, setIsMember] = useState<boolean>(false);
     const [formData, setFormData] = useState<BookingFormData>({
         personalInfo: {
             firstName: "",
@@ -117,6 +118,7 @@ const BookingPage: React.FC = () => {
                     {/* Render Current Step */}
                     {currentStep === 1 && (
                         <PersonalInfoComponent
+                            setIsMember={setIsMember}
                             trip={trip}
                             selectedDate={selectedDate}
                             nextStep={nextStep}
@@ -134,9 +136,9 @@ const BookingPage: React.FC = () => {
                             updateData={(data) => updateFormData("travelDetails", data)}
                         />
                     )}
-                    
+
                     {currentStep === 3 && (
-                        <ReviewConfirm formData={formData} trip={trip} selectedDate={selectedDate} />
+                        <ReviewConfirm isMember = {isMember} formData={formData} trip={trip} selectedDate={selectedDate} />
                     )}
                 </div>
             )}

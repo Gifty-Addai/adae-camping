@@ -55,28 +55,28 @@ export function NavUser() {
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton
               size="lg"
-              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+              className="data-[state=open]:bg-white data-[state=open]:text-card-foreground"
             >
               <Avatar className="h-8 w-8 rounded-lg">
                 <AvatarImage
                   src={`https://github.com/shadcn.png`}
                   alt={user?._id}
                 />
-                <AvatarFallback className="rounded-lg font-bold">{`${user?.name}`}</AvatarFallback>
+                <AvatarFallback className="text-card rounded-lg font-bold">{`${user?.name}`}</AvatarFallback>
               </Avatar>
-              <div className="grid flex-1 text-left text-sm text-sidebar-foreground leading-tight">
-                <span className="truncate font-semibold">
+              <div className="grid flex-1 text-left text-sm text-card leading-tight">
+                <span className="truncate text-card font-semibold">
                   {user?.name || "Guest"}
                 </span>
-                <span className="truncate text-xs">
+                <span className="truncate text-xs text-card">
                   {user?._id || `Add phone number`}
                 </span>
               </div>
-              <ChevronsUpDown className="ml-auto size-4" />
+              <ChevronsUpDown className="ml-auto size-4 text-card-foreground" />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent
-            className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
+            className="w-[--radix-dropdown-menu-trigger-width] bg-card min-w-56 rounded-lg"
             side={isMobile ? "bottom" : "right"}
             align="end"
             sideOffset={4}
@@ -100,18 +100,18 @@ export function NavUser() {
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
+              <DropdownMenuItem className="text-card-foreground">
                 <BadgeCheck className="mr-2 h-4 w-4" />
                 Account
               </DropdownMenuItem>
-              <DropdownMenuItem>
+              <DropdownMenuItem className="text-card-foreground">
                 <Bell className="mr-2 h-4 w-4" />
                 Notifications
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem disabled={status === 'loading'} onClick={handleLogout}>
+              <DropdownMenuItem className="text-card-foreground" disabled={status === 'loading'} onClick={handleLogout}>
                 {status === 'loading' ? <LoaderIcon className="mr-2 h-4 w-4 animate-spin" /> : <LogOut className="mr-2 h-4 w-4" />}
                 Log out
               </DropdownMenuItem>
