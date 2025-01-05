@@ -47,15 +47,8 @@ export const AppRoute = () => {
 
   if (appLoading) {
     return (
-      <div
-        className={cn(
-          "fixed top-0 left-0 w-full h-full flex items-center bg-primary justify-center z-50",
-          appLoading && "bg-primary/50"
-        )}
-      >
-        <div className="text-center flex relative flex-col">
-          <Spinner size={"xl"} />
-        </div>
+      <div className="text-center flex relative flex-col">
+        <Spinner className="fixed top-0 left-0 w-full h-full flex items-center bg-primary justify-center z-50" size={"xl"} />
       </div>
     );
   }

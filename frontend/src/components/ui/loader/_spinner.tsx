@@ -1,5 +1,3 @@
-// src/ui/loader/_spinner.tsx
-
 import { cn } from "../../../lib/utils";
 import { VariantProps, cva } from "class-variance-authority";
 import React from "react";
@@ -9,43 +7,58 @@ const spinnerVariants = cva(
   {
     variants: {
       size: {
-        default: "h-5 w-5",
-        sm: "h-2 w-2",
-        md: "h-4 w-4",
-        lg: "h-10 w-10",
-        xl: "h-16 w-16",
+        sm: "h-6 w-6",
+        md: "h-12 w-12",
+        lg: "h-16 w-16",
+        xl: "h-20 w-20",
+      },
+      color: {
+        primary: "border-primary",
+        secondary: "border-secondary",
+        accent: "border-accent",
+        white: "border-white",
+      },
+      glow: {
+        true: "shadow-lg glow",
+        false: "shadow-none",
       },
     },
     defaultVariants: {
-      size: "default",
+      size: "md",
+      color: "primary",
+      glow: true,
     },
   }
 );
 
 export interface SpinnerProps
-  extends React.HTMLAttributes<HTMLDivElement>,
-  VariantProps<typeof spinnerVariants> {
+  extends VariantProps<typeof spinnerVariants> {
   animationData?: object;
   loop?: boolean;
+  className?: string;
+  glow?: boolean;
 }
 
 const Spinner = React.forwardRef<HTMLDivElement, SpinnerProps>(
-  ({ className, size, animationData, loop = true, ...props }, ref) => {
+  ({ className, size, color, glow, animationData, loop = true, ...props }, ref) => {
     return (
       <div
-        className={cn(spinnerVariants({ size, className }))}
+        className={cn(spinnerVariants({ size, color, glow, className }))}
         ref={ref}
         {...props}
       >
-        {/* CSS Spinner */}
+        {/* CSS Spinner with improved design */}
         <span
           className={cn(
-            "absolute inset-0 border-t-transparent border-black rounded-full animate-spin",
-            size === "sm" && "border-2",
-            size === "default" && "border-2",
-            size === "md" && "border-2",
-            size === "lg" && "border-2",
-            size === "xl" && "border-2"
+            "absolute inset-0 border-t-transparent rounded-full animate-spin",
+            "border-6",
+            "border-t-transparent",
+            "border-solid",
+            glow && "glow-effect", 
+            size === "sm" && "border-4",
+            size === "md" && "border-6",
+            size === "lg" && "border-8",
+            size === "xl" && "border-10"
           )}
         ></span>
       </div>
