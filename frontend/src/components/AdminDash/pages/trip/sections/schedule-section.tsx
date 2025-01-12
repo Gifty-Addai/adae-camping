@@ -59,9 +59,6 @@ const ScheduleSection: React.FC<ScheduleSectionProps> = ({
   const onSubmit = (formData: ScheduleInput) => {
     const isValid = formData.dates.every((date) => {
       const actualDuration =  getInclusiveDayDifference(date.startDate.toDateString(), date.endDate.toDateString());
-      // const actualDuration = Math.ceil(
-      //   (endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)
-      // );
 
       return actualDuration === duration;
     });

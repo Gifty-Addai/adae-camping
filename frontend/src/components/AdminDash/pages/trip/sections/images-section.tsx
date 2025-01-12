@@ -51,7 +51,7 @@ const ImagesSection: React.FC<ImagesSectionProps> = ({ data, onNext }) => {
   const onDrop = useCallback((acceptedFiles: File[]) => {
     const newUploads = acceptedFiles.map((file) => ({
       id: uuidv4(),
-      file : file || null,
+      file: file || null,
       preview: URL.createObjectURL(file),
       uploading: false,
       progress: 0,
@@ -72,7 +72,7 @@ const ImagesSection: React.FC<ImagesSectionProps> = ({ data, onNext }) => {
       "image/png": [".png"],
       "image/gif": [".gif"],
     },
-    maxSize: 5 * 1024 * 1024,
+    maxSize: 25 * 1024 * 1024,
   });
 
   const uploadImage = async (upload: ImageUpload) => {
@@ -109,10 +109,8 @@ const ImagesSection: React.FC<ImagesSectionProps> = ({ data, onNext }) => {
       );
 
       const imageUrl = response.url;
-      console.log("Server response:", response);
 
-      if (imageUrl) { // Ensure imageUrl is valid
-        console.log("Image uploaded successfully:", imageUrl);
+      if (imageUrl) {
         setImageUploads((prev) =>
           prev.map((u) =>
             u.id === upload.id
@@ -187,7 +185,7 @@ const ImagesSection: React.FC<ImagesSectionProps> = ({ data, onNext }) => {
           </p>
         )}
         <em className="text-sm text-muted-foreground">
-          (Only *.jpeg, *.jpg, *.png, *.gif images will be accepted, max size 5
+          (Only *.jpeg, *.jpg, *.png, *.gif images will be accepted, max size 25
           MB)
         </em>
       </div>
