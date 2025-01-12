@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import ErrorMessage from "@/components/ui/error-message";
 import { ScheduleInput, scheduleSchema } from "@/core/interfaces/zod";
 import { toast } from "react-toastify";
+import { getInclusiveDayDifference } from "@/lib/utils";
 
 interface ScheduleSectionProps {
   data: ScheduleInput;
@@ -57,11 +58,10 @@ const ScheduleSection: React.FC<ScheduleSectionProps> = ({
   // 4) Submit handler
   const onSubmit = (formData: ScheduleInput) => {
     const isValid = formData.dates.every((date) => {
-      const startDate = new Date(date.startDate);
-      const endDate = new Date(date.endDate);
-      const actualDuration = Math.ceil(
-        (endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)
-      );
+      const actualDuration =  getInclusiveDayDifference(date.startDate.toDateString(), date.endDate.toDateString());
+      // const actualDuration = Math.ceil(
+      //   (endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)
+      // );
 
       return actualDuration === duration;
     });

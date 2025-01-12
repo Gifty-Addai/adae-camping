@@ -207,7 +207,7 @@ export interface UseTripAPI {
   currentPage: number;
   totalPages: number;
   goToPage: (page: number) => void;
-  getTrips: (page?: number, type?: string, difficulty?: string, status?:TripStatus) => Promise<void>;
+  getTrips: (page?: number, status?:TripStatus, type?: string, difficulty?: string,) => Promise<void>;
 }
 export interface UseMailAPI {
   loading: boolean;

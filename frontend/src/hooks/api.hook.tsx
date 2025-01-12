@@ -23,9 +23,9 @@ export function useTripAPI(defaultType?: string, defaultDifficulty?: string): Us
   // GET trips from the server
   const getTrips = async (
     page: number = currentPage,
+    status: TripStatus = "open",
     type?: string,
     difficulty?: string,
-    status?: TripStatus
   ): Promise<void> => {
     setLoading(true);
     try {
@@ -98,6 +98,7 @@ export function useTripAPI(defaultType?: string, defaultDifficulty?: string): Us
   ): Promise<void> => {
     setLoading(true);
     try {
+      alert(filters.status)
       const result = await searchTrips(filters);
       setTrips(result.trips!);
       setCurrentPage(result.currentPage!);

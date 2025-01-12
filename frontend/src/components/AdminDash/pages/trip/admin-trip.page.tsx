@@ -1,6 +1,6 @@
 // src/components/AdminDash/pages/trip/AdminTripPage.tsx
 
-import React from "react";
+import React, { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { toast } from "react-toastify";
 import { Trip } from "@/core/interfaces";
@@ -17,6 +17,7 @@ const AdminTripPage: React.FC = () => {
     loading,
     removeTrip,
     currentPage,
+    getTrips,
     totalPages,
     goToPage,
   } = useTripAPI();
@@ -24,6 +25,10 @@ const AdminTripPage: React.FC = () => {
   const handleEdit = (trip: Trip) => {
     navigate(`/admin/trips/edit/${trip._id}`);
   };
+
+  useEffect(() => {
+    getTrips(undefined, "closed");
+  }, []);
 
   const handleDelete = async (id: string) => {
     if (!id) return;

@@ -2,7 +2,7 @@
 import React from "react";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { Trip } from "@/core/interfaces";
-import { Star, CalendarDays, Activity, Edit, Trash } from "lucide-react";
+import {  CalendarDays, Activity, Edit, Trash } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 
@@ -41,41 +41,41 @@ const TripCard: React.FC<TripCardProps> = ({
       {/* Card Content */}
         <CardContent className="py-4 px-2 flex flex-col justify-between h-[calc(100%-9rem)]">
         {/* Trip Title */}
-          <h5 className="text-lg font-semibold text-white  line-clamp-2">
+          <h5 className="text-lg font-semibold text-white ">
             {trip?.name}
           </h5>
 
         {/* Ratings */}
-        <div className="flex items-center mb-3">
+        {/* <div className="flex items-center mb-3">
           {[...Array(5)].map((_, index) => (
               <Star key={index} className="w-4 h-4 text-yellow-400 fill-current" />
           ))}
           <span className="text-xs text-gray-300 ml-2">(121 Reviews)</span>
-        </div>
+        </div> */}
 
         {/* Trip Details */}
-          <div className="space-y-2 text-gray-300 text-sm">
+          <div className="space-y-6 text-gray-300 text-sm">
           <div className="flex items-center gap-2">
-            <CalendarDays className="w-4 h-4 text-green-400" />
-            <span>
+            <CalendarDays color="yellow" className="w-4 h-4 text-green-400" />
+            <span className="text-card-foreground">
               <strong>Days:</strong> {trip?.duration?.days || 3}
             </span>
           </div>
           <div className="flex items-center gap-2">
-            <Activity className="w-4 h-4 text-blue-400" />
-            <span>
+            <Activity color="yellow" className="w-4 h-4 text-blue-400" />
+            <span className="text-card-foreground">
               <strong>Activity Level:</strong> {trip?.activityLevel || 2}
             </span>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 text-yellow-300 ">
             {'₵'}
-            <span>
+            <span className="text-card-foreground">
               <strong>Member:</strong> GHS {trip?.cost?.basePrice.toFixed(2)}
             </span>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 text-yellow-300">
             {'₵'}
-            <span>
+            <span className="text-card-foreground">
               <strong>Non-Member:</strong> GHS{" "}
               {(trip?.cost?.basePrice! + (trip?.cost?.discount || 0)).toFixed(2)}
             </span>
