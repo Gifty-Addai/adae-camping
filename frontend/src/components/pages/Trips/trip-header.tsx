@@ -520,7 +520,7 @@ const TripHeaderCTA: React.FC<Props> = ({
             </div>
 
             <Button className="w-full" onClick={() => setShowModal(true)}>
-              {selectedDate ? "Select Dates" : "Request Space"}
+              {selectedDate ? "Select Dates" : "Request Date"}
             </Button>
 
             {/* Private Booking Contact Info */}
