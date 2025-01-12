@@ -78,6 +78,19 @@ export interface ScheduleDate {
   _id?: string;
 }
 
+export interface RequestItem {
+  _id: string;
+  name: string;
+  phone: string;
+  email: string;
+  startDate: string; 
+  endDate: string;
+  tripId: string;
+  tripName: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
 export interface Itinerary {
   day: number;
   activities: string;
@@ -194,7 +207,7 @@ export interface UseTripAPI {
   currentPage: number;
   totalPages: number;
   goToPage: (page: number) => void;
-  getTrips: (page?: number, type?: string, difficulty?: string) => Promise<void>;
+  getTrips: (page?: number, type?: string, difficulty?: string, status?:TripStatus) => Promise<void>;
 }
 export interface UseMailAPI {
   loading: boolean;

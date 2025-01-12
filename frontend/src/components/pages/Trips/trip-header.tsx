@@ -5,9 +5,213 @@ import { Button } from "@/components/ui/button";
 import { ScheduleDate, Trip } from "@/core/interfaces";
 import { Link } from "react-router-dom";
 import { ShareButtons } from "@/components/ui/share-button";
+import { Input } from "@/components/ui/input";
+import { z } from "zod";
+import { requestDateSchema } from "@/core/interfaces/zod";
+import { getInclusiveDayDifference } from "@/lib/utils";
+import { toast } from "react-toastify";
+import { postRequest } from "@/lib/api-Request/api-requests";
+
+
+/** This new interface is for the Request Form Modal */
+interface RequestFormModalProps {
+  tripId: string | undefined;
+  tripName: string;
+  duration: number;
+  onClose: () => void;
+  defaultStartDate?: string;
+  defaultEndDate?: string;
+}
+
+/** A simple Request Form modal to capture user details */
+const RequestFormModal: React.FC<RequestFormModalProps> = ({
+  tripName,
+  tripId,
+  duration,
+  onClose,
+  defaultStartDate = "",
+  defaultEndDate = "",
+}) => {
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState("");
+  const [startDate, setStartDate] = useState(defaultStartDate);
+  const [endDate, setEndDate] = useState(defaultEndDate);
+
+  // Store Zod validation errors so we can display them
+  const [errors, setErrors] = useState<
+    Partial<Record<keyof z.infer<typeof requestDateSchema>, string[]>>
+  >({});
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    const formData = {
+      name,
+      phone,
+      email,
+      startDate,
+      endDate
+    };
+
+    try {
+      const result = requestDateSchema.parse(formData);
+
+      setErrors({});
+      const dayDiff = getInclusiveDayDifference(result.startDate, result.endDate);
+
+      if (dayDiff !== duration) {
+        toast.info(`The date interval must be exactly ${duration} days!`);
+        return;
+      }
+
+      console.log("Form Data:", result);
+
+      try {
+
+        const succ = await postRequest<{ sent: boolean }>(`/api/trip/requestDate/${tripId}`, { ...result, tripName });
+        if (succ.sent) {
+          toast.success("Request sent successfully!");
+          onClose();
+        } else {
+          toast.error("Failed to send request. Please try again later.");
+        }
+      } catch (error) {
+        toast.error("Failed to send request. Please try again later.");
+      }
+
+    } catch (err) {
+      if (err instanceof z.ZodError) {
+        const fieldErrors = err.flatten().fieldErrors;
+        setErrors(fieldErrors);
+      }
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center">
+      <div className="bg-card rounded-lg w-full max-w-lg p-6 relative">
+        {/* Close Button */}
+        <Button
+          className="absolute top-4 right-4"
+          onClick={onClose}
+          size="icon"
+          aria-label="Close Modal"
+        >
+          &times;
+        </Button>
+
+        <h2 className="text-xl text-yellow-400 font-bold mb-4">Request Date</h2>
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Name */}
+          <div>
+            <label className="block mb-1 text-card-foreground text-sm font-semibold" htmlFor="name">
+              Name
+            </label>
+            <Input
+              id="name"
+              type="text"
+              className="border border-gray-300 rounded px-3 py-2 w-full"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+            />
+            {errors.name && (
+              <p className="text-red-500 text-sm mt-1">{errors.name[0]}</p>
+            )}
+          </div>
+
+          {/* Phone */}
+          <div>
+            <label className="block mb-1 text-sm text-card-foreground font-semibold" htmlFor="phone">
+              Phone
+            </label>
+            <Input
+              id="phone"
+              type="tel"
+              className="border border-gray-300 rounded px-3 py-2 w-full"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              required
+            />
+            {errors.phone && (
+              <p className="text-red-500 text-sm mt-1">{errors.phone[0]}</p>
+            )}
+          </div>
+
+          {/* Email */}
+          <div>
+            <label className="block mb-1 text-card-foreground text-sm font-semibold" htmlFor="email">
+              Email
+            </label>
+            <Input
+              id="email"
+              type="email"
+              className="border border-gray-300 rounded px-3 py-2 w-full"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+            {errors.email && (
+              <p className="text-red-500 text-sm mt-1">{errors.email[0]}</p>
+            )}
+          </div>
+
+          {/* Start Date */}
+          <div>
+            <label className="block mb-1 text-card-foreground text-sm font-semibold" htmlFor="startDate">
+              Trip Start Date
+            </label>
+            <Input
+              id="startDate"
+              type="date"
+              className="border border-gray-300 rounded px-3 py-2 w-full"
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)}
+              required
+            />
+            {errors.startDate && (
+              <p className="text-red-500 text-sm mt-1">{errors.startDate[0]}</p>
+            )}
+          </div>
+
+          {/* End Date */}
+          <div>
+            <label className="block text-card-foreground mb-1 text-sm font-semibold" htmlFor="endDate">
+              Trip End Date
+            </label>
+            <Input
+              id="endDate"
+              type="date"
+              className="border border-gray-300 rounded px-3 py-2 w-full"
+              value={endDate}
+              onChange={(e) => setEndDate(e.target.value)}
+              required
+            />
+            {errors.endDate && (
+              <p className="text-red-500 text-sm mt-1">{errors.endDate[0]}</p>
+            )}
+          </div>
+
+          {/* Submit Button */}
+          <div className="flex justify-center">
+            <Button
+              type="submit"
+            >
+              Submit
+            </Button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+};
+
 
 /** Modal component interface */
 interface TripDatesModalProps {
+  duration: number;
   tripName: string;
   cost: number;
   tripId: string | undefined;
@@ -22,6 +226,7 @@ interface TripDatesModalProps {
 const TripDatesModal: React.FC<TripDatesModalProps> = ({
   tripId,
   cost,
+  duration,
   departures,
   tripName,
   selectedDate,
@@ -31,6 +236,8 @@ const TripDatesModal: React.FC<TripDatesModalProps> = ({
 }) => {
   const [years, setYears] = useState<number[]>([]);
   const [activeYear, setActiveYear] = useState<number | null>(null);
+
+  const [showRequestFormModal, setShowRequestFormModal] = useState(false);
 
   // Collect unique years from the departures
   useEffect(() => {
@@ -56,13 +263,14 @@ const TripDatesModal: React.FC<TripDatesModalProps> = ({
       {/* Modal container with max height and scrollable content */}
       <div className="bg-card rounded-lg w-full max-w-3xl relative max-h-[80vh] overflow-y-auto">
         {/* Close button */}
-        <button
-          className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
+        <Button
+          className="absolute top-4 right-4"
           onClick={onClose}
+          size={"icon"}
           aria-label="Close"
         >
           &times;
-        </button>
+        </Button>
 
         {/* Centered modal content */}
         <div className="p-6 flex flex-col items-center text-center">
@@ -74,8 +282,9 @@ const TripDatesModal: React.FC<TripDatesModalProps> = ({
             {years.map((yr) => (
               <Button
                 key={yr}
-                variant={activeYear === yr ? "default" : "outline"}
+                variant={activeYear === yr ? "secondary" : "outline"}
                 onClick={() => setActiveYear(yr)}
+                className="text-yellow-400"
               >
                 {yr}
               </Button>
@@ -144,6 +353,12 @@ const TripDatesModal: React.FC<TripDatesModalProps> = ({
 
           {/* Disclaimers (centered text) */}
           <div className="text-sm text-gray-600 space-y-2 mb-6">
+
+            {!selectedDate && (
+              <Button onClick={() => setShowRequestFormModal(true)}>
+                Request Date
+              </Button>
+            )}
             <p className="text-muted-foreground">Prices are per person.</p>
             {/* <p>
               All dates are subject to hotel availability and may change. Hotel
@@ -185,6 +400,19 @@ const TripDatesModal: React.FC<TripDatesModalProps> = ({
           </div>
         </div>
       </div>
+
+      {showRequestFormModal && (
+        <RequestFormModal
+          tripId={tripId}
+          tripName={tripName}
+          duration={duration}
+          onClose={() => setShowRequestFormModal(false)}
+        /** If you want to pass in defaults, e.g. today's date: 
+            defaultStartDate={format(new Date(), 'yyyy-MM-dd')}
+            defaultEndDate={format(new Date(), 'yyyy-MM-dd')}
+         */
+        />
+      )}
     </div>
   );
 };
@@ -287,12 +515,12 @@ const TripHeaderCTA: React.FC<Props> = ({
                   {format(new Date(selectedDate.endDate), "MMM d")}
                 </p>
               ) : (
-                <p className="text-sm text-red-500">No available dates</p>
+                <p className="text-sm text-red-500">Available dates sold out</p>
               )}
             </div>
 
             <Button className="w-full" onClick={() => setShowModal(true)}>
-              Select Dates
+              {selectedDate ? "Select Dates" : "Request Space"}
             </Button>
 
             {/* Private Booking Contact Info */}
@@ -328,6 +556,7 @@ const TripHeaderCTA: React.FC<Props> = ({
         <TripDatesModal
           tripId={trip._id}
           cost={trip.cost.basePrice}
+          duration={trip.duration.days}
           tripName={trip.name}
           departures={trip.schedule.dates}
           selectedDate={selectedDate}

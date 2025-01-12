@@ -12,6 +12,13 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+export const  getInclusiveDayDifference = (start: string, end: string): number =>{
+  const startDate = new Date(start);
+  const endDate = new Date(end);
+  return Math.round((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+}
+
+
 // Function to validate ISO 8601 date strings
 export const isValidDate = (dateString: string) => {
   return moment(dateString, moment.ISO_8601, true).isValid();

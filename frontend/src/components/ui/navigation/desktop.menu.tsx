@@ -79,11 +79,11 @@ const DesktopMenu: React.FC = () => {
           </Button>
         </Link>
 
-        {/* <Link to="/ASGSDWSDZ-234ADFSDAS/member">
+        <Link to="/ASGSDWSDZ-234ADFSDAS/trip">
           <Button className="ml-10">
-            Become a Fie Member
+            Adventure With Us
           </Button>
-        </Link> */}
+        </Link>
       </div>
     </div>
   );

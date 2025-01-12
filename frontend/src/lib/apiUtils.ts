@@ -1,4 +1,4 @@
-import { ConfirmMemberRequest, ConfirmMembershipResponse, SignInResponse, Trip, TripSearchParams, UpdateUserPayload, User, VerifyPaymentResponse } from "@/core/interfaces";
+import { ConfirmMemberRequest, ConfirmMembershipResponse, SignInResponse, Trip, TripSearchParams, TripStatus, UpdateUserPayload, User, VerifyPaymentResponse } from "@/core/interfaces";
 import { deleteRequest, getRequest, patchRequest, postRequest, putRequest } from "./api-Request/api-requests";
 import { TripFormInput } from "@/core/interfaces/zod";
 
@@ -35,8 +35,9 @@ export const signin = async (params: { email: string, password: string }): Promi
 export const fetchTrips = async (
   page: number = 1,
   limit: number = 10,
+  status?: TripStatus,
   type?: string,
-  difficulty?: string
+  difficulty?: string,
 ): Promise<{
   trips: Trip[];
   currentPage: number;
@@ -46,10 +47,10 @@ export const fetchTrips = async (
   const query = new URLSearchParams({
     page: String(page),
     limit: String(limit),
+    status: status || "open",
   });
   if (type) query.set("type", type);
   if (difficulty) query.set("difficulty", difficulty);
-
   const endpoint = `/api/trip/getAllTrips?${query.toString()}`;
   const data = await getRequest<{
     trips: Trip[];

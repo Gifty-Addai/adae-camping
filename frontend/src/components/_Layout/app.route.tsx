@@ -29,6 +29,7 @@ import BecomeMemberPage from "../pages/fie-member-form";
 import { RequireAdmin } from "./requireAdmin";
 import { useAppDispatch } from "@/core/constants";
 import { fetchUserProfile } from "@/core/store/slice/user_slice";
+import AdminRequestsPage from "../AdminDash/pages/requestDates/admin_requeset_dates";
 
 // Route Guards
 // import { RequireAuth } from "./RequireAuth";
@@ -113,6 +114,7 @@ export const AppRoute = () => {
             <Route path="new" element={<AdminTripFormPage />} />
             <Route path="edit/:id" element={<AdminTripFormPage />} />
             <Route path="add" element={<AddTripPage />} />
+            <Route path="requests" element={<AdminRequestsPage />} />
           </Route>
 
           {/* Example placeholders

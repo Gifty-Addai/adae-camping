@@ -1,4 +1,4 @@
-import { Trip, TripSearchParams, UseMailAPI, UseTripAPI } from "@/core/interfaces";
+import { Trip, TripSearchParams, TripStatus, UseMailAPI, UseTripAPI } from "@/core/interfaces";
 import { isApiError } from "@/core/interfaces/guards";
 import { TripFormInput } from "@/core/interfaces/zod";
 import { postRequest } from "@/lib/api-Request/api-requests";
@@ -24,11 +24,12 @@ export function useTripAPI(defaultType?: string, defaultDifficulty?: string): Us
   const getTrips = async (
     page: number = currentPage,
     type?: string,
-    difficulty?: string
+    difficulty?: string,
+    status?: TripStatus
   ): Promise<void> => {
     setLoading(true);
     try {
-      const result = await fetchTrips(page, limit, type || defaultType, difficulty || defaultDifficulty);
+      const result = await fetchTrips(page, limit, status, type || defaultType, difficulty || defaultDifficulty);
       setTrips(result.trips!);
       setCurrentPage(result.currentPage!);
       setTotalPages(result.totalPages!);

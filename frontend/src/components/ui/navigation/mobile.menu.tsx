@@ -88,6 +88,13 @@ const MobileMenu: React.FC = () => {
                     </Button>
                   </Link>
                 </NavigationMenuItem>
+                <NavigationMenuItem>
+                  <Link to="/ASGSDWSDZ-234ADFSDAS/trip" onClick={handleLinkClick} className="text-center">
+                    <Button className="w-40  py-2 px-4 rounded-full" variant={"secondary"}>
+                      Adventure With Us
+                    </Button>
+                  </Link>
+                </NavigationMenuItem>
               </NavigationMenuList>
             </NavigationMenu>
           </nav>

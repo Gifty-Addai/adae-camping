@@ -3,6 +3,29 @@
 import { z, ZodIssueCode } from "zod";
 import { differenceInDays, isAfter, isBefore } from "date-fns";
 
+
+/* -------------------------------------------------------------------------- */
+/*                                Request date Schema                               */
+/* -------------------------------------------------------------------------- */
+export const requestDateSchema = z
+  .object({
+    name: z.string().min(1, "Name is required"),
+    phone: z
+      .string()
+      .regex(/^\d+$/, "Phone number must contain only digits")
+      .min(10, "Phone number must be at least 10 digits"),
+    email: z.string().email("Invalid email address"),
+    startDate: z.string().min(1, "Start date is required"),
+    endDate: z.string().min(1, "End date is required"),
+  })
+  .refine(
+    (data) => new Date(data.startDate) <= new Date(data.endDate),
+    {
+      path: ["endDate"],
+      message: "End date cannot be before start date",
+    }
+  );
+
 /* -------------------------------------------------------------------------- */
 /*                                Booking Schema                               */
 /* -------------------------------------------------------------------------- */
