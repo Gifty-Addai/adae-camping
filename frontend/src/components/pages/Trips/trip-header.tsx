@@ -386,7 +386,7 @@ const TripDatesModal: React.FC<TripDatesModalProps> = ({
               </a>{" "}
               |{" "}
               <a href="tel:1-800-622-2236" className="underline">
-                +233 247413964
+                +233202814017
               </a>
               <br />
               Mon–Sun 7am–5pm GMT
@@ -493,13 +493,13 @@ const TripHeaderCTA: React.FC<Props> = ({
             <div>
               <p className="text-sm text-muted-foreground">Starting from</p>
               <p className="text-2xl font-bold text-primary">
-                ${(trip.cost.basePrice - trip.cost.discount).toLocaleString()}{" "}
+              ₵ {(trip.cost.basePrice - trip.cost.discount).toLocaleString()}{" "}
                 <span className="text-sm font-normal text-foreground">
                   for Fie Members
                 </span>
               </p>
               <p className="font-normal mt-5 text-primary text-md">
-                ${(trip.cost.basePrice + trip.cost.discount).toLocaleString()}{" "}
+              ₵ {(trip.cost.basePrice + trip.cost.discount).toLocaleString()}{" "}
                 <span className="text-sm font-normal text-foreground">
                   for non-members
                 </span>
@@ -538,10 +538,10 @@ const TripHeaderCTA: React.FC<Props> = ({
                 </a>{" "}
                 or 📞{" "}
                 <a
-                  href="tel:+233247413964"
+                  href="tel:+233202814017"
                   className="hover:underline"
                 >
-                  +233 247413964
+                  +233202814017
                 </a>
               </p>
             </div>
