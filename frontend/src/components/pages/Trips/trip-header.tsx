@@ -428,7 +428,7 @@ const TripHeaderCTA: React.FC<Props> = ({
   const [showModal, setShowModal] = useState(false);
   const [selectedDate, setSelectedDate] = useState<ScheduleDate | null>(null);
   const baseUrl = import.meta.env.VITE_APP_BASE_URL || window.location.origin;
-  const shareUrl = `${baseUrl}/product/${encodeURIComponent((trip?.name || '').substring(0, 30))}/${trip?._id ?? ''}`;
+  const shareUrl = `${baseUrl}/trip/${trip?._id ?? ''}`;
   const tripTitle = trip?.name || 'Trip Details';
 
 
