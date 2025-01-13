@@ -214,10 +214,10 @@ const TripDetail: React.FC = () => {
               <div>
                 <h2 className="text-xl font-bold text-primary">Trip Logistics</h2>
                 <div className="text-muted-foreground mt-2 space-y-2">
-                  {/* <p className="text-card-foreground">
+                  <p className="text-card-foreground">
                     <strong className="text-yellow-400">Transportation:</strong>{" "}
                     {trip?.logistics?.transportation || "N/A"}
-                  </p> */}
+                  </p>
                   <p className="text-card-foreground">
                     <strong className="text-yellow-400">Gear Provided:</strong>{" "}
                     {trip?.logistics?.gearProvided ? "Yes" : "No"}
