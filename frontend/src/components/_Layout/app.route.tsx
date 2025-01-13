@@ -63,12 +63,12 @@ export const AppRoute = () => {
         <Route path="/products" element={<StorePage />} />
 
         {/* Trip & Booking Pages */}
-        <Route path="/ASGSDWSDZ-234ADFSDAS/trip" element={<TripPage />} />
-        <Route path="/ASGSDWSDZ-234ADFSDAS/trip/:id" element={<TripDetail />} />
-        <Route path="/ASGSDWSDZ-234ADFSDAS/booking/:id/:date" element={<BookingPage />} />
+        <Route path="/trip" element={<TripPage />} />
+        <Route path="/trip/:id" element={<TripDetail />} />
+        <Route path="/booking/:id/:date" element={<BookingPage />} />
 
         {/* Membership Form */}
-        <Route path="/ASGSDWSDZ-234ADFSDAS/member" element={<BecomeMemberPage />} />
+        <Route path="/member" element={<BecomeMemberPage />} />
 
         {/* Product Detail */}
         <Route path="/product/:produtName/:productId" element={<ProductDetailPage />} />

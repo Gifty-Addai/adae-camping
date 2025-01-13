@@ -159,9 +159,9 @@ export const scheduleDateSchema = z.object({
   endDate: z.coerce.date(),
   isAvailable: z.boolean(),
   slotsRemaining: z.number().min(0, "Slots remaining cannot be negative"),
+  _id: z.string().optional(),
 }).superRefine((date, ctx) => {
 
-  console.log("Date validation")
   if (isAfter(date.startDate, date.endDate)) {
     ctx.addIssue({
       code: ZodIssueCode.custom,

@@ -323,7 +323,7 @@ const TripDatesModal: React.FC<TripDatesModalProps> = ({
 
                   {isAvailable ? (
                     <div className="w-full">
-                      <Link to={`/ASGSDWSDZ-234ADFSDAS/booking/${tripId}/${selectedDate?._id}`}>
+                      <Link to={`/booking/${tripId}/${selectedDate?._id}`}>
 
                         <Button
                           className="w-full bg-green-700 hover:bg-green-800 text-white mb-2"
@@ -359,6 +359,9 @@ const TripDatesModal: React.FC<TripDatesModalProps> = ({
                 Request Date
               </Button>
             )}
+            <p className="text-yellow-400"><span className="text-card-foreground"> Reach us on.{"  "}</span><a href="tel:1-800-622-2236" className="underline">
+                +233202814017
+              </a></p>
             <p className="text-muted-foreground">Prices are per person.</p>
             {/* <p>
               All dates are subject to hotel availability and may change. Hotel
@@ -385,9 +388,7 @@ const TripDatesModal: React.FC<TripDatesModalProps> = ({
                 akoben@fienefie.com
               </a>{" "}
               |{" "}
-              <a href="tel:1-800-622-2236" className="underline">
-                +233202814017
-              </a>
+              
               <br />
               Mon–Sun 7am–5pm GMT
             </p>
@@ -493,13 +494,13 @@ const TripHeaderCTA: React.FC<Props> = ({
             <div>
               <p className="text-sm text-muted-foreground">Starting from</p>
               <p className="text-2xl font-bold text-primary">
-              ₵ {(trip.cost.basePrice - trip.cost.discount).toLocaleString()}{" "}
+                ₵ {(trip.cost.basePrice - trip.cost.discount).toLocaleString()}{" "}
                 <span className="text-sm font-normal text-foreground">
                   for Fie Members
                 </span>
               </p>
               <p className="font-normal mt-5 text-primary text-md">
-              ₵ {(trip.cost.basePrice + trip.cost.discount).toLocaleString()}{" "}
+                ₵ {(trip.cost.basePrice + trip.cost.discount).toLocaleString()}{" "}
                 <span className="text-sm font-normal text-foreground">
                   for non-members
                 </span>

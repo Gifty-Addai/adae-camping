@@ -1,6 +1,3 @@
-// src/components/AdminDash/pages/trip/TripForm.tsx
-"use client";
-
 import React, { useEffect, useState } from "react";
 import { z } from "zod";
 import {
@@ -30,11 +27,11 @@ import {
   LogisticsSection,
   ImagesSection,
   ReviewAndSubmitSection,
-} from "./sections"; // Ensure all sections are exported from './sections/index.ts'
+} from "./sections";
 import { Page } from "@/components/ui/page";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
-import ErrorBoundary from "@/components/ui/error-boundary"; // Ensure this component exists
+import ErrorBoundary from "@/components/ui/error-boundary";
 import { Progress } from "@/components/ui/progress"; interface TripFormProps {
   defaultTrip?: Trip | null;
   onSubmit: (tripData: TripFormInput, isEdit: boolean) => Promise<void>;
@@ -79,14 +76,22 @@ const TripForm: React.FC<TripFormProps> = ({
       pointsOfInterest: [{ value: "" }],
     },
     schedule: {
-      dates: [
-        {
-          startDate: new Date(),
-          endDate: new Date(),
-          isAvailable: true,
-          slotsRemaining: defaultTrip?.groupSize.max || 1,
-        },
-      ],
+      dates: isEdit && defaultTrip?.schedule.dates
+        ? defaultTrip.schedule.dates.map((date) => ({
+          startDate: new Date(date.startDate),
+          endDate: new Date(date.endDate),
+          isAvailable: date.isAvailable,
+          slotsRemaining: date.slotsRemaining,
+          _id: date._id,
+        }))
+        : [
+          {
+            startDate: new Date(),
+            endDate: new Date(),
+            isAvailable: true,
+            slotsRemaining: defaultTrip?.groupSize.max || 1,
+          },
+        ],
       itinerary: [],
     },
     logistics: {
@@ -127,16 +132,19 @@ const TripForm: React.FC<TripFormProps> = ({
           dates:
             defaultTrip.schedule.dates.length > 0
               ? defaultTrip.schedule.dates.map((date) => ({
-                ...date,
+                // ...date,
                 startDate: date.startDate,
                 endDate: date.endDate,
+                isAvailable: date.isAvailable,
+                slotsRemaining: date.slotsRemaining,
+                _id: date._id,
               }))
               : [
                 {
                   startDate: new Date(),
                   endDate: new Date(),
                   isAvailable: true,
-                  slotsRemaining: defaultTrip.groupSize.max,
+                  slotsRemaining: 1234234535,
                 },
               ],
           itinerary: defaultTrip.schedule.itinerary || [],
@@ -147,13 +155,20 @@ const TripForm: React.FC<TripFormProps> = ({
     }
   }, [defaultTrip]);
 
-  console.log("defaultTrip",(formData?.images?.length! > 0))
+  console.log("defaultTrip", defaultTrip)
+
+  console.log("FormData", formData)
+
+  console.log("defaultTrip", (formData?.images?.length! > 0))
   // Handle form submission
   const handleFinalSubmit = async () => {
     try {
       const validatedData = tripSchema.parse(formData);
       // No transformation needed as pointsOfInterest is already { value: string }[]
       const transformedData: TripFormInput = validatedData;
+
+      console.log("transformedData", transformedData)
+      alert(transformedData.schedule.dates.length)
       await onSubmit(transformedData, isEdit);
     } catch (error) {
       if (error instanceof z.ZodError) {

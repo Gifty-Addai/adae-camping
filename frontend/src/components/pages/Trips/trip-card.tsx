@@ -117,7 +117,7 @@ const TripCard: React.FC<TripCardProps> = ({
   return isAdmin ? (
     cardContent
   ) : (
-    <Link to={`/ASGSDWSDZ-234ADFSDAS/trip/${trip?._id}`} className="block">
+    <Link to={`/trip/${trip?._id}`} className="block">
       {cardContent}
     </Link>
   );
