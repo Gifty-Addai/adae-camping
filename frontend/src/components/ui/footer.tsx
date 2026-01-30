@@ -4,14 +4,13 @@ import { Icons } from "./icons";
 
 const Footer = () => {
   return (
-    <footer className="bg-card text-white py-12">
+    <footer className="bg-[#1d1d1d] text-white py-12 border-t border-[#2d2d2d]">
       <div className="container mx-auto px-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
         {/* About Section */}
         <div className="text-center sm:text-left">
-          <h3 className="text-lg font-bold mb-4 text-card-foreground">Fie Ne Fie</h3>
-          <p className="text-xs text-card-foreground">
-            Explore the world with our curated outdoor experiences, connecting you
-            to nature in its purest form.
+          <h3 className="text-lg font-bold mb-4 text-gray-100">The Ancestral Tallow</h3>
+          <p className="text-xs text-gray-400">
+            Pure, ancestral tallow products crafted with respect for tradition and the earth.
           </p>
         </div>
 
@@ -40,7 +39,7 @@ const Footer = () => {
 
         {/* Social Media Links */}
         <div className="text-center sm:text-left">
-          <h3 className="text-lg font-bold mb-4 text-card-foreground">Follow Us</h3>
+          <h3 className="text-lg font-bold mb-4 text-gray-100">Follow Us</h3>
           <div className="flex justify-center sm:justify-start space-x-4">
             {/* <Button
               variant="ghost"
@@ -66,7 +65,7 @@ const Footer = () => {
               asChild
             >
               <a href="https://www.instagram.com/outdoorscamps?igsh=MnF5YmRlbjA2YWd3" target="_blank" rel="noopener noreferrer">
-                <Icons.instagram className="h-6 w-6 text-card-foreground hover:text-white" />
+                <Icons.instagram className="h-6 w-6 text-gray-300 hover:text-white" />
               </a>
             </Button>
             <Button
@@ -75,7 +74,7 @@ const Footer = () => {
               asChild
             >
               <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer">
-                <Icons.linkedin className="h-6 w-6 text-card-foreground hover:text-white" />
+                <Icons.linkedin className="h-6 w-6 text-gray-300 hover:text-white" />
               </a>
             </Button>
           </div>
@@ -83,7 +82,7 @@ const Footer = () => {
 
         {/* Contact Information */}
         <div className="text-center sm:text-left">
-          <h3 className="text-lg font-bold mb-4 text-card-foreground">Contact Us</h3>
+          <h3 className="text-lg font-bold mb-4 text-gray-100">Contact Us</h3>
           <ul className="space-y-2 text-sm">
             {/* <li className="flex items-center text-card-foreground">
               <Icons.mapPin className="h-5 w-5 mr-2 " />  Accra City, Earth
@@ -97,38 +96,38 @@ const Footer = () => {
               className="hover:bg-pink-500 flex items-center"
               asChild
             >
-               <Icons.mail className="h-5 w-5" />
+              <Icons.mail className="h-5 w-5" />
               <a
                 href="mailto:info@adaeakobenadventure.com"
-                className="hover:text-green-400 transition-colors text-card-foreground"
+                className="hover:text-white transition-colors text-gray-300"
               >
                 info@adaeakobenadventure.com
               </a>
             </Button>
             <li className="flex items-center">
-             
+
             </li>
           </ul>
         </div>
       </div>
 
       {/* Separator */}
-      <Separator className="my-8 bg-gray-800" />
+      <Separator className="my-8 bg-[#2d2d2d]" />
 
       {/* Bottom Footer */}
       <div className="text-center text-sm text-gray-1 00">
-        <p className="text-card-foreground">
-          &copy; 2024 Fie Ne Fie. All rights reserved.{" "}
+        <p className="text-gray-400">
+          &copy; 2024 The Ancestral Tallow. All rights reserved.{" "}
           <a
             // href="/terms"
-            className="text-primary  transition-colors"
+            className="text-gray-300 hover:text-white transition-colors"
           >
             Terms of Service
           </a>{" "}
           |{" "}
           <a
             // href="/privacy"
-            className="text-primary transition-colors"
+            className="text-gray-300 hover:text-white transition-colors"
           >
             Privacy Policy
           </a>

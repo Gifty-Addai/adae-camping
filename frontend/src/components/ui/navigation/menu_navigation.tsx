@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils"
 import { NavigationMenuLink } from "../navigation-menu"
 import DesktopMenu from "./desktop.menu"
 import MobileMenu from "./mobile.menu"
+import PromoBanner from "./promo-banner"
 
 
 export const MenuBar = () => {
@@ -25,7 +26,8 @@ export const MenuBar = () => {
   }, []);
 
   return (
-    <header className="h-14 mb-10 text-[15px] fixed inset-0 flex items-center bg-card z-50 px-4">
+    <header className="w-full fixed top-0 z-50 bg-[#1d1d1d]">
+      <PromoBanner />
       {isMobile ? <MobileMenu /> : <DesktopMenu />}
     </header>
   )

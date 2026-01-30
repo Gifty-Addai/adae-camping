@@ -17,17 +17,17 @@ const MobileMenu: React.FC = () => {
   };
 
   return (
-    <div className="flex justify-between items-center w-full px-4 py-3 bg-transparent shadow-md">
+    <div className="flex justify-between items-center w-full px-4 py-3 bg-[#1d1d1d]">
       {/* Logo Section */}
       <Link to="/" className="flex items-center no-underline">
-        <div className="flex items-center h-10 justify-center rounded-lg bg-yellow-300 px-3 py-2">
-          <Label className="text-lg font-bold text-black">FieNeFie</Label>
+        <div className="flex items-center h-10 justify-center rounded-lg bg-primary px-4 py-2">
+          <Label className="text-sm font-bold text-white">The Ancestral Tallow</Label>
         </div>
       </Link>
 
       {/* Menu Button */}
       <Button
-        className="text-gray-800 focus:outline-none"
+        className="text-white focus:outline-none"
         onClick={() => setIsOpen(!isOpen)}
         size="icon"
       >
@@ -60,38 +60,10 @@ const MobileMenu: React.FC = () => {
           <nav className="flex-grow flex flex-col items-center justify-center space-y-6 text-lg">
             <NavigationMenu>
               <NavigationMenuList className="flex flex-col items-center space-y-6">
-                {/* <NavigationMenuItem>
-                  <Link to="/features" onClick={handleLinkClick} className="text-center">
-                    <Button className="w-40 py-2 px-4 rounded-full" variant={"secondary"}>
-                      Shop Gears
-                    </Button>
-                  </Link>
-                </NavigationMenuItem>
                 <NavigationMenuItem>
-                  <Link to="/use-cases" onClick={handleLinkClick} className="text-center">
-                    <Button className="w-40 bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-full">
-                      Use Cases
-                    </Button>
-                  </Link>
-                </NavigationMenuItem>
-                <NavigationMenuItem>
-                  <Link to="/about-us" onClick={handleLinkClick} className="text-center">
-                    <Button className="w-40 bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-full">
-                      About Us
-                    </Button>
-                  </Link>
-                </NavigationMenuItem> */}
-                <NavigationMenuItem>
-                  <Link to="/products" onClick={handleLinkClick} className="text-center">
+                  <Link to="/" onClick={handleLinkClick} className="text-center">
                     <Button className="w-40  py-2 px-4 rounded-full" variant={"secondary"}>
                       Products
-                    </Button>
-                  </Link>
-                </NavigationMenuItem>
-                <NavigationMenuItem>
-                  <Link to="/trip" onClick={handleLinkClick} className="text-center">
-                    <Button className="w-40  py-2 px-4 rounded-full" variant={"secondary"}>
-                      Adventure With Us
                     </Button>
                   </Link>
                 </NavigationMenuItem>
@@ -101,7 +73,7 @@ const MobileMenu: React.FC = () => {
 
           {/* Footer Section */}
           <div className="py-4 text-center text-sm text-gray-400">
-            &copy; {new Date().getFullYear()} FieNeFie. All Rights Reserved.
+            &copy; {new Date().getFullYear()} The Ancestral Tallow. All Rights Reserved.
           </div>
         </div>
       )}

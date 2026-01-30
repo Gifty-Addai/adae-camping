@@ -4,12 +4,7 @@ import { LucideIcon } from "lucide-react";
 import {
     Shield as LucideShield,
     ShoppingCart as LucideShoppingCart,
-    CalendarCheck as LucideCalendarCheck,
     Users as LucideUsers,
-    MapPin as LucideMapPin,
-    Image as LucideImage,
-    Video as LucideVideo,
-    MessageSquare as LucideMessageSquare,
 } from "lucide-react";
 
 export interface BreadcrumbConfigItem {
@@ -62,20 +57,7 @@ export const breadcrumbConfig: BreadcrumbConfigItem[] = [
             // Add more product routes if needed
         ],
     },
-    {
-        title: "Bookings",
-        url: "/admin/bookings",
-        icon: LucideCalendarCheck,
-        isActive: false,
-        breadcrumb: "Bookings",
-        children: [
-            {
-                title: "All Bookings",
-                url: "/admin/bookings",
-                breadcrumb: "All Bookings",
-            }
-        ],
-    },
+
     {
         title: "Users",
         url: "/admin/users",
@@ -96,91 +78,5 @@ export const breadcrumbConfig: BreadcrumbConfigItem[] = [
             // Add more user routes if needed
         ],
     },
-    {
-        title: "Trips",
-        url: "/admin/trips",
-        icon: LucideMapPin,
-        isActive: false,
-        breadcrumb: "Trips",
-        children: [
-            {
-                title: "All Trips",
-                url: "/admin/trips",
-                breadcrumb: "All Trips",
-            },
-            {
-                title: "Add New Trip",
-                url: "/admin/trips/new",
-                breadcrumb: "Add New Trip",
-            },
-            {
-                title: "Trip Request Date",
-                url: "/admin/trips/requests",
-                // breadcrumb: ({}, tripName) =>
-                //     tripName ? `Edit Trip: ${tripName}` : "Edit Trip",
-            },
-            // Add more trip routes if needed
-        ],
-    },
-    {
-        title: "Gallery",
-        url: "/admin/gallery",
-        icon: LucideImage,
-        isActive: false,
-        breadcrumb: "Gallery",
-        children: [
-            {
-                title: "All Gallery Items",
-                url: "/admin/gallery",
-                breadcrumb: "All Gallery Items",
-            },
-            {
-                title: "Add to Gallery",
-                url: "/admin/gallery/new",
-                breadcrumb: "Add to Gallery",
-            },
-            // Add more gallery routes if needed
-        ],
-    },
-    {
-        title: "Videos",
-        url: "/admin/videos",
-        icon: LucideVideo,
-        isActive: false,
-        breadcrumb: "Videos",
-        children: [
-            {
-                title: "All Videos",
-                url: "/admin/videos",
-                breadcrumb: "All Videos",
-            },
-            {
-                title: "Upload Video",
-                url: "/admin/videos/new",
-                breadcrumb: "Upload Video",
-            },
-            // Add more video routes if needed
-        ],
-    },
-    {
-        title: "Testimonies",
-        url: "/admin/testimonies",
-        icon: LucideMessageSquare,
-        isActive: false,
-        breadcrumb: "Testimonies",
-        children: [
-            {
-                title: "All Testimonies",
-                url: "/admin/testimonies",
-                breadcrumb: "All Testimonies",
-            },
-            {
-                title: "Add Testimony",
-                url: "/admin/testimonies/new",
-                breadcrumb: "Add Testimony",
-            },
-            // Add more testimony routes if needed
-        ],
-    }
     // Add more sections as needed
 ]

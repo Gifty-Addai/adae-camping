@@ -1,89 +1,81 @@
-import {
-  NavigationMenu,
-  NavigationMenuList,
-  NavigationMenuItem,
-} from "../navigation-menu";
-import { Button } from "../button";
 import { Link } from "react-router-dom";
-import { ShoppingCart } from "lucide-react";
+import { Search, ShoppingCart, User } from "lucide-react";
 import { useSelector } from "react-redux";
 import { RootState } from "@/core/store/store";
+import { useState } from "react";
+import { Input } from "../input";
 
 const DesktopMenu: React.FC = () => {
   const totalItems = useSelector((state: RootState) => state.cart.totalItems);
+  const [searchQuery, setSearchQuery] = useState("");
 
   return (
-    <div className="flex items-center justify-between px-4 py-2 w-full">
-      {/* Logo Section */}
-      <Link to="/" className="flex items-center no-underline">
-        <div className="flex items-center justify-center rounded-lg bg-yellow-300 px-3 py-2">
-          <span className="text-lg font-bold text-black">FieNeFie</span>
-        </div>
-      </Link>
-
-      {/* Navigation Menu */}
-      <NavigationMenu className="ml-auto space-x-8">
-        <NavigationMenuList className="flex space-x-6">
-          {/* <NavigationMenuItem>
-            <NavigationMenuTrigger>Features</NavigationMenuTrigger>
-            <NavigationMenuContent>
-              <ul className="p-4 grid gap-3 md:w-[300px] lg:w-[400px]">
-                <li className="text-gray-700 font-medium">Feature 1</li>
-                <li className="text-gray-700 font-medium">Feature 2</li>
-                <li className="text-gray-700 font-medium">Feature 3</li>
-              </ul>
-            </NavigationMenuContent>
-          </NavigationMenuItem>
-
-          <NavigationMenuItem>
-            <NavigationMenuTrigger>Use Cases</NavigationMenuTrigger>
-            <NavigationMenuContent>
-              <ul className="p-4 grid gap-3 md:w-[300px] lg:w-[400px]">
-                <li className="text-gray-700 font-medium">Use Case 1</li>
-                <li className="text-gray-700 font-medium">Use Case 2</li>
-                <li className="text-gray-700 font-medium">Use Case 3</li>
-              </ul>
-            </NavigationMenuContent>
-          </NavigationMenuItem> */}
-
-          <NavigationMenuItem>
-            <Link to="/products" className="no-underline font-medium text-yellow-400">
-              Products
+    <div className="bg-[#1d1d1d] border-b border-[#2d2d2d]">
+      <div className="container mx-auto px-6 py-3">
+        <div className="flex items-center justify-between gap-8">
+          {/* Left Navigation */}
+          <nav className="flex items-center gap-6 flex-1">
+            <Link to="/" className="text-gray-300 hover:text-white font-medium transition-colors">
+              Home
             </Link>
-          </NavigationMenuItem>
-          {/* 
-          <NavigationMenuItem>
-            <Link to="/customers" className="no-underline font-medium text-gray-700">
-              Customers
+            <Link to="/shop" className="text-gray-300 hover:text-white font-medium transition-colors">
+              Shop
             </Link>
-          </NavigationMenuItem>
-
-          <NavigationMenuItem>
-            <Link to="/about-us" className="no-underline font-medium text-gray-700">
+            <Link to="/blog" className="text-gray-300 hover:text-white font-medium transition-colors">
+              Blog
+            </Link>
+            <Link to="/about" className="text-gray-300 hover:text-white font-medium transition-colors">
               About Us
             </Link>
-          </NavigationMenuItem> */}
-        </NavigationMenuList>
-      </NavigationMenu>
+            <Link to="/contact" className="text-gray-300 hover:text-white font-medium transition-colors">
+              Contact Us
+            </Link>
+          </nav>
 
-      {/* Cart & Get Started */}
-      <div className="flex items-center px-8">
-        <Link to="/cart">
-          <Button variant="ghost" size={"icon"} className="relative">
-            <ShoppingCart color="white" size={20} />
-            {totalItems > 0 && (
-              <span className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                {totalItems}
-              </span>
-            )}
-          </Button>
-        </Link>
+          {/* Centered Logo */}
+          <Link to="/" className="flex-shrink-0">
+            <div className="h-12 flex items-center justify-center">
+              {/* Brand Logo - inverted for dark background */}
+              <img
+                src="/logo.png"
+                alt="The Ancestral Tallow"
+                className="h-14 w-auto object-contain"
+              />
+            </div>
+          </Link>
 
-        <Link to="/trip">
-          <Button className="ml-10">
-            Adventure With Us
-          </Button>
-        </Link>
+          {/* Right Section: Search, User, Cart */}
+          <div className="flex items-center gap-3 flex-1 justify-end">
+            {/* Search Bar */}
+            <div className="relative">
+              <Input
+                type="text"
+                placeholder="Search product here"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pr-10 bg-[#2a2a2a] border-[#3a3a3a] text-white placeholder:text-gray-500 w-64 focus:border-white focus:ring-white"
+              />
+              <button className="absolute right-2 top-1/2 -translate-y-1/2 bg-white text-black p-1.5 rounded hover:bg-gray-200 transition-colors">
+                <Search size={16} />
+              </button>
+            </div>
+
+            {/* User Icon */}
+            <Link to="/account" className="text-gray-300 hover:text-white transition-colors">
+              <User size={24} />
+            </Link>
+
+            {/* Cart */}
+            <Link to="/cart" className="relative text-gray-300 hover:text-white transition-colors">
+              <ShoppingCart size={24} />
+              {totalItems > 0 && (
+                <span className="absolute -top-2 -right-2 bg-white text-black text-xs rounded-full w-5 h-5 flex items-center justify-center font-medium">
+                  {totalItems}
+                </span>
+              )}
+            </Link>
+          </div>
+        </div>
       </div>
     </div>
   );

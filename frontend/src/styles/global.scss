@@ -4,84 +4,76 @@
 
 @layer base {
   :root {
-    /* Base Colors */
+    /* Base Colors - Organic/Earth Theme */
     --landing: 180 36.5% 11%;
-    --background: 210 19% 10%;
-    /* Almost black background */
-    --foreground: 0 0% 95%;
-    /* Near-white for primary text */
-    --card: 210 16% 13%;
-    /* Very dark gray for cards */
-    --card-foreground: 0 0% 85%;
-    /* Light gray for card content */
-    --popover: 0 0% 14%;
-    /* Same as card for popovers */
-    --popover-foreground: 0 0% 85%;
-    /* Light gray for popover text */
-    --primary: 120 61% 34%;
-    /* Slightly brighter green for primary buttons */
-    --primary-foreground: 0 0% 95%;
-    /* Near-white for primary text */
-    --secondary: 0 0% 30%;
-    /* Mid-gray for secondary elements */
-    --secondary-foreground: 0 0% 80%;
-    /* Muted light gray for secondary text */
-    --muted: 0 0% 20%;
-    /* Dark muted gray for inactive elements */
-    --muted-foreground: 0 0% 60%;
-    /* Muted gray for text */
-    --accent: 0 80% 55%;
-    /* Vivid red for accents (like YouTube red) */
-    --accent-foreground: 0 0% 95%;
-    /* Near-white for accent text */
+
+    /* Creamy Off-White Background (#FDFBF7) */
+    --background: 40 33% 98%;
+
+    /* Dark Forest Green Foreground (#2F3E30) */
+    --foreground: 125 14% 21%;
+
+    /* White Card Background */
+    --card: 0 0% 100%;
+    --card-foreground: 125 14% 21%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 125 14% 21%;
+
+    /* Natural Green Primary (#4A6741) */
+    --primary: 106 23% 33%;
+    --primary-foreground: 0 0% 100%;
+
+    /* Soft Brown/Tan Accent (#C4A484) */
+    --accent: 30 38% 64%;
+    --accent-foreground: 0 0% 100%;
+
+    /* Muted colors */
+    --secondary: 40 20% 94%; /* Light beige for secondary backgrounds */
+    --secondary-foreground: 125 14% 21%;
+
+    --muted: 40 20% 90%;
+    --muted-foreground: 125 5% 45%;
+
     --destructive: 0 70% 50%;
-    /* Bright red for destructive actions */
-    --destructive-foreground: 0 0% 95%;
-    /* Near-white for destructive text */
-    --border: 0 0% 20%;
-    /* Subtle gray for borders */
-    --input: 0 0% 16%;
-    /* Slightly lighter gray for input fields */
-    --ring: 0 80% 50%;
-    /* Bright red for focus rings */
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 40 20% 90%;
+    --input: 40 20% 90%;
+    --ring: 106 23% 33%;
+
     --radius: 0.5rem;
-    /* Subtle rounded corners */
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 240 5.9% 10%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 240 4.8% 95.9%;
-    --sidebar-accent-foreground: 240 5.9% 10%;
-    --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
 
-    --sidebar-icon-color: 300 100% 75%;
+    /* Sidebar - keeping consistent with main theme */
+    --sidebar-background: 40 33% 98%;
+    --sidebar-foreground: 125 14% 21%;
+    --sidebar-primary: 106 23% 33%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 30 38% 64%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 40 20% 90%;
+    --sidebar-ring: 106 23% 33%;
+    --sidebar-icon-color: 106 23% 33%;
 
-    /* Chart Colors */
-    --chart-1: 200 30% 60%;
-    /* Gentle pale blue (clear sky) */
-    --chart-2: 120 40% 50%;
-    /* Soft muted green (like leaves in sunlight) */
-    --chart-3: 35 50% 40%;
-    /* Warm earthy brown (wood or soil) */
-    --chart-4: 80 50% 55%;
-    /* Fresh yellow-green (young grass or plants) */
-    --chart-5: 180 40% 60%;
-    /* Subtle oceanic teal (cool mountain streams) */
-
+    /* Chart Colors (Updated to match earthy tones) */
+    --chart-1: 106 23% 33%; /* Green */
+    --chart-2: 30 38% 64%; /* Tan */
+    --chart-3: 125 14% 21%; /* Dark Green */
+    --chart-4: 35 50% 40%; /* Brown */
+    --chart-5: 180 40% 60%; /* Teal accent */
   }
-
 }
 
 @layer base {
   * {
-    @apply border-border text-black;
+    @apply border-border;
     font-family: AdaeBrightnessMontserrat !important;
     font-weight: lighter;
+    color: #e5e5e5;
   }
 
   body {
-    @apply bg-background text-black;
+    @apply bg-[#2a2a2a] text-white;
     overflow-x: hidden;
     font-family: AdaeBrightnessMontserrat, sans-serif;
     font-optical-sizing: auto;

@@ -3,18 +3,18 @@ import { MenuBar } from "../ui/navigation/menu_navigation";
 import Footer from "../ui/footer";
 import React from "react";
 
-type VerifiedLayout ={
-  auth:boolean
+type VerifiedLayout = {
+  auth: boolean
 }
 
-export const VerifiedLayout : React.FC<VerifiedLayout> = () => {
+export const VerifiedLayout: React.FC<VerifiedLayout> = () => {
   return (
     <>
       {/* Navigation Menu */}
-      <MenuBar/>
-      
+      <MenuBar />
+
       {/* Main Content Area */}
-      <div>
+      <div className="pt-32">
         <Outlet />
       </div>
 
