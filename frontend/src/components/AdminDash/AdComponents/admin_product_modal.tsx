@@ -41,16 +41,17 @@ export interface AdminProductModalProps {
     onSave: (data: ProductFormData) => Promise<boolean>;
     onDelete: (id: string) => void;
     action: "add" | "update" | null;
+    defaultCategory?: string; // Optional fixed category
 }
 
-const AdminProductModal: React.FC<AdminProductModalProps> = ({ product, onOpen, onClose, onSave, onDelete }) => {
+const AdminProductModal: React.FC<AdminProductModalProps> = ({ product, onOpen, onClose, onSave, onDelete, defaultCategory }) => {
     const form = useForm<ProductFormData>({
         resolver: zodResolver(productSchema),
         defaultValues: {
             name: "",
             description: "",
-            price: undefined, // Changed from 0 to undefined
-            category: "accessories",
+            price: undefined,
+            category: defaultCategory || "accessories", // Use defaultCategory if provided
             stock: 0,
             image: "",
             isAvailable: false,
@@ -110,13 +111,13 @@ const AdminProductModal: React.FC<AdminProductModalProps> = ({ product, onOpen, 
                 name: "",
                 description: "",
                 price: undefined,
-                category: "accessories",
+                category: defaultCategory || "accessories",
                 stock: 0,
                 image: "",
                 isAvailable: false,
             });
         }
-    }, [product, form]);
+    }, [product, form, defaultCategory]);
 
     const onSubmit = async (data: ProductFormData) => {
         const success = await onSave(data);
@@ -234,7 +235,11 @@ const AdminProductModal: React.FC<AdminProductModalProps> = ({ product, onOpen, 
                         <FormField control={form.control} name="category" render={({ field }) => (
                             <FormItem>
                                 <FormLabel className="text-gray-300">Category</FormLabel>
-                                <Select onValueChange={field.onChange} value={field.value}>
+                                <Select
+                                    onValueChange={field.onChange}
+                                    value={field.value}
+                                    disabled={!!defaultCategory} // Disable if fixed category
+                                >
                                     <SelectTrigger>
                                         <SelectValue placeholder="Select category" />
                                     </SelectTrigger>

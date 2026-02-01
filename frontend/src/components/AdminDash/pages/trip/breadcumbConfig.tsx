@@ -54,6 +54,11 @@ export const breadcrumbConfig: BreadcrumbConfigItem[] = [
                 url: "/admin/products/new",
                 breadcrumb: "Add New Product",
             },
+            {
+                title: "Tallow Products",
+                url: "/admin/products/tallow",
+                breadcrumb: "Tallow Products",
+            },
             // Add more product routes if needed
         ],
     },

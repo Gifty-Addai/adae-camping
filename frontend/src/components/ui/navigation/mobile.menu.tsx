@@ -1,12 +1,14 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { Menu, ShoppingCart, X } from "lucide-react";
+import { Menu, ShoppingCart, X, Search } from "lucide-react";
 import { Button } from "../button";
 import { useSelector } from "react-redux";
 import { RootState } from "@/core/store/store";
+import SearchModal from "./search-modal";
 
 const MobileMenu: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
   const totalItems = useSelector((state: RootState) => state.cart.totalItems);
 
   const handleLinkClick = () => {
@@ -26,6 +28,15 @@ const MobileMenu: React.FC = () => {
 
       {/* Right Icons */}
       <div className="flex items-center gap-3">
+        {/* Search Trigger */}
+        <Button
+          className="text-white focus:outline-none bg-transparent hover:bg-[#2a2a2a] p-2"
+          onClick={() => setIsSearchOpen(true)}
+          size="icon"
+        >
+          <Search size={24} className="text-gray-300 hover:text-white" />
+        </Button>
+
         {/* Cart */}
         <Link to="/cart" className="relative text-gray-300 hover:text-white transition-colors">
           <ShoppingCart size={24} />
@@ -45,6 +56,8 @@ const MobileMenu: React.FC = () => {
           <Menu className="h-6 w-6" />
         </Button>
       </div>
+
+      <SearchModal isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
 
       {/* Mobile Menu Drawer - Slides from Left */}
       <div

@@ -9,7 +9,7 @@ type VerifiedLayout = {
 
 export const VerifiedLayout: React.FC<VerifiedLayout> = () => {
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen bg-[#fdfdfd]">
       {/* Navigation Menu */}
       <MenuBar />
 

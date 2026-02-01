@@ -13,6 +13,7 @@ import { Spinner } from "../ui/loader/_spinner";
 
 // Admin Pages
 import AdminProductDash from "../AdminDash/pages/Dashboard/productDash";
+import AdminTallowDash from "../AdminDash/pages/Dashboard/tallowDash";
 
 // Other pages
 import LandingPage from "../pages/Landing/landing.page";
@@ -94,6 +95,7 @@ export const AppRoute = () => {
           <Route path="products">
             <Route index element={<AdminProductDash />} />
             <Route path="new" element={<AdminProductDash />} />
+            <Route path="tallow" element={<AdminTallowDash />} />
           </Route>
 
           {/* Fallback 404 for Admin */}

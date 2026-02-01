@@ -39,7 +39,7 @@ const ProductDetailPage: React.FC = () => {
             if (productId) {
                 window.scrollTo({ top: 0, behavior: 'smooth' });
                 try {
-                    const res = await searchProduct({}, true);
+                    const res = await searchProduct({ category: 'tallow' }, true);
                     setProducts(res);
                     const data = await getProductById(productId);
                     setProduct(data);

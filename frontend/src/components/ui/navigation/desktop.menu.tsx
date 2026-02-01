@@ -3,11 +3,11 @@ import { Search, ShoppingCart, User } from "lucide-react";
 import { useSelector } from "react-redux";
 import { RootState } from "@/core/store/store";
 import { useState } from "react";
-import { Input } from "../input";
+import SearchModal from "./search-modal";
 
 const DesktopMenu: React.FC = () => {
   const totalItems = useSelector((state: RootState) => state.cart.totalItems);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   return (
     <div className="bg-[#1d1d1d] border-b border-[#2d2d2d]">
@@ -46,19 +46,15 @@ const DesktopMenu: React.FC = () => {
 
           {/* Right Section: Search, User, Cart */}
           <div className="flex items-center gap-3 flex-1 justify-end">
-            {/* Search Bar */}
-            <div className="relative">
-              <Input
-                type="text"
-                placeholder="Search product here"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pr-10 bg-[#2a2a2a] border-[#3a3a3a] text-white placeholder:text-gray-500 w-64 focus:border-white focus:ring-white"
-              />
-              <button className="absolute right-2 top-1/2 -translate-y-1/2 bg-white text-black p-1.5 rounded hover:bg-gray-200 transition-colors">
-                <Search size={16} />
-              </button>
-            </div>
+            {/* Search Bar Trigger */}
+            <button
+              onClick={() => setIsSearchOpen(true)}
+              className="flex items-center gap-2 bg-[#2a2a2a] border border-[#3a3a3a] text-gray-400 px-4 py-2 rounded-full hover:border-gray-500 hover:text-white transition-all w-64 group"
+            >
+              <Search size={16} className="text-gray-500 group-hover:text-white transition-colors" />
+              <span className="text-sm">Search tallow products...</span>
+            </button>
+            <SearchModal isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
 
             {/* User Icon */}
             <Link to="/account" className="text-gray-300 hover:text-white transition-colors">

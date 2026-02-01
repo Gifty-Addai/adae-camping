@@ -3,6 +3,7 @@ import { Product } from '@/core/interfaces';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import 'react-toastify/dist/ReactToastify.css';
+import { Eye } from 'lucide-react';
 
 interface AdminProductCardProps {
   product: Product;
@@ -44,7 +45,11 @@ const AdminProductCard: React.FC<AdminProductCardProps> = ({ product, onEdit }) 
       </div>
 
       {/* Admin Actions */}
-      <CardFooter className="absolute bottom-0 left-0 w-full p-4 space-x-2 flex justify-between border-t border-[#3d3d3d]">
+      <CardFooter className="absolute bottom-0 left-0 w-full p-4 flex justify-between items-center border-t border-[#3d3d3d]">
+        <div className="flex items-center gap-2 text-gray-400 bg-[#353535] px-3 py-1.5 rounded-full text-xs font-medium">
+          <Eye size={14} className="text-[#8b7355]" />
+          <span>{product.clickCount || 0} Views</span>
+        </div>
         <Button
           className="bg-[#8b7355] hover:bg-[#6d5a44] text-white"
           onClick={handleEditProduct}

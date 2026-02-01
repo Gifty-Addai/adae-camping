@@ -438,6 +438,7 @@ export interface UseProductAPI {
   totalProducts: number,
   isSuggestion: boolean,
   goToPage: (page: number) => void;
+  trackClick: (id: string) => Promise<void>;
 }
 
 export interface ProductModalProps {
@@ -599,6 +600,7 @@ export interface Product {
   description: string;
   stock: number;
   isAvailable: boolean;
+  clickCount?: number;
 }
 
 

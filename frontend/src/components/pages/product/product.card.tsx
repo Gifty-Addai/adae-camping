@@ -9,6 +9,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import { addToCart } from '@/core/store/slice/cart.slice';
 import { Link } from 'react-router-dom';
 
+import { useProductAPI } from '@/hooks/product.hook';
+
 interface ProductCardProps {
   product: Product;
   onOpenModal: (product: Product) => void;
@@ -17,6 +19,11 @@ interface ProductCardProps {
 const ProductCard: React.FC<ProductCardProps> = ({ product, onOpenModal }) => {
   const dispatch = useDispatch();
   const [quantity] = useState(1);
+  const { trackClick } = useProductAPI();
+
+  const handleProductClick = () => {
+    trackClick(product._id);
+  };
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -32,7 +39,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onOpenModal }) => {
       <div className="relative bg-gradient-to-br from-[#2a2a2a] to-[#1d1d1d] rounded-3xl overflow-hidden border border-[#3d3d3d] transition-all duration-500 hover:border-[#8b7355] hover:shadow-2xl hover:shadow-amber-950/30">
 
         {/* Image Container */}
-        <Link to={`/product/${encodeURIComponent(product.name.substring(0, 30))}/${product._id}`} className="block">
+        <Link to={`/product/${encodeURIComponent(product.name.substring(0, 30))}/${product._id}`} className="block" onClick={handleProductClick}>
           <div className="relative aspect-square w-full bg-[#353535] overflow-hidden">
             {/* Product Image */}
             <div className="absolute inset-0 p-8 flex items-center justify-center transition-transform duration-700 group-hover:scale-110">
@@ -54,6 +61,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onOpenModal }) => {
                 onClick={(e) => {
                   e.preventDefault();
                   onOpenModal(product);
+                  handleProductClick();
                 }}
               >
                 <ShoppingBag className="w-5 h-5" />

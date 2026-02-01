@@ -16,6 +16,7 @@ export const fetchProducts = async (
   page: number,
   limit: number,
   isAvailable: boolean | undefined,
+  filters: Record<string, any> = {},
 ): Promise<{
   products: Product[];
   totalPages: number;
@@ -33,9 +34,10 @@ export const fetchProducts = async (
     activeProducts: number;
     inActiveProducts: number;
     isSuggestion: boolean;
-  }>("/api/product/searchProducts", { page, limit, isAvailable });
+  }>("/api/product/searchProducts", { ...filters, page, limit, isAvailable });
   return data;
 };
+
 export const fetchTallowProducts = async (
   page: number,
   limit: number,
@@ -52,6 +54,7 @@ export const fetchTallowProducts = async (
     currentPage: number;
     totalProducts: number;
     activeProducts: number;
+    inActiveProducts?: number;
   }>(`/api/product/getTallowProducts?page=${page}&limit=${limit}`);
   return data;
 };
@@ -112,10 +115,15 @@ export const searchProducts = async (
   return data;
 };
 
+export const trackProductClick = async (id: string): Promise<void> => {
+  await postRequest(`/api/product/click/${id}`, {});
+};
+
 export const useProductAPI = (
   defaultAvailability: boolean | undefined = undefined,
   isAdmin: boolean = false,
-): UseProductAPI => {
+  initialFilters: Record<string, any> = {},
+): UseProductAPI & { trackClick: (id: string) => Promise<void> } => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -136,12 +144,20 @@ export const useProductAPI = (
     try {
       let response;
       if (isAdmin) {
-        response = await fetchProducts(page, limit, isAvailable);
+        // Pass filter if admin
+        response = await fetchProducts(
+          page,
+          limit,
+          isAvailable,
+          initialFilters,
+        );
         setInActiveProducts(response.inActiveProducts || 0);
         setIsSuggestion(response.isSuggestion || false);
       } else {
         response = await fetchTallowProducts(page, limit);
-        setInActiveProducts(0); // Tallow endpoint might not return this, or not relevant for frontend
+        setInActiveProducts(
+          (response.totalProducts || 0) - (response.activeProducts || 0),
+        );
         setIsSuggestion(false);
       }
 
@@ -270,5 +286,6 @@ export const useProductAPI = (
     inActiveProducts,
     totalProducts,
     goToPage,
+    trackClick: trackProductClick,
   };
 };

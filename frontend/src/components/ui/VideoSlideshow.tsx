@@ -91,12 +91,12 @@ export const VideoSlideshow = () => {
                         <div
                             key={video.id}
                             className={`absolute transition-all duration-700 ease-out ${position === 'center'
-                                    ? 'z-30 scale-100 opacity-100'
-                                    : position === 'left'
-                                        ? 'z-20 -translate-x-80 scale-75 opacity-60 blur-sm'
-                                        : position === 'right'
-                                            ? 'z-20 translate-x-80 scale-75 opacity-60 blur-sm'
-                                            : 'z-10 scale-50 opacity-0'
+                                ? 'z-30 scale-100 opacity-100'
+                                : position === 'left'
+                                    ? 'z-20 -translate-x-80 scale-75 opacity-60 blur-sm'
+                                    : position === 'right'
+                                        ? 'z-20 translate-x-80 scale-75 opacity-60 blur-sm'
+                                        : 'z-10 scale-50 opacity-0'
                                 }`}
                             style={{
                                 transform: position === 'center'
@@ -161,7 +161,7 @@ export const VideoSlideshow = () => {
             {/* Navigation buttons */}
             <button
                 onClick={prevSlide}
-                className="absolute left-8 top-1/2 -translate-y-1/2 z-40 w-14 h-14 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center hover:bg-white/20 transition-all duration-300 group"
+                className="absolute left-8 top-1/2 -translate-y-1/2 z-40 w-14 h-14 rounded-full bg-gray-900 backdrop-blur-md border border-white/20 flex items-center justify-center hover:bg-gray-900 transition-all duration-300 group"
                 aria-label="Previous slide"
             >
                 <ChevronLeft className="w-6 h-6 text-white group-hover:scale-110 transition-transform" />
@@ -169,7 +169,7 @@ export const VideoSlideshow = () => {
 
             <button
                 onClick={nextSlide}
-                className="absolute right-8 top-1/2 -translate-y-1/2 z-40 w-14 h-14 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center hover:bg-white/20 transition-all duration-300 group"
+                className="absolute right-8 top-1/2 -translate-y-1/2 z-40 w-14 h-14 rounded-full bg-gray-900 backdrop-blur-md border border-white/20 flex items-center justify-center hover:bg-gray-900 transition-all duration-300 group"
                 aria-label="Next slide"
             >
                 <ChevronRight className="w-6 h-6 text-white group-hover:scale-110 transition-transform" />
