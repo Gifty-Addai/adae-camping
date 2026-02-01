@@ -77,7 +77,7 @@ export const VideoSlideshow = () => {
 
     return (
         <div
-            className="relative w-full h-[600px] overflow-hidden"
+            className="relative w-full h-[500px] overflow-hidden"
             style={{ perspective: '1200px' }}
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}

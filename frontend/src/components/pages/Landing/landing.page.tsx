@@ -34,11 +34,11 @@ const LandingPage = () => {
             {/* ---------------------------------------
           HERO SECTION
       --------------------------------------- */}
-            <section className="relative w-full min-h-[90vh] flex items-center overflow-hidden bg-transparent">
-                <div className="container mx-auto px-6 py-12">
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <section className="relative w-full min-h-[5vh] flex items-center overflow-hidden bg-transparent">
+                <div className="container mx-auto px-6">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-center">
                         {/* Left Side - Content */}
-                        <div className="flex gap-8 lg:gap-12">
+                        <div className="flex gap-2 lg:gap-12">
                             {/* Slide Numbers */}
                             <div className="hidden lg:flex flex-col gap-6 text-gray-400 flex-shrink-0">
                                 <div className="text-2xl font-light text-gray-800">02</div>
@@ -110,7 +110,7 @@ const LandingPage = () => {
           FEATURED PRODUCTS SHOWCASE
       --------------------------------------- */}
             {featuredProducts.length > 0 && (
-                <section className="py-20 bg-white">
+                <section className="py-5 bg-white">
                     <div className="container px-4">
                         <div className="text-center mb-12">
                             <h2 className="text-3xl md:text-4xl font-serif text-gray-900 mb-4 font-bold">Featured Products</h2>
@@ -139,7 +139,7 @@ const LandingPage = () => {
             {/* ---------------------------------------
           FEATURES / CATEGORIES
       --------------------------------------- */}
-            <section className="py-24 bg-transparent">
+            <section className="py-5 bg-transparent">
                 <div className="container px-4">
                     <div className="text-center mb-16">
                         <h2 className="text-3xl md:text-4xl font-serif text-gray-900 mb-4 font-bold">Our Collection</h2>
@@ -152,14 +152,14 @@ const LandingPage = () => {
                             <div className="w-full h-80 rounded-[40px] overflow-hidden bg-gray-100 mb-6 relative transition-all duration-300 group-hover:shadow-2xl group-hover:scale-105 border border-gray-200">
                                 <img
                                     src="https://res.cloudinary.com/dyua9sfez/image/upload/v1769895230/photo_7_2026-01-31_21-33-30_piv24z.jpg"
-                                    alt="Cooking Oils - Goat, Beef & Ghee Tallow"
+                                    alt="Cooking Oils - Goat, Beef Tallow & Ghee"
                                     className="absolute inset-0 w-full h-full object-cover"
                                 />
                                 {/* Overlay on hover */}
                                 <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-300" />
                             </div>
                             <h3 className="text-xl font-serif text-gray-900 mb-2 font-semibold">Cooking Oils</h3>
-                            <p className="text-sm text-gray-600 mb-2">Goat, Beef & Ghee Tallow</p>
+                            <p className="text-sm text-gray-600 mb-2">Goat, Beef Tallow & Ghee</p>
                             <Link to="/products">
                                 <Button variant="link" className="text-gray-700 hover:text-black font-medium">Shop Now <ArrowRight size={16} className="ml-2" /></Button>
                             </Link>
@@ -208,7 +208,7 @@ const LandingPage = () => {
             {/* ---------------------------------------
           PROMO BANNER
       --------------------------------------- */}
-            <section className="py-32 bg-[#1d1d1d] relative overflow-hidden">
+            <section className="py-12 bg-[#1d1d1d] relative overflow-hidden">
                 <div className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
                     {/* Goat silhouette - top left */}
                     <img src={Images.Goat} alt="" className="absolute top-10 left-10 w-32 h-32 rotate-12 " />
@@ -222,7 +222,7 @@ const LandingPage = () => {
                         Ghana's Ancestral <br /> Tallow Tradition
                     </h2>
                     <p className="text-gray-300 text-lg max-w-2xl mx-auto mb-10 leading-relaxed">
-                        Pure Goat, Beef, and Ghee tallow. Crafted with respect for tradition and the earth. Nourish your body inside and out.
+                        Pure Goat, Beef Tallow, and Ghee. Crafted with respect for tradition and the earth. Nourish your body inside and out.
                     </p>
                     <Link to="/products">
                         <Button size="lg" className="bg-white text-black hover:bg-gray-100 rounded-full px-10 py-7 text-lg font-semibold">
@@ -235,7 +235,7 @@ const LandingPage = () => {
             {/* ---------------------------------------
           VIDEO SLIDESHOW - COOKING OILS & MORE
       --------------------------------------- */}
-            <section className="py-24 bg-transparent">
+            <section className="py-5 bg-transparent">
                 <div className="container px-4">
                     <div className="text-center mb-16">
                         <h3 className="text-3xl md:text-4xl font-serif text-gray-900 mb-4 font-bold">
