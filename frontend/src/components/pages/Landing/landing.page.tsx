@@ -48,7 +48,7 @@ const LandingPage = () => {
                         </div>
 
                         {/* Right Side - Product Image */}
-                        <div className="relative flex items-center justify-center">
+                        <div className="hidden lg:flex relative items-center justify-center">
                             {/* Decorative Circle Background */}
                             <div className="absolute right-0 top-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full bg-[#3a3a3a] opacity-20 blur-3xl"></div>
 
