@@ -31,9 +31,7 @@ const LandingPage = () => {
 
     return (
         <div className="flex flex-col min-h-screen bg-background text-foreground font-sans">
-            {/* ---------------------------------------
-          HERO SECTION
-      --------------------------------------- */}
+            {/* ---------------------------------------HERO SECTION--------------------------------------- */}
             <section className="relative w-full min-h-[5vh] flex items-center overflow-hidden bg-transparent">
                 <div className="container mx-auto px-6">
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-center">

@@ -5,6 +5,7 @@ import { Button } from "../button";
 import { useSelector } from "react-redux";
 import { RootState } from "@/core/store/store";
 import SearchModal from "./search-modal";
+import { CartDrawer } from "@/components/pages/Cart/cart-drawer";
 
 const MobileMenu: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -37,15 +38,17 @@ const MobileMenu: React.FC = () => {
           <Search size={24} className="text-gray-300 hover:text-white" />
         </Button>
 
-        {/* Cart */}
-        <Link to="/cart" className="relative text-gray-300 hover:text-white transition-colors">
-          <ShoppingCart size={24} />
-          {totalItems > 0 && (
-            <span className="absolute -top-2 -right-2 bg-white text-black text-xs rounded-full w-5 h-5 flex items-center justify-center font-medium">
-              {totalItems}
-            </span>
-          )}
-        </Link>
+        {/* Cart Drawer Trigger */}
+        <CartDrawer>
+          <div className="relative text-gray-300 hover:text-white transition-colors cursor-pointer p-2">
+            <ShoppingCart size={24} />
+            {totalItems > 0 && (
+              <span className="absolute -top-2 -right-2 bg-white text-black text-xs rounded-full w-5 h-5 flex items-center justify-center font-medium">
+                {totalItems}
+              </span>
+            )}
+          </div>
+        </CartDrawer>
 
         {/* Menu Button */}
         <Button

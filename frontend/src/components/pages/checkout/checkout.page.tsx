@@ -2,16 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '@/core/store/store';
 import { clearCart } from '@/core/store/slice/cart.slice';
-import { useOrderAPI, OrderPayload } from '@/hooks/order.hook'; // We just created this
+import { useOrderAPI, OrderPayload } from '@/hooks/order.hook';
 import { useNavigate } from 'react-router-dom';
-import { Button } from '@/components/ui/button'; // Assuming these exist
+import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Loader2 } from 'lucide-react';
-import { Page } from '@/components/ui/page';
+import { Loader2, Lock } from 'lucide-react';
 
 const FREE_SHIPPING_THRESHOLD = 100;
 const FLAT_SHIPPING_RATE = 15;
@@ -23,14 +21,21 @@ const CheckoutPage = () => {
     const { user } = useSelector((state: RootState) => state.userSlice);
     const { createOrder, loading } = useOrderAPI();
 
-    const [deliveryMethod, setDeliveryMethod] = useState<'Shipping' | 'Pickup'>('Shipping');
+    const [deliveryMethod] = useState<'Shipping' | 'Pickup'>('Shipping');
+    const [email, setEmail] = useState('');
+    const [contactChecked, setContactChecked] = useState(true);
     const [shippingAddress, setShippingAddress] = useState({
-        street: user?.streetAddress || '',
+        firstName: user?.name?.split(' ')[0] || '',
+        lastName: user?.name?.split(' ')[1] || '',
+        address: user?.streetAddress || '',
+        apartment: '',
         city: user?.city || '',
-        zipCode: user?.zipCode || '',
+        postalCode: user?.zipCode || '',
+        phone: '',
         country: 'Ghana'
     });
-    const [pickupLocation, setPickupLocation] = useState('Main Store - Accra');
+    const [pickupLocation] = useState('Main Store - Accra');
+    const [billingSameAsShipping, setBillingSameAsShipping] = useState(true);
 
     // Calculate Fees
     const deliveryFee =
@@ -59,9 +64,14 @@ const CheckoutPage = () => {
                 quantity: item.quantity
             })),
             deliveryMethod,
-            shippingAddress: deliveryMethod === 'Shipping' ? shippingAddress : undefined,
+            shippingAddress: deliveryMethod === 'Shipping' ? {
+                street: shippingAddress.address,
+                city: shippingAddress.city,
+                zipCode: shippingAddress.postalCode,
+                country: shippingAddress.country
+            } : undefined,
             pickupLocation: deliveryMethod === 'Pickup' ? pickupLocation : undefined,
-            paymentMethod: 'CashOnDelivery' // Hardcoded for now as per plan
+            paymentMethod: 'CashOnDelivery'
         };
 
         try {
@@ -73,183 +83,252 @@ const CheckoutPage = () => {
         }
     };
 
-    if (!user) {
-        return (
-            <Page
-                pageTitle="Checkout"
-                renderBody={() => (
-                    <div className="flex flex-col items-center justify-center p-10 text-center h-[60vh]">
-                        <h2 className="text-2xl font-bold text-gray-900 mb-4">Please log in to checkout</h2>
-                        <Button onClick={() => navigate('/auth')} className="bg-[#4A6741]">
-                            Go to Login
+    return (
+        <div className="flex flex-col-reverse lg:flex-row min-h-screen bg-white">
+            {/* Left Column: Form Section */}
+            <div className="flex-1 p-6 lg:p-12 lg:pr-24 overflow-y-auto">
+                <div className="max-w-xl mx-auto space-y-8">
+                    {/* Header */}
+                    <div className="flex justify-between items-center mb-6">
+                        <h1 className="text-2xl font-bold text-gray-900">Checkout</h1>
+                    </div>
+
+                    <form onSubmit={handleSubmit} className="space-y-8">
+                        {/* Contact Section */}
+                        <section>
+                            <div className="flex justify-between items-center mb-3">
+                                <h2 className="text-lg font-semibold text-gray-800">Contact</h2>
+                                {!user && <span className="text-sm text-[#4A6741] cursor-pointer hover:text-[#5a7a50]">Log in</span>}
+                            </div>
+                            <Input
+                                type="email"
+                                placeholder="Email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                className="bg-white border-gray-300 text-gray-900 placeholder:text-gray-500 focus:ring-[#4A6741] focus:border-[#4A6741]"
+                            />
+                            <div className="flex items-center space-x-2 mt-3">
+                                <input
+                                    type="checkbox"
+                                    id="news"
+                                    checked={contactChecked}
+                                    onChange={(e) => setContactChecked(e.target.checked)}
+                                    className="rounded border-gray-300 text-[#4A6741] focus:ring-[#4A6741]"
+                                />
+                                <label htmlFor="news" className="text-sm text-gray-600">Email me with news and offers</label>
+                            </div>
+                        </section>
+
+                        {/* Delivery Section */}
+                        <section>
+                            <h2 className="text-lg font-semibold text-gray-800 mb-3">Delivery</h2>
+                            <div className="space-y-3">
+                                <Select defaultValue="Ghana">
+                                    <SelectTrigger className="bg-white border-gray-300 text-gray-900">
+                                        <SelectValue placeholder="Country/Region" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="Ghana">Ghana</SelectItem>
+                                    </SelectContent>
+                                </Select>
+
+                                <div className="grid grid-cols-2 gap-3">
+                                    <Input
+                                        name="firstName"
+                                        placeholder="First name (optional)"
+                                        value={shippingAddress.firstName}
+                                        onChange={handleAddressChange}
+                                        className="bg-white border-gray-300 text-gray-900"
+                                    />
+                                    <Input
+                                        name="lastName"
+                                        placeholder="Last name"
+                                        value={shippingAddress.lastName}
+                                        onChange={handleAddressChange}
+                                        required
+                                        className="bg-white border-gray-300 text-gray-900"
+                                    />
+                                </div>
+                                <Input
+                                    name="address"
+                                    placeholder="Address"
+                                    value={shippingAddress.address}
+                                    onChange={handleAddressChange}
+                                    required
+                                    className="bg-white border-gray-300 text-gray-900"
+                                />
+                                <Input
+                                    name="apartment"
+                                    placeholder="Apartment, suite, etc. (optional)"
+                                    value={shippingAddress.apartment}
+                                    onChange={handleAddressChange}
+                                    className="bg-white border-gray-300 text-gray-900"
+                                />
+                                <div className="grid grid-cols-2 gap-3">
+                                    <Input
+                                        name="city"
+                                        placeholder="City"
+                                        value={shippingAddress.city}
+                                        onChange={handleAddressChange}
+                                        required
+                                        className="bg-white border-gray-300 text-gray-900"
+                                    />
+                                    <Input
+                                        name="postalCode"
+                                        placeholder="Postal code (optional)"
+                                        value={shippingAddress.postalCode}
+                                        onChange={handleAddressChange}
+                                        className="bg-white border-gray-300 text-gray-900"
+                                    />
+                                </div>
+                                <div className="relative">
+                                    <Input
+                                        name="phone"
+                                        placeholder="Phone"
+                                        value={shippingAddress.phone}
+                                        onChange={handleAddressChange}
+                                        required
+                                        className="bg-white border-gray-300 text-gray-900 pr-10"
+                                    />
+                                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs">?</span>
+                                </div>
+                                <div className="flex items-center space-x-2">
+                                    <input type="checkbox" id="save-info" className="rounded border-gray-300 text-[#4A6741] focus:ring-[#4A6741]" />
+                                    <label htmlFor="save-info" className="text-sm text-gray-600">Save this information for next time</label>
+                                </div>
+                            </div>
+                        </section>
+
+                        {/* Shipping Method */}
+                        <section>
+                            <h2 className="text-lg font-semibold text-gray-800 mb-3">Shipping method</h2>
+                            <div className="flex justify-between items-center p-4 border border-gray-200 rounded-lg bg-gray-50">
+                                <span className="text-sm text-gray-700">Standard Shipping</span>
+                                <span className="text-sm font-medium text-gray-900">GHS {deliveryFee.toFixed(2)}</span>
+                            </div>
+                        </section>
+
+                        {/* Payment */}
+                        <section>
+                            <div className="mb-3">
+                                <h2 className="text-lg font-semibold text-gray-800">Payment</h2>
+                                <p className="text-sm text-gray-500">All transactions are secure and encrypted.</p>
+                            </div>
+                            <div className="border border-gray-300 rounded-lg overflow-hidden">
+                                <div className="bg-[#f0f9eb] border-b border-gray-200 p-4 flex justify-between items-center">
+                                    <span className="text-sm font-medium text-[#1a5e1a]">Cash on Delivery</span>
+                                    {/* Icons could go here */}
+                                </div>
+                                <div className="p-8 bg-gray-50 text-center">
+                                    <Lock className="w-12 h-12 text-gray-300 mx-auto mb-2" />
+                                    <p className="text-sm text-gray-600">You'll pay when your order arrives or at pickup.</p>
+                                </div>
+                            </div>
+                        </section>
+
+                        {/* Billing Address */}
+                        <section>
+                            <h2 className="text-lg font-semibold text-gray-800 mb-3">Billing address</h2>
+                            <RadioGroup value={billingSameAsShipping ? 'same' : 'different'} onValueChange={(v) => setBillingSameAsShipping(v === 'same')}>
+                                <div className={`border rounded-lg overflow-hidden ${billingSameAsShipping ? 'border-[#4A6741] bg-[#f0f9eb]' : 'border-gray-200'}`}>
+                                    <div className="flex items-center p-4 space-x-2">
+                                        <RadioGroupItem value="same" id="billing-same" className="text-[#4A6741]" />
+                                        <Label htmlFor="billing-same" className="cursor-pointer font-medium text-gray-700">Same as shipping address</Label>
+                                    </div>
+                                </div>
+                                <div className={`border rounded-lg overflow-hidden mt-3 ${!billingSameAsShipping ? 'border-[#4A6741] bg-[#f0f9eb]' : 'border-gray-200'}`}>
+                                    <div className="flex items-center p-4 space-x-2">
+                                        <RadioGroupItem value="different" id="billing-diff" className="text-[#4A6741]" />
+                                        <Label htmlFor="billing-diff" className="cursor-pointer font-medium text-gray-700">Use a different billing address</Label>
+                                    </div>
+                                </div>
+                            </RadioGroup>
+                        </section>
+
+                        <Button
+                            type="submit"
+                            disabled={loading}
+                            className="w-full bg-[#89CFF0] hover:bg-[#7ABFE0] text-gray-900 font-semibold h-14 text-lg mt-6 shadow-sm rounded-md transition-all"
+                        >
+                            {loading ? <Loader2 className="animate-spin mr-2" /> : 'Pay now'}
+                        </Button>
+
+                        <div className="text-xs text-center space-x-4 text-gray-500 mt-8 pt-6 border-t border-gray-200">
+                            <a href="#" className="underline">Refund policy</a>
+                            <a href="#" className="underline">Shipping</a>
+                            <a href="#" className="underline">Privacy policy</a>
+                            <a href="#" className="underline">Terms of service</a>
+                            <a href="#" className="underline">Contact</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            {/* Right Column: Order Summary (Dark Theme) */}
+            <div className="w-full lg:w-[45%] bg-[#1a1a1a] border-b lg:border-b-0 lg:border-l border-[#2d2d2d] p-6 lg:p-12 text-gray-300">
+                <div className="max-w-md sticky top-12 space-y-6">
+                    {/* Items List */}
+                    <div className="space-y-4 max-h-64 lg:max-h-full overflow-y-auto">
+                        {items.map((item) => (
+                            <div key={item._id} className="flex gap-4 items-center">
+                                <div className="relative">
+                                    <div className="h-16 w-16 bg-[#2a2a2a] rounded-lg border border-[#3d3d3d] overflow-hidden relative">
+                                        <img src={item.imageUrl} alt={item.name} className="h-full w-full object-cover" />
+                                    </div>
+                                    <span className="absolute -top-2 -right-2 bg-[#4d4d4d] text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-medium">
+                                        {item.quantity}
+                                    </span>
+                                </div>
+                                <div className="flex-1">
+                                    <h3 className="text-gray-100 font-medium">{item.name}</h3>
+                                    {/* <p className="text-sm text-gray-400">Variant info here</p> */}
+                                </div>
+                                <span className="font-medium text-gray-200">GHS {(item.price * item.quantity).toFixed(2)}</span>
+                            </div>
+                        ))}
+                    </div>
+
+                    <div className="border-t border-[#2d2d2d] my-6"></div>
+
+                    {/* Discount Code */}
+                    <div className="flex gap-3">
+                        <Input
+                            placeholder="Discount code"
+                            className="bg-[#2a2a2a] border-[#3d3d3d] text-white placeholder:text-gray-500 focus:ring-[#4A6741]"
+                        />
+                        <Button variant="outline" className="border-[#3d3d3d] bg-[#2a2a2a] text-gray-300 hover:bg-[#3d3d3d] hover:text-white">
+                            Apply
                         </Button>
                     </div>
-                )}
-            />
-        );
-    }
 
-    return (
-        <Page
-            pageTitle="Checkout"
-            renderBody={() => (
-                <div className="container mx-auto p-4 md:p-8 max-w-6xl">
-                    <h1 className="text-3xl font-bold mb-8 font-serif text-[#d4c5a9]">Checkout</h1>
+                    <div className="border-t border-[#2d2d2d] my-6"></div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-
-                        {/* Left Column: Form */}
-                        <div className="md:col-span-2 space-y-6">
-                            <Card className="bg-[#2a2a2a] border-[#3d3d3d] shadow-lg">
-                                <CardHeader>
-                                    <CardTitle className="text-xl text-gray-100">1. Delivery Method</CardTitle>
-                                </CardHeader>
-                                <CardContent>
-                                    <RadioGroup
-                                        defaultValue="Shipping"
-                                        value={deliveryMethod}
-                                        onValueChange={(val: string) => setDeliveryMethod(val as 'Shipping' | 'Pickup')}
-                                        className="flex gap-4"
-                                    >
-                                        <div className="flex items-center space-x-2 border border-[#3d3d3d] p-4 rounded-lg cursor-pointer hover:bg-[#3d3d3d] w-full transition-all data-[state=checked]:border-[#4A6741] data-[state=checked]:bg-[#4A6741]/10">
-                                            <RadioGroupItem value="Shipping" id="r1" className="border-gray-400 text-[#4A6741]" />
-                                            <Label htmlFor="r1" className="cursor-pointer w-full font-medium text-gray-200">Ship to Me</Label>
-                                        </div>
-                                        <div className="flex items-center space-x-2 border border-[#3d3d3d] p-4 rounded-lg cursor-pointer hover:bg-[#3d3d3d] w-full transition-all data-[state=checked]:border-[#4A6741] data-[state=checked]:bg-[#4A6741]/10">
-                                            <RadioGroupItem value="Pickup" id="r2" className="border-gray-400 text-[#4A6741]" />
-                                            <Label htmlFor="r2" className="cursor-pointer w-full font-medium text-gray-200">Store Pickup</Label>
-                                        </div>
-                                    </RadioGroup>
-                                </CardContent>
-                            </Card>
-
-                            <Card className="bg-[#2a2a2a] border-[#3d3d3d] shadow-lg">
-                                <CardHeader>
-                                    <CardTitle className="text-xl text-gray-100">
-                                        {deliveryMethod === 'Shipping' ? '2. Shipping Address' : '2. Pickup Location'}
-                                    </CardTitle>
-                                </CardHeader>
-                                <CardContent>
-                                    {deliveryMethod === 'Shipping' ? (
-                                        <div className="grid gap-4">
-                                            <div className="grid gap-2">
-                                                <Label htmlFor="street" className="text-gray-300">Street Address</Label>
-                                                <Input
-                                                    id="street"
-                                                    name="street"
-                                                    value={shippingAddress.street}
-                                                    onChange={handleAddressChange}
-                                                    required
-                                                    className="bg-[#1d1d1d] border-[#3d3d3d] focus:ring-[#4A6741] text-gray-100 placeholder:text-gray-500"
-                                                    placeholder="123 Main St"
-                                                />
-                                            </div>
-                                            <div className="grid grid-cols-2 gap-4">
-                                                <div className="grid gap-2">
-                                                    <Label htmlFor="city" className="text-gray-300">City</Label>
-                                                    <Input
-                                                        id="city"
-                                                        name="city"
-                                                        value={shippingAddress.city}
-                                                        onChange={handleAddressChange}
-                                                        required
-                                                        className="bg-[#1d1d1d] border-[#3d3d3d] focus:ring-[#4A6741] text-gray-100"
-                                                        placeholder="Accra"
-                                                    />
-                                                </div>
-                                                <div className="grid gap-2">
-                                                    <Label htmlFor="zipCode" className="text-gray-300">Zip Code</Label>
-                                                    <Input
-                                                        id="zipCode"
-                                                        name="zipCode"
-                                                        value={shippingAddress.zipCode}
-                                                        onChange={handleAddressChange}
-                                                        required
-                                                        className="bg-[#1d1d1d] border-[#3d3d3d] focus:ring-[#4A6741] text-gray-100"
-                                                        placeholder="00233"
-                                                    />
-                                                </div>
-                                            </div>
-                                        </div>
-                                    ) : (
-                                        <div className="grid gap-4">
-                                            <Label className="text-gray-300">Select Store</Label>
-                                            <Select value={pickupLocation} onValueChange={setPickupLocation}>
-                                                <SelectTrigger className="w-full bg-[#1d1d1d] border-[#3d3d3d] text-gray-100">
-                                                    <SelectValue placeholder="Select a store" />
-                                                </SelectTrigger>
-                                                <SelectContent className="bg-[#2a2a2a] border-[#3d3d3d] text-gray-100">
-                                                    <SelectItem value="Main Store - Accra" className="focus:bg-[#3d3d3d] cursor-pointer">Main Store - Accra (Osu)</SelectItem>
-                                                    <SelectItem value="Warehouse - Kumasi" className="focus:bg-[#3d3d3d] cursor-pointer">Warehouse - Kumasi</SelectItem>
-                                                </SelectContent>
-                                            </Select>
-                                            <p className="text-sm text-gray-400 mt-2">
-                                                Your order will be ready for pickup within 24 hours. We will email you when it's ready.
-                                            </p>
-                                        </div>
-                                    )}
-                                </CardContent>
-                            </Card>
-
-                            <Card className="bg-[#2a2a2a] border-[#3d3d3d] shadow-lg">
-                                <CardHeader>
-                                    <CardTitle className="text-xl text-gray-100">3. Payment Method</CardTitle>
-                                </CardHeader>
-                                <CardContent>
-                                    <div className="border border-[#4A6741]/30 p-4 rounded-lg bg-[#4A6741]/10">
-                                        <p className="font-medium text-[#4A6741]">Cash on Delivery / Pay on Pickup</p>
-                                        <p className="text-sm text-gray-400">Pay securely when you receive your items.</p>
-                                    </div>
-                                </CardContent>
-                            </Card>
+                    {/* Totals */}
+                    <div className="space-y-3 text-sm">
+                        <div className="flex justify-between">
+                            <span className="text-gray-400">Subtotal • {items.length} items</span>
+                            <span className="text-gray-200 font-medium">GHS {totalPrice.toFixed(2)}</span>
                         </div>
+                        <div className="flex justify-between">
+                            <span className="text-gray-400">Shipping</span>
+                            <span className="text-gray-200 font-medium">GHS {deliveryFee.toFixed(2)}</span>
+                        </div>
+                    </div>
 
-                        {/* Right Column: Order Summary */}
-                        <div className="md:col-span-1">
-                            <Card className="sticky top-24 bg-[#2a2a2a] shadow-xl border border-[#3d3d3d]">
-                                <CardHeader className="bg-[#1d1d1d] text-gray-100 rounded-t-lg border-b border-[#3d3d3d]">
-                                    <CardTitle>Order Summary</CardTitle>
-                                </CardHeader>
-                                <CardContent className="p-6 space-y-4">
-                                    <div className="flex justify-between text-sm">
-                                        <span className="text-gray-400">Subtotal ({items.length} items)</span>
-                                        <span className="font-medium text-gray-200">${totalPrice.toFixed(2)}</span>
-                                    </div>
-                                    <div className="flex justify-between text-sm">
-                                        <span className="text-gray-400">Delivery Fee</span>
-                                        <span className={`font-medium ${deliveryFee === 0 ? 'text-[#4A6741]' : 'text-gray-200'}`}>
-                                            {deliveryFee === 0 ? 'FREE' : `$${deliveryFee.toFixed(2)}`}
-                                        </span>
-                                    </div>
-
-                                    {deliveryMethod === 'Shipping' && totalPrice < FREE_SHIPPING_THRESHOLD && (
-                                        <p className="text-xs text-amber-500 bg-amber-950/30 border border-amber-900/50 p-2 rounded">
-                                            Add ${(FREE_SHIPPING_THRESHOLD - totalPrice).toFixed(2)} more for free shipping!
-                                        </p>
-                                    )}
-
-                                    <div className="border-t border-[#3d3d3d] pt-4 mt-4">
-                                        <div className="flex justify-between text-lg font-bold text-[#d4c5a9]">
-                                            <span>Total</span>
-                                            <span>${finalTotal.toFixed(2)}</span>
-                                        </div>
-                                    </div>
-
-                                    <Button
-                                        onClick={handleSubmit}
-                                        disabled={loading || (deliveryMethod === 'Shipping' && !shippingAddress.street)}
-                                        className="w-full bg-[#4A6741] hover:bg-[#3a5232] text-white h-12 text-lg mt-6 shadow-lg hover:shadow-[#4A6741]/20 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-                                    >
-                                        {loading ? <Loader2 className="animate-spin mr-2" /> : 'Place Order'}
-                                    </Button>
-                                </CardContent>
-                            </Card>
+                    <div className="border-t border-[#2d2d2d] my-6 pt-6">
+                        <div className="flex justify-between items-baseline">
+                            <span className="text-lg font-medium text-gray-100">Total</span>
+                            <div className="text-right">
+                                <span className="text-sm text-gray-400 mr-2">GHS</span>
+                                <span className="text-3xl font-bold text-[#d4c5a9]">{finalTotal.toFixed(2)}</span>
+                            </div>
                         </div>
                     </div>
                 </div>
-            )}
-        />
+            </div>
+        </div>
     );
 };
 
 export default CheckoutPage;
+
