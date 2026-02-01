@@ -9,7 +9,8 @@ import { I18nextProvider } from 'react-i18next';
 import i18n from './i18n';
 import { ModalProvider } from './context/signIn_modal_context';
 import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css'; 
+import 'react-toastify/dist/ReactToastify.css';
+import ScrollToTop from './components/utils/ScrollToTop';
 
 createRoot(document.getElementById('root')!).render(
   <I18nextProvider i18n={i18n}>
@@ -17,8 +18,9 @@ createRoot(document.getElementById('root')!).render(
       <ModalProvider>
         <Provider store={store}>
           <BrowserRouter>
+            <ScrollToTop />
             <AppRoute />
-            <ToastContainer /> 
+            <ToastContainer />
           </BrowserRouter>
         </Provider>
       </ModalProvider>
