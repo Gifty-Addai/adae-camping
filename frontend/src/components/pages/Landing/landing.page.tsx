@@ -3,7 +3,7 @@ import { ArrowRight } from 'lucide-react';
 import { Images } from '@/assets/assets';
 import { Link } from 'react-router-dom';
 import { VideoSlideshow } from '@/components/ui/VideoSlideshow';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Product } from '@/core/interfaces';
 import ProductCard from '../product/product.card';
 import ProductModal from '@/components/ui/product.modal';
@@ -11,7 +11,7 @@ import { useProductAPI } from '@/hooks/product.hook';
 
 const LandingPage = () => {
     // Use the hook at the top level correctly
-    const { products: allProducts, loading } = useProductAPI(true);
+    const { products: allProducts } = useProductAPI(true);
 
     // Derived state or just variable
     const featuredProducts = allProducts ? allProducts.slice(0, 3) : [];

@@ -1,9 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { X, Search, ArrowRight, ShoppingBag } from 'lucide-react';
+import { X, Search, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Product } from '@/core/interfaces';
 import { postRequest } from '@/lib/api-Request/api-requests';
-import { Button } from '@/components/ui/button';
 
 
 interface SearchModalProps {
