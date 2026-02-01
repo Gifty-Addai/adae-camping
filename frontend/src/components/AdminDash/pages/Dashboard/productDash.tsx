@@ -14,7 +14,7 @@ import StatisticsCard from "../../AdComponents/booking-statistics-card";
 import { Book, CheckCircle, Clock } from "lucide-react";
 
 const AdminProductDash: React.FC = () => {
-  const { products, loading, addProduct, activeProducts, inActiveProducts, totalProducts, editProduct, removeProduct, searchProduct, totalPages, currentPage, goToPage } = useProductAPI();
+  const { products, loading, addProduct, activeProducts, inActiveProducts, totalProducts, editProduct, removeProduct, searchProduct, totalPages, currentPage, goToPage } = useProductAPI(undefined, true);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [showModal, setShowModal] = useState<boolean>(false);
   const [productToEdit, setProductToEdit] = useState<Product | null>(null);
@@ -40,20 +40,22 @@ const AdminProductDash: React.FC = () => {
     setShowModal(true);
   };
 
-  const handleSaveProduct = async (data: ProductFormData) => {
+  const handleSaveProduct = async (data: ProductFormData): Promise<boolean> => {
     console.info(`action performing ${action} data : ${data}`)
     try {
+      let success = false;
       // Try updating or adding the product
       if (action === "update" && productToEdit) {
-        editProduct(productToEdit._id, data);
+        success = await editProduct(productToEdit._id, data);
       } else if (action === "add") {
-        addProduct(data);
+        success = await addProduct(data);
       }
-
+      return success;
 
     } catch (error) {
       // If there's an error, handle it (show a toast or alert)
       toast.error("Error saving product");
+      return false;
       // The modal stays open to allow the user to retry
     }
   };
@@ -63,7 +65,7 @@ const AdminProductDash: React.FC = () => {
     <Page
       pageTitle="Admin Products"
       renderBody={() => (
-        <div className="">
+        <div className="bg-[#2a2a2a] min-h-screen rounded-lg p-6">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
             <StatisticsCard
               title="Total Products"
@@ -93,13 +95,13 @@ const AdminProductDash: React.FC = () => {
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="border border-gray-300 rounded w-full sm:w-64"
                 />
-                <Button onClick={handleSearch} className="bg-yellow-400 text-white px-4 py-2 w-full sm:w-auto">
+                <Button onClick={handleSearch} className="bg-[#8b7355] hover:bg-[#6d5a44] text-white px-4 py-2 w-full sm:w-auto">
                   Search
                 </Button>
               </div>
               <Button
                 onClick={handleAddProduct}
-                className="bg-green-600 text-white px-6 py-2 w-full sm:w-auto mt-4 sm:mt-0"
+                className="bg-[#8b7355] hover:bg-[#6d5a44] text-white px-6 py-2 w-full sm:w-auto mt-4 sm:mt-0"
               >
                 Add Product
               </Button>

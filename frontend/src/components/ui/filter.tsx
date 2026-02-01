@@ -27,7 +27,7 @@ const Filters: React.FC<FilterProps> = ({ onFilterChange, onSearchChange, catego
   };
 
   return (
-    <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4 p-4 space-y-4 sm:space-y-0">
+    <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4 p-4 space-y-4 sm:space-y-0 bg-[#1d1d1d] rounded-xl border border-[#3d3d3d]">
       {/* Category Filter */}
       <Select onValueChange={handleCategoryChange} value={categoryValue}>
         <SelectTrigger className="w-full sm:w-[180px]">
@@ -49,12 +49,12 @@ const Filters: React.FC<FilterProps> = ({ onFilterChange, onSearchChange, catego
       <div className="flex items-center space-x-2 w-full sm:w-[250px]">
         <Input
           type="text"
-          className="p-2 rounded-md border border-gray-300 w-full"
+          className="w-full"
           placeholder="Search products"
           value={searchQuery}
           onChange={handleSearchChange}
         />
-        <Button onClick={onSearch} className="p-2 bg-yellow-400 text-black rounded-md">
+        <Button onClick={onSearch} className="p-2 bg-[#8b7355] hover:bg-[#6d5a44] text-white rounded-md">
           Search
         </Button>
       </div>

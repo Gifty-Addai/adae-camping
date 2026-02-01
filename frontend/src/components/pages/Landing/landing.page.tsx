@@ -1,7 +1,9 @@
 
 import { Button } from '@/components/ui/button';
-import { ArrowRight, Leaf, ShieldCheck, Heart } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
+import { Images } from '@/assets/assets';
 import { Link } from 'react-router-dom';
+import { VideoSlideshow } from '@/components/ui/VideoSlideshow';
 
 const LandingPage = () => {
     return (
@@ -13,18 +15,18 @@ const LandingPage = () => {
                 <div className="container mx-auto px-6 py-12">
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                         {/* Left Side - Content */}
-                        <div className="relative">
+                        <div className="flex gap-8 lg:gap-12">
                             {/* Slide Numbers */}
-                            <div className="absolute -left-16 top-0 hidden xl:flex flex-col gap-8 text-gray-400">
+                            <div className="hidden lg:flex flex-col gap-6 text-gray-400 flex-shrink-0">
                                 <div className="text-2xl font-light">02</div>
                                 <div className="w-px h-24 bg-gray-600 mx-auto"></div>
                                 <div className="text-2xl font-light">04</div>
                             </div>
 
-                            <div className="space-y-6">
+                            <div className="space-y-6 flex-1">
                                 <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-gray-100 leading-tight">
-                                    Meet TAT's{' '}
-                                    <span className="block mt-2">Organic</span>
+                                    Ancestral{' '}
+                                    <span className="block mt-2">Beef & Goat</span>
                                     <span className="block mt-2">Tallow Collection</span>
                                 </h1>
 
@@ -70,7 +72,7 @@ const LandingPage = () => {
                                 {/* Product Image */}
                                 <div className="relative mx-auto w-full aspect-square flex items-center justify-center">
                                     <img
-                                        src="/tallow-jar.svg"
+                                        src="/product-hero.svg"
                                         alt="Ancestral Beef Tallow"
                                         className="w-3/4 h-3/4 object-contain relative z-20"
                                     />
@@ -94,43 +96,58 @@ const LandingPage = () => {
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                        {/* Feature 1 */}
+                        {/* Feature 1 - Cooking Oils */}
                         <div className="flex flex-col items-center text-center group cursor-pointer">
-                            <div className="w-full h-80 rounded-[40px] overflow-hidden bg-[#353535] mb-6 relative transition-all duration-300 group-hover:shadow-2xl group-hover:bg-[#404040] border border-[#454545]">
-                                {/* Image Placeholder */}
-                                <div className="absolute inset-0 bg-[#454545] flex items-center justify-center">
-                                    <Leaf size={48} className="text-green-400 opacity-40" />
-                                </div>
+                            <div className="w-full h-80 rounded-[40px] overflow-hidden bg-[#353535] mb-6 relative transition-all duration-300 group-hover:shadow-2xl group-hover:scale-105 border border-[#454545]">
+                                <img
+                                    src="https://res.cloudinary.com/dyua9sfez/image/upload/v1769895230/photo_7_2026-01-31_21-33-30_piv24z.jpg"
+                                    alt="Cooking Oils - Goat, Beef & Ghee Tallow"
+                                    className="absolute inset-0 w-full h-full object-cover"
+                                />
+                                {/* Overlay on hover */}
+                                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-300" />
                             </div>
                             <h3 className="text-xl font-serif text-gray-100 mb-2 font-semibold">Cooking Oils</h3>
                             <p className="text-sm text-gray-300 mb-2">Goat, Beef & Ghee Tallow</p>
-                            <Button variant="link" className="text-gray-200 hover:text-white font-medium">Shop Now <ArrowRight size={16} className="ml-2" /></Button>
+                            <Link to="/products">
+                                <Button variant="link" className="text-gray-200 hover:text-white font-medium">Shop Now <ArrowRight size={16} className="ml-2" /></Button>
+                            </Link>
                         </div>
 
-                        {/* Feature 2 */}
+                        {/* Feature 2 - Skin Care */}
                         <div className="flex flex-col items-center text-center group cursor-pointer mt-12 md:mt-0">
-                            <div className="w-full h-80 rounded-[40px] overflow-hidden bg-[#353535] mb-6 relative transition-all duration-300 group-hover:shadow-2xl group-hover:bg-[#404040] border border-[#454545]">
-                                {/* Image Placeholder */}
-                                <div className="absolute inset-0 bg-[#454545] flex items-center justify-center">
-                                    <ShieldCheck size={48} className="text-amber-400 opacity-40" />
-                                </div>
+                            <div className="w-full h-80 rounded-[40px] overflow-hidden bg-[#353535] mb-6 relative transition-all duration-300 group-hover:shadow-2xl group-hover:scale-105 border border-[#454545]">
+                                <img
+                                    src="https://res.cloudinary.com/dyua9sfez/image/upload/v1735639715/trip_images/kkorgq4e8d9uuc8qfr6b.jpg"
+                                    alt="Skin Care - Nourishing Tallow Balms"
+                                    className="absolute inset-0 w-full h-full object-cover"
+                                />
+                                {/* Overlay on hover */}
+                                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-300" />
                             </div>
                             <h3 className="text-xl font-serif text-gray-100 mb-2 font-semibold">Skin Care</h3>
                             <p className="text-sm text-gray-300 mb-2">Nourishing Tallow Balms</p>
-                            <Button variant="link" className="text-gray-200 hover:text-white font-medium">Shop Now <ArrowRight size={16} className="ml-2" /></Button>
+                            <Link to="/products">
+                                <Button variant="link" className="text-gray-200 hover:text-white font-medium">Shop Now <ArrowRight size={16} className="ml-2" /></Button>
+                            </Link>
                         </div>
 
-                        {/* Feature 3 */}
+                        {/* Feature 3 - Hair Care */}
                         <div className="flex flex-col items-center text-center group cursor-pointer">
-                            <div className="w-full h-80 rounded-[40px] overflow-hidden bg-[#353535] mb-6 relative transition-all duration-300 group-hover:shadow-2xl group-hover:bg-[#404040] border border-[#454545]">
-                                {/* Image Placeholder */}
-                                <div className="absolute inset-0 bg-[#454545] flex items-center justify-center">
-                                    <Heart size={48} className="text-rose-400 opacity-40" />
-                                </div>
+                            <div className="w-full h-80 rounded-[40px] overflow-hidden bg-[#353535] mb-6 relative transition-all duration-300 group-hover:shadow-2xl group-hover:scale-105 border border-[#454545]">
+                                <img
+                                    src="https://res.cloudinary.com/dyua9sfez/image/upload/v1735639715/trip_images/kkorgq4e8d9uuc8qfr6b.jpg"
+                                    alt="Hair Care - Traditional Nourishment"
+                                    className="absolute inset-0 w-full h-full object-cover"
+                                />
+                                {/* Overlay on hover */}
+                                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-300" />
                             </div>
                             <h3 className="text-xl font-serif text-gray-100 mb-2 font-semibold">Hair Care</h3>
                             <p className="text-sm text-gray-300 mb-2">Traditional Nourishment</p>
-                            <Button variant="link" className="text-gray-200 hover:text-white font-medium">Shop Now <ArrowRight size={16} className="ml-2" /></Button>
+                            <Link to="/products">
+                                <Button variant="link" className="text-gray-200 hover:text-white font-medium">Shop Now <ArrowRight size={16} className="ml-2" /></Button>
+                            </Link>
                         </div>
                     </div>
                 </div>
@@ -142,8 +159,11 @@ const LandingPage = () => {
       --------------------------------------- */}
             <section className="py-32 bg-[#1d1d1d] relative overflow-hidden">
                 <div className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
-                    <Leaf className="absolute top-10 left-10 text-white w-32 h-32 rotate-45" />
-                    <Leaf className="absolute bottom-10 right-10 text-white w-48 h-48 -rotate-12" />
+                    {/* Goat silhouette - top left */}
+                    <img src={Images.Goat} alt="" className="absolute top-10 left-10 w-32 h-32 rotate-12 " />
+
+                    {/* Cow silhouette - bottom right */}
+                    <img src={Images.Cow} alt="" className="absolute bottom-10 right-10 w-48 h-48 -rotate-12 text-white" />
                 </div>
 
                 <div className="container px-4 text-center relative z-10">
@@ -162,21 +182,20 @@ const LandingPage = () => {
             </section>
 
             {/* ---------------------------------------
-          COMMUNITY / BLOG PREVIEW
+          VIDEO SLIDESHOW - COOKING OILS & MORE
       --------------------------------------- */}
             <section className="py-24 bg-[#2a2a2a]">
-                <div className="container px-4 text-center">
-                    <h3 className="text-2xl font-serif text-gray-100 mb-12 font-bold">From Our Community</h3>
-
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                        {[1, 2, 3, 4].map((i) => (
-                            <div key={i} className="aspect-square bg-[#353535] rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow border border-[#454545]">
-                                <div className="w-full h-full bg-[#454545] flex items-center justify-center text-gray-300 font-medium">
-                                    @user_{i}
-                                </div>
-                            </div>
-                        ))}
+                <div className="container px-4">
+                    <div className="text-center mb-16">
+                        <h3 className="text-3xl md:text-4xl font-serif text-gray-100 mb-4 font-bold">
+                            Cooking Oils & More
+                        </h3>
+                        <p className="text-gray-300 text-lg max-w-2xl mx-auto">
+                            Discover how our ancestral tallow transforms cooking and enhances your lifestyle
+                        </p>
                     </div>
+
+                    <VideoSlideshow />
                 </div>
             </section>
 

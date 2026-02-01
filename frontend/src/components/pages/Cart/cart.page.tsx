@@ -112,10 +112,10 @@ const CartPage: React.FC = () => {
                 pageTitle='cart'
                 renderBody={() => (
                     <div className='flex justify-center flex-col text-center mt-3'>
-                        <h3 className="text-xl font-semibold text-gray-700 mb-2">
+                        <h3 className="text-xl font-semibold text-gray-100 mb-2">
                             Your Cart is Empty! 🛒
                         </h3>
-                        <p className="text-gray-500 mb-4">
+                        <p className="text-gray-400 mb-4">
                             You have no items in your cart. Start shopping now and add products to your cart!
                         </p>
 
@@ -136,25 +136,25 @@ const CartPage: React.FC = () => {
             pageTitle='cart'
             renderBody={() => (
                 <div className='container mx-auto mt-3'>
-                    <h2 className="text-2xl font-semibold text-card-foreground mb-6 text-center">Your Cart</h2>
+                    <h2 className="text-2xl font-semibold text-gray-100 mb-6 text-center">Your Cart</h2>
                     {/* Cart Items and Invoice Section */}
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-8">
                         {/* Package Details */}
-                        <div className="col-span-2 rounded-lg shadow-lg p-6">
+                        <div className="col-span-2 bg-[#2a2a2a] rounded-2xl shadow-lg p-6 border border-[#3d3d3d]">
                             {cart.items.map((item) => (
                                 <CartItem key={item._id} item={item} />
                             ))}
-                            <div className="flex justify-between items-center mt-6 p-4 bg-gray-100 rounded-lg">
-                                <div className="font-semibold text-lg">Total: </div>
-                                <div className="text-xl font-semibold text-gray-700">
+                            <div className="flex justify-between items-center mt-6 p-4 bg-[#1d1d1d] rounded-lg border border-[#3d3d3d]">
+                                <div className="font-semibold text-lg text-gray-100">Total: </div>
+                                <div className="text-xl font-semibold text-[#d4c5a9]">
                                     GHS {cart.totalPrice.toFixed(2)}
                                 </div>
                             </div>
                         </div>
 
                         {/* Booking Form */}
-                        <div className="col-span-1 bg-card rounded-lg shadow-lg p-6">
-                            <h3 className="text-xl text-center text-white font-bold mb-4">One step away to have your product(s)</h3>
+                        <div className="col-span-1 bg-[#2a2a2a] rounded-2xl shadow-lg p-6 border border-[#3d3d3d]">
+                            <h3 className="text-xl text-center text-gray-100 font-bold mb-4">One step away to have your product(s)</h3>
                             <Form {...form}>
                                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                                     <FormField
@@ -162,7 +162,7 @@ const CartPage: React.FC = () => {
                                         name="name"
                                         render={({ field }) => (
                                             <FormItem>
-                                                <FormLabel className='text-card-foreground'>Full Name *</FormLabel>
+                                                <FormLabel className='text-gray-300'>Full Name *</FormLabel>
                                                 <FormControl>
                                                     <Input
                                                         placeholder="Enter your name"
@@ -178,7 +178,7 @@ const CartPage: React.FC = () => {
                                         name="address"
                                         render={({ field }) => (
                                             <FormItem>
-                                                <FormLabel className='text-card-foreground'>Address(GH-Region-City/Town) *</FormLabel>
+                                                <FormLabel className='text-gray-300'>Address(GH-Region-City/Town) *</FormLabel>
                                                 <FormControl>
                                                     <Input
                                                         placeholder="Enter specific address"
@@ -195,7 +195,7 @@ const CartPage: React.FC = () => {
                                         name="phone"
                                         render={({ field }) => (
                                             <FormItem>
-                                                <FormLabel className='text-card-foreground'>Phone *</FormLabel>
+                                                <FormLabel className='text-gray-300'>Phone *</FormLabel>
                                                 <FormControl>
                                                     <Input
                                                         placeholder="Enter your phone number"
@@ -212,7 +212,7 @@ const CartPage: React.FC = () => {
                                         name="email"
                                         render={({ field }) => (
                                             <FormItem>
-                                                <FormLabel className='text-card-foreground'>Email *</FormLabel>
+                                                <FormLabel className='text-gray-300'>Email *</FormLabel>
                                                 <FormControl>
                                                     <Input
                                                         placeholder="Enter your email"
@@ -229,7 +229,7 @@ const CartPage: React.FC = () => {
                                         name="preferences"
                                         render={({ field }) => (
                                             <FormItem>
-                                                <FormLabel className='text-card-foreground'>Note(s)</FormLabel>
+                                                <FormLabel className='text-gray-300'>Note(s)</FormLabel>
                                                 <FormControl>
                                                     <Input
                                                         placeholder="Enter preferences (optional)"

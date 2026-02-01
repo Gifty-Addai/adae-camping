@@ -28,7 +28,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import {  useSelector} from "react-redux";
+import { useSelector } from "react-redux";
 import { RootState } from "@/core/store/store";
 import { logout } from "@/core/store/slice/user_slice";
 import { useAppDispatch } from "@/core/constants";
@@ -43,9 +43,9 @@ export function NavUser() {
   const { user, status, error } = useSelector((state: RootState) => state.userSlice);
 
   const handleLogout = () => {
-      dispatch(logout()).unwrap();
-      navigate("/admin/signin");
-    
+    dispatch(logout()).unwrap();
+    navigate("/admin/signin");
+
   };
 
   return (
@@ -55,28 +55,28 @@ export function NavUser() {
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton
               size="lg"
-              className="data-[state=open]:bg-white data-[state=open]:text-card-foreground"
+              className="data-[state=open]:bg-[#2a2a2a] data-[state=open]:text-gray-100 hover:bg-[#2a2a2a]"
             >
               <Avatar className="h-8 w-8 rounded-lg">
                 <AvatarImage
                   src={`https://github.com/shadcn.png`}
                   alt={user?._id}
                 />
-                <AvatarFallback className="text-card rounded-lg font-bold">{`${user?.name}`}</AvatarFallback>
+                <AvatarFallback className="bg-[#8b7355] text-white rounded-lg font-bold">{`${user?.name}`}</AvatarFallback>
               </Avatar>
-              <div className="grid flex-1 text-left text-sm text-card leading-tight">
-                <span className="truncate text-card font-semibold">
+              <div className="grid flex-1 text-left text-sm leading-tight">
+                <span className="truncate text-gray-100 font-semibold">
                   {user?.name || "Guest"}
                 </span>
-                <span className="truncate text-xs text-card">
+                <span className="truncate text-xs text-gray-400">
                   {user?._id || `Add phone number`}
                 </span>
               </div>
-              <ChevronsUpDown className="ml-auto size-4 text-card-foreground" />
+              <ChevronsUpDown className="ml-auto size-4 text-gray-300" />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent
-            className="w-[--radix-dropdown-menu-trigger-width] bg-card min-w-56 rounded-lg"
+            className="w-[--radix-dropdown-menu-trigger-width] bg-[#2a2a2a] border border-[#3d3d3d] min-w-56 rounded-lg"
             side={isMobile ? "bottom" : "right"}
             align="end"
             sideOffset={4}
@@ -91,27 +91,27 @@ export function NavUser() {
                   <AvatarFallback className="rounded-lg">CN</AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">
+                  <span className="truncate font-semibold text-gray-100">
                     {user?.name || "Guest"}
                   </span>
-                  
+
                 </div>
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem className="text-card-foreground">
+              <DropdownMenuItem className="text-gray-100 hover:bg-[#353535]">
                 <BadgeCheck className="mr-2 h-4 w-4" />
                 Account
               </DropdownMenuItem>
-              <DropdownMenuItem className="text-card-foreground">
+              <DropdownMenuItem className="text-gray-100 hover:bg-[#353535]">
                 <Bell className="mr-2 h-4 w-4" />
                 Notifications
               </DropdownMenuItem>
             </DropdownMenuGroup>
-            <DropdownMenuSeparator />
+            <DropdownMenuSeparator className="bg-[#3d3d3d]" />
             <DropdownMenuGroup>
-              <DropdownMenuItem className="text-card-foreground" disabled={status === 'loading'} onClick={handleLogout}>
+              <DropdownMenuItem className="text-gray-100 hover:bg-[#353535]" disabled={status === 'loading'} onClick={handleLogout}>
                 {status === 'loading' ? <LoaderIcon className="mr-2 h-4 w-4 animate-spin" /> : <LogOut className="mr-2 h-4 w-4" />}
                 Log out
               </DropdownMenuItem>

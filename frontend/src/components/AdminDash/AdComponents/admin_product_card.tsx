@@ -17,10 +17,10 @@ const AdminProductCard: React.FC<AdminProductCardProps> = ({ product, onEdit }) 
   };
 
   return (
-    <Card className="w-full h-[380px] rounded-lg shadow-md hover:shadow-lg transition-shadow cursor-pointer flex flex-col border border-gray-200 bg-card relative">
-      
+    <Card className="w-full h-[380px] rounded-2xl shadow-md hover:shadow-xl transition-all cursor-pointer flex flex-col bg-[#2a2a2a] border border-[#3d3d3d] hover:border-[#8b7355] relative">
+
       {/* Product Image */}
-      <div className="relative h-40 pt-4 px-4">
+      <div className="relative h-40 pt-4 px-4 bg-[#353535] rounded-t-2xl">
         <img
           src={product.imageUrl}
           alt={product.name}
@@ -30,29 +30,27 @@ const AdminProductCard: React.FC<AdminProductCardProps> = ({ product, onEdit }) 
 
       <CardContent className="px-4 flex flex-col justify-between flex-grow">
         {/* Title and Description */}
-        <CardHeader className="px-0 py-1">
-          <CardTitle className="text-sm font-semibold text-card-foreground">{product.name}</CardTitle>
-          <CardDescription className="text-xs line-clamp-2">{product.description}</CardDescription>
+        <CardHeader className="px-0 py-2">
+          <CardTitle className="text-base font-semibold text-gray-100">{product.name}</CardTitle>
+          <CardDescription className="text-sm line-clamp-2 text-gray-400">{product.description}</CardDescription>
         </CardHeader>
       </CardContent>
 
       {/* Price */}
       <div className="absolute bottom-[80px] left-4 w-full flex justify-start items-center px-4">
-        <p className="text-sm font-bold text-card-foreground">
+        <p className="text-lg font-bold text-[#d4c5a9]">
           GHS {product.price.toLocaleString()}
         </p>
       </div>
 
       {/* Admin Actions */}
-      <CardFooter className="absolute bottom-0 left-0 w-full p-4 space-x-2 flex justify-between">
+      <CardFooter className="absolute bottom-0 left-0 w-full p-4 space-x-2 flex justify-between border-t border-[#3d3d3d]">
         <Button
-          variant="default"
+          className="bg-[#8b7355] hover:bg-[#6d5a44] text-white"
           onClick={handleEditProduct}
-          
         >
           Edit
         </Button>
-      
       </CardFooter>
     </Card>
   );

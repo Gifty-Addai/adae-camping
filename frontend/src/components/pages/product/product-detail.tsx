@@ -93,7 +93,7 @@ const ProductDetailPage: React.FC = () => {
             key={product?._id}
             pageTitle={product ? product.name : 'Product Details'}
             renderBody={() => (
-                <div className="max-w-6xl mx-auto bg-muted rounded-lg shadow-lg p-4 md:p-6 lg:p-12">
+                <div className="max-w-6xl mx-auto bg-[#2a2a2a] rounded-2xl shadow-2xl p-4 md:p-6 lg:p-12 border border-[#3d3d3d]">
                     <div className="flex flex-col md:flex-row">
 
                         {/* Product Image with Zoom */}
@@ -114,7 +114,7 @@ const ProductDetailPage: React.FC = () => {
                         <div className="w-full md:w-1/2 md:pl-8 lg:pl-12 mt-6 md:mt-0">
                             {!loading && products?.length! > 0 ? (
                                 <div>
-                                    <h1 className="text-3xl text-center md:text-4xl font-extrabold text-card-foreground mb-3 md:mb-4">
+                                    <h1 className="text-3xl text-center md:text-4xl font-extrabold text-gray-100 mb-3 md:mb-4">
                                         {product?.name}
                                     </h1>
 
@@ -127,7 +127,7 @@ const ProductDetailPage: React.FC = () => {
                                             {!showFullDesc && product.description.length > MAX_DESC_LENGTH && (
                                                 <span
                                                     onClick={() => setShowFullDesc(true)}
-                                                    className="ml-2 text-yellow-400 cursor-pointer text-sm font-semibold"
+                                                    className="ml-2 text-[#d4c5a9] cursor-pointer text-sm font-semibold hover:text-[#8b7355]"
                                                 >
                                                     View More
                                                 </span>
@@ -137,7 +137,7 @@ const ProductDetailPage: React.FC = () => {
                                             {showFullDesc && product.description.length > MAX_DESC_LENGTH && (
                                                 <span
                                                     onClick={() => setShowFullDesc(false)}
-                                                    className="ml-2 text-yellow-400 cursor-pointer text-sm font-semibold"
+                                                    className="ml-2 text-[#d4c5a9] cursor-pointer text-sm font-semibold hover:text-[#8b7355]"
                                                 >
                                                     View Less
                                                 </span>
@@ -146,11 +146,11 @@ const ProductDetailPage: React.FC = () => {
                                     )}
 
                                     <div className="flex items-center mb-4 md:mb-6">
-                                        <p className="text-2xl md:text-3xl font-bold text-yellow-400 mr-3 md:mr-4">
+                                        <p className="text-2xl md:text-3xl font-bold text-[#d4c5a9] mr-3 md:mr-4">
                                             GHS {product?.price.toLocaleString()}
                                         </p>
                                         <>
-                                            <p className="text-sm md:text-base text-card-foreground line-through">
+                                            <p className="text-sm md:text-base text-gray-400 line-through">
                                                 GHS {0}
                                             </p>
                                             <span className="bg-red-500 text-white text-xs md:text-sm px-2 py-1 rounded-md ml-2 md:ml-4">
@@ -172,9 +172,9 @@ const ProductDetailPage: React.FC = () => {
                                             >
                                                 <MinusIcon className="h-4 w-4" />
                                             </Button>
-                                            <p className="mx-3 text-md font-medium text-card-foreground">{quantity}</p>
+                                            <p className="mx-3 text-md font-medium text-gray-100">{quantity}</p>
                                             <Button
-                                                className="h-8 w-8 bg-yellow-400 p-0 flex items-center justify-center"
+                                                className="h-8 w-8 bg-[#8b7355] hover:bg-[#6d5a44] p-0 flex items-center justify-center"
                                                 onClick={(e) => {
                                                     e.preventDefault();
                                                     e.stopPropagation();
@@ -201,7 +201,7 @@ const ProductDetailPage: React.FC = () => {
 
                                     {/* Timer for Sales Countdown */}
                                     <div className="mt-4 mb-4 md:mb-6">
-                                        <h3 className="text-md md:text-lg font-semibold text-card-foreground mb-1 md:mb-2">
+                                        <h3 className="text-md md:text-lg font-semibold text-gray-100 mb-1 md:mb-2">
                                             Discount Sale Ends In:
                                         </h3>
                                         <Countdown
@@ -212,23 +212,23 @@ const ProductDetailPage: React.FC = () => {
 
                                     {/* Delivery & Returns */}
                                     <div className="border-t pt-4 md:pt-6 mt-4 md:mt-6">
-                                        <h3 className="text-md md:text-lg font-semibold text-card-foreground mb-2">
+                                        <h3 className="text-md md:text-lg font-semibold text-gray-100 mb-2">
                                             Delivery & Returns
                                         </h3>
-                                        <ul className="list-disc list-inside text-sm md:text-base text-white">
-                                            <li className="text-card-foreground">Delivery: Within 4-7 working days</li>
-                                            <li className="text-card-foreground">Returns: Item is not refundable</li>
+                                        <ul className="list-disc list-inside text-sm md:text-base text-gray-300">
+                                            <li className="text-gray-300">Delivery: Within 4-7 working days</li>
+                                            <li className="text-gray-300">Returns: Item is not refundable</li>
                                         </ul>
                                     </div>
 
                                     {/* Product Details */}
                                     <div className="border-t pt-4 md:pt-6 mt-4 md:mt-6">
-                                        <h3 className="text-md md:text-lg font-semibold text-card-foreground mb-2">
+                                        <h3 className="text-md md:text-lg font-semibold text-gray-100 mb-2">
                                             Product Details
                                         </h3>
-                                        <ul className="list-disc list-inside text-sm md:text-base text-white">
-                                            <li className="text-card-foreground">Category: {product?.category}</li>
-                                            <li className="text-card-foreground">
+                                        <ul className="list-disc list-inside text-sm md:text-base text-gray-300">
+                                            <li className="text-gray-300">Category: {product?.category}</li>
+                                            <li className="text-gray-300">
                                                 Available: {product?.isAvailable ? 'Yes' : 'No'}
                                             </li>
                                         </ul>
@@ -262,7 +262,7 @@ const ProductDetailPage: React.FC = () => {
                     {/* People Also View Section */}
                     {products?.length! > 0 && (
                         <div className="mt-8 md:mt-12">
-                            <h2 className="text-xl md:text-2xl font-semibold text-card-foreground mb-4 md:mb-6">
+                            <h2 className="text-xl md:text-2xl font-semibold text-gray-100 mb-4 md:mb-6">
                                 People Also View
                             </h2>
                             <div className="flex space-x-4 overflow-x-auto pb-4 flex-nowrap">

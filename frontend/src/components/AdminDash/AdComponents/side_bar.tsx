@@ -34,19 +34,19 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const updatedBreadcrumbConfig = React.useMemo(() => updateActiveState(breadcrumbConfig), [pathname]);
 
   return (
-    <Sidebar collapsible="icon" variant="inset" {...props}>
-      <SidebarContent>
+    <Sidebar collapsible="icon" variant="inset" className="bg-[#1d1d1d] border-r border-[#3d3d3d]" {...props}>
+      <SidebarContent className="bg-[#1d1d1d]">
         {/* Main Navigation using updated breadcrumbConfig */}
         <NavMain items={updatedBreadcrumbConfig} />
       </SidebarContent>
 
-      <SidebarFooter>
+      <SidebarFooter className="bg-[#1d1d1d] border-t border-[#3d3d3d]">
         {/* User Info / Profile */}
         <NavUser />
       </SidebarFooter>
 
       {/* SidebarRail: the condensed version of the sidebar */}
-      <SidebarRail />
+      <SidebarRail className="bg-[#2a2a2a]" />
     </Sidebar>
   );
 }

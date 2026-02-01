@@ -1,29 +1,86 @@
-import { ApiResponse, Product, ProductFormData, UseProductAPI } from "@/core/interfaces";
-import { deleteRequest, getRequest, postRequest } from "@/lib/api-Request/api-requests";
+import {
+  ApiResponse,
+  Product,
+  ProductFormData,
+  UseProductAPI,
+} from "@/core/interfaces";
+import {
+  deleteRequest,
+  getRequest,
+  postRequest,
+} from "@/lib/api-Request/api-requests";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
-
-
-export const fetchProducts = async (page: number, limit: number, isAvailable: boolean | undefined): Promise<{ products: Product[], totalPages: number, currentPage: number, totalProducts: number, isSuggestion: boolean, activeProducts: number, inActiveProducts: number, }> => {
-  const data = await postRequest<{ products: Product[], totalPages: number, currentPage: number, totalProducts: number, activeProducts: number, inActiveProducts: number, isSuggestion: boolean }>('/api/product/searchProducts', { page, limit, isAvailable });
+export const fetchProducts = async (
+  page: number,
+  limit: number,
+  isAvailable: boolean | undefined,
+): Promise<{
+  products: Product[];
+  totalPages: number;
+  currentPage: number;
+  totalProducts: number;
+  isSuggestion: boolean;
+  activeProducts: number;
+  inActiveProducts: number;
+}> => {
+  const data = await postRequest<{
+    products: Product[];
+    totalPages: number;
+    currentPage: number;
+    totalProducts: number;
+    activeProducts: number;
+    inActiveProducts: number;
+    isSuggestion: boolean;
+  }>("/api/product/searchProducts", { page, limit, isAvailable });
+  return data;
+};
+export const fetchTallowProducts = async (
+  page: number,
+  limit: number,
+): Promise<{
+  products: Product[];
+  totalPages: number;
+  currentPage: number;
+  totalProducts: number;
+  activeProducts: number;
+}> => {
+  const data = await getRequest<{
+    products: Product[];
+    totalPages: number;
+    currentPage: number;
+    totalProducts: number;
+    activeProducts: number;
+  }>(`/api/product/getTallowProducts?page=${page}&limit=${limit}`);
   return data;
 };
 
-export const createProduct = async (productData: ProductFormData): Promise<Product> => {
+export const createProduct = async (
+  productData: ProductFormData,
+): Promise<Product> => {
   console.log("Creating product with data:", productData);
-  const data = await postRequest<Product>('/api/product/createProduct', productData);
+  const data = await postRequest<Product>(
+    "/api/product/createProduct",
+    productData,
+  );
   return data;
 };
 
 export const fetchProductById = async (id: string): Promise<Product | null> => {
-  const data = await getRequest<Product>(`/api/product/getProductById/${id}`,);
+  const data = await getRequest<Product>(`/api/product/getProductById/${id}`);
   return data;
 };
 
-export const updateProduct = async (id: string, productData: ProductFormData): Promise<Product> => {
+export const updateProduct = async (
+  id: string,
+  productData: ProductFormData,
+): Promise<Product> => {
   console.log("Updating product with ID:", id, "Data:", productData);
-  const data = await postRequest<Product>(`/api/product/updateProduct/${id}`, productData);
+  const data = await postRequest<Product>(
+    `/api/product/updateProduct/${id}`,
+    productData,
+  );
   return data;
 };
 // Delete a product by ID
@@ -32,14 +89,33 @@ export const deleteProduct = async (id: string): Promise<ApiResponse> => {
 };
 
 // Search products by filters
-export const searchProducts = async (filters: Record<string, any>, page: number, limit: number, isAvailable: boolean | undefined): Promise<{ products: Product[], totalPages: number, currentPage: number, totalProducts: number, isSuggestion: boolean }> => {
-  const data = await postRequest<{ products: Product[], totalPages: number, currentPage: number, totalProducts: number, isSuggestion: boolean }>('/api/product/searchProducts', { ...filters, page, limit, isAvailable });
-  console.log("product search", data)
+export const searchProducts = async (
+  filters: Record<string, any>,
+  page: number,
+  limit: number,
+  isAvailable: boolean | undefined,
+): Promise<{
+  products: Product[];
+  totalPages: number;
+  currentPage: number;
+  totalProducts: number;
+  isSuggestion: boolean;
+}> => {
+  const data = await postRequest<{
+    products: Product[];
+    totalPages: number;
+    currentPage: number;
+    totalProducts: number;
+    isSuggestion: boolean;
+  }>("/api/product/searchProducts", { ...filters, page, limit, isAvailable });
+  console.log("product search", data);
   return data;
 };
 
-
-export const useProductAPI = (defaultAvailability: boolean | undefined = undefined): UseProductAPI => {
+export const useProductAPI = (
+  defaultAvailability: boolean | undefined = undefined,
+  isAdmin: boolean = false,
+): UseProductAPI => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -51,48 +127,68 @@ export const useProductAPI = (defaultAvailability: boolean | undefined = undefin
 
   const limit = 12;
 
-  const getProducts = async (isAvailable: boolean | undefined = defaultAvailability, page: number = currentPage): Promise<void> => {
+  const getProducts = async (
+    isAvailable: boolean | undefined = defaultAvailability,
+    page: number = currentPage,
+  ): Promise<void> => {
     setLoading(true);
 
     try {
-      const response = await fetchProducts(page, limit, isAvailable);
+      let response;
+      if (isAdmin) {
+        response = await fetchProducts(page, limit, isAvailable);
+        setInActiveProducts(response.inActiveProducts || 0);
+        setIsSuggestion(response.isSuggestion || false);
+      } else {
+        response = await fetchTallowProducts(page, limit);
+        setInActiveProducts(0); // Tallow endpoint might not return this, or not relevant for frontend
+        setIsSuggestion(false);
+      }
+
       setProducts(response.products || []);
       setTotalPages(response.totalPages || 1);
-      setIsSuggestion(response.isSuggestion || false);
       setTotalProducts(response.totalProducts || 0);
       setActiveProducts(response.activeProducts || 0);
-      setInActiveProducts(response.inActiveProducts || 0);
     } catch (error) {
       console.error("Error fetching products:", error);
-      toast.error("Failed to load products. Check your internet connection and try again.");
+      toast.error(
+        "Failed to load products. Check your internet connection and try again.",
+      );
     } finally {
       setLoading(false);
     }
   };
 
-  const addProduct = async (productData: ProductFormData): Promise<void> => {
+  const addProduct = async (productData: ProductFormData): Promise<boolean> => {
     setLoading(true);
     try {
       await createProduct(productData);
       await getProducts(undefined);
       toast.success("Product added successfully!");
+      return true;
     } catch (error) {
       console.error("Error adding product:", error);
       toast.error("Failed to add product.");
+      return false;
     } finally {
       setLoading(false);
     }
   };
 
-  const editProduct = async (id: string, productData: ProductFormData): Promise<void> => {
+  const editProduct = async (
+    id: string,
+    productData: ProductFormData,
+  ): Promise<boolean> => {
     setLoading(true);
     try {
       await updateProduct(id, productData);
       await getProducts(undefined);
       toast.success("Product updated successfully!");
+      return true;
     } catch (error) {
       console.error("Error updating product:", error);
       toast.error("Failed to update product.");
+      return false;
     } finally {
       setLoading(false);
     }
@@ -112,7 +208,11 @@ export const useProductAPI = (defaultAvailability: boolean | undefined = undefin
     }
   };
 
-  const searchProduct = async (filters: Record<string, any>, isAvailable: boolean | undefined, page: number = currentPage): Promise<Product[] | void> => {
+  const searchProduct = async (
+    filters: Record<string, any>,
+    isAvailable: boolean | undefined,
+    page: number = currentPage,
+  ): Promise<Product[] | void> => {
     setLoading(true);
     try {
       const result = await searchProducts(filters, page, limit, isAvailable);

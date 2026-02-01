@@ -9,18 +9,18 @@ type VerifiedLayout = {
 
 export const VerifiedLayout: React.FC<VerifiedLayout> = () => {
   return (
-    <>
+    <div className="flex flex-col min-h-screen">
       {/* Navigation Menu */}
       <MenuBar />
 
       {/* Main Content Area */}
-      <div className="pt-32">
+      <main className="flex-1 pt-32">
         <Outlet />
-      </div>
+      </main>
 
       {/* Footer */}
       <Footer />
 
-    </>
+    </div>
   );
 };

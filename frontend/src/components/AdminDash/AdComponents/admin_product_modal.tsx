@@ -12,6 +12,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import Textarea from "@/components/ui/textarea";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Upload, X } from "lucide-react";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 // Define Zod validation schema for product
 const productSchema = z.object({
@@ -34,7 +38,7 @@ export interface AdminProductModalProps {
     product: Product | null;
     onOpen: boolean;
     onClose: () => void;
-    onSave: (data: ProductFormData) => void;
+    onSave: (data: ProductFormData) => Promise<boolean>;
     onDelete: (id: string) => void;
     action: "add" | "update" | null;
 }
@@ -54,6 +58,40 @@ const AdminProductModal: React.FC<AdminProductModalProps> = ({ product, onOpen, 
     });
 
     const [showConfirmDialog, setShowConfirmDialog] = useState(false);
+    const [uploading, setUploading] = useState(false);
+
+    const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        const formData = new FormData();
+        formData.append("file", file);
+
+        setUploading(true);
+        try {
+            // Retrieve token from localStorage (adjust key as needed based on auth implementation)
+            const token = localStorage.getItem("accessToken") || localStorage.getItem("token");
+
+            const response = await axios.post(`${import.meta.env.VITE_APP_BASE_URL}/api/image/upload-image`, formData, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                    Authorization: `Bearer ${token}`
+                },
+            });
+
+            if (response.data.success) {
+                form.setValue("image", response.data.data.url);
+                toast.success("Image uploaded successfully!");
+            } else {
+                toast.error("Failed to upload image");
+            }
+        } catch (error) {
+            console.error("Upload error:", error);
+            toast.error("Error uploading image");
+        } finally {
+            setUploading(false);
+        }
+    };
 
     useEffect(() => {
         if (product) {
@@ -81,8 +119,10 @@ const AdminProductModal: React.FC<AdminProductModalProps> = ({ product, onOpen, 
     }, [product, form]);
 
     const onSubmit = async (data: ProductFormData) => {
-        onSave(data);
-        onClose();
+        const success = await onSave(data);
+        if (success) {
+            onClose();
+        }
     };
 
     const handleDelete = () => {
@@ -108,10 +148,10 @@ const AdminProductModal: React.FC<AdminProductModalProps> = ({ product, onOpen, 
 
     return (
         <Dialog open={onOpen} onOpenChange={(open) => { if (!open) onClose(); }}>
-            <DialogContent className="w-full max-w-3xl mx-2 sm:mx-auto max-h-[90vh] overflow-y-auto"> {/* Responsive width and scrollable content */}
+            <DialogContent className="w-full max-w-3xl mx-2 sm:mx-auto max-h-[90vh] overflow-y-auto bg-[#2a2a2a] border border-[#3d3d3d]">
                 <DialogHeader>
-                    <DialogTitle className="text-card-foreground">{product ? "Edit Product" : "Add Product"}</DialogTitle>
-                    <DialogDescription>
+                    <DialogTitle className="text-gray-100">{product ? "Edit Product" : "Add Product"}</DialogTitle>
+                    <DialogDescription className="text-gray-400">
                         {product ? "Update the details of the product" : "Fill out the details of the new product"}
                     </DialogDescription>
                 </DialogHeader>
@@ -122,7 +162,7 @@ const AdminProductModal: React.FC<AdminProductModalProps> = ({ product, onOpen, 
                         {/* Name input (Textarea) */}
                         <FormField control={form.control} name="name" render={({ field }) => (
                             <FormItem>
-                                <FormLabel className="text-card-foreground">Product Name</FormLabel>
+                                <FormLabel className="text-gray-300">Product Name</FormLabel>
                                 <FormControl>
                                     <Textarea
                                         placeholder="Enter product name"
@@ -137,7 +177,7 @@ const AdminProductModal: React.FC<AdminProductModalProps> = ({ product, onOpen, 
                         {/* Description input (Textarea) */}
                         <FormField control={form.control} name="description" render={({ field }) => (
                             <FormItem>
-                                <FormLabel className="text-card-foreground">Description</FormLabel>
+                                <FormLabel className="text-gray-300">Description</FormLabel>
                                 <FormControl>
                                     <Textarea
                                         placeholder="Enter product description"
@@ -153,7 +193,7 @@ const AdminProductModal: React.FC<AdminProductModalProps> = ({ product, onOpen, 
                         <div className="flex flex-col sm:flex-row sm:space-x-4 space-y-4 sm:space-y-0">
                             <FormField control={form.control} name="price" render={({ field }) => (
                                 <FormItem className="flex-1">
-                                    <FormLabel className="text-card-foreground">Price</FormLabel>
+                                    <FormLabel className="text-gray-300">Price</FormLabel>
                                     <FormControl>
                                         <Input
                                             type="number"
@@ -175,7 +215,7 @@ const AdminProductModal: React.FC<AdminProductModalProps> = ({ product, onOpen, 
 
                             <FormField control={form.control} name="stock" render={({ field }) => (
                                 <FormItem className="flex-1">
-                                    <FormLabel className="text-card-foreground">Stock</FormLabel>
+                                    <FormLabel className="text-gray-300">Stock</FormLabel>
                                     <FormControl>
                                         <Input
                                             type="number"
@@ -193,7 +233,7 @@ const AdminProductModal: React.FC<AdminProductModalProps> = ({ product, onOpen, 
                         {/* Category */}
                         <FormField control={form.control} name="category" render={({ field }) => (
                             <FormItem>
-                                <FormLabel className="text-card-foreground">Category</FormLabel>
+                                <FormLabel className="text-gray-300">Category</FormLabel>
                                 <Select onValueChange={field.onChange} value={field.value}>
                                     <SelectTrigger>
                                         <SelectValue placeholder="Select category" />
@@ -202,6 +242,7 @@ const AdminProductModal: React.FC<AdminProductModalProps> = ({ product, onOpen, 
                                         <SelectItem value="accessories">Outdoor accessory</SelectItem>
                                         <SelectItem value="camping light">Camping Light</SelectItem>
                                         <SelectItem value="cookwear">Cookwear</SelectItem>
+                                        <SelectItem value="tallow">Tallow</SelectItem>
                                         <SelectItem value="others">Other</SelectItem>
                                     </SelectContent>
                                 </Select>
@@ -209,20 +250,65 @@ const AdminProductModal: React.FC<AdminProductModalProps> = ({ product, onOpen, 
                             </FormItem>
                         )} />
 
-                        {/* Image URL input (Textarea) */}
-                        <FormField control={form.control} name="image" render={({ field }) => (
-                            <FormItem>
-                                <FormLabel className="text-card-foreground">Image URL</FormLabel>
-                                <FormControl>
-                                    <Textarea
-                                        placeholder="Provide image URL"
-                                        {...field}
-                                        className="resize-none h-16"
-                                    />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )} />
+                        {/* Image Selection with Tabs */}
+                        <div className="space-y-3">
+                            <FormLabel className="text-gray-300">Product Image</FormLabel>
+                            <Tabs defaultValue="url" className="w-full">
+                                <TabsList className="grid w-full grid-cols-2 bg-[#353535] text-gray-400">
+                                    <TabsTrigger value="url" className="data-[state=active]:bg-[#8b7355] data-[state=active]:text-white">Image URL</TabsTrigger>
+                                    <TabsTrigger value="upload" className="data-[state=active]:bg-[#8b7355] data-[state=active]:text-white">Upload Image</TabsTrigger>
+                                </TabsList>
+                                <TabsContent value="url" className="mt-4">
+                                    <FormField control={form.control} name="image" render={({ field }) => (
+                                        <FormItem>
+                                            <FormControl>
+                                                <Textarea
+                                                    placeholder="Provide image URL"
+                                                    {...field}
+                                                    className="resize-none h-20 bg-[#353535] border-[#4d4d4d] text-gray-200 focus:border-[#8b7355]"
+                                                />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )} />
+                                </TabsContent>
+                                <TabsContent value="upload" className="mt-4">
+                                    <div className="flex flex-col items-center justify-center w-full">
+                                        <label htmlFor="image-upload" className="flex flex-col items-center justify-center w-full h-32 border-2 border-[#4d4d4d] border-dashed rounded-lg cursor-pointer bg-[#353535] hover:bg-[#3d3d3d] transition-colors">
+                                            <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                                                <Upload className="w-8 h-8 mb-3 text-gray-400" />
+                                                <p className="mb-2 text-sm text-gray-400"><span className="font-semibold">Click to upload</span> or drag and drop</p>
+                                                <p className="text-xs text-gray-500">SVG, PNG, JPG or GIF (MAX. 5MB)</p>
+                                            </div>
+                                            <Input
+                                                id="image-upload"
+                                                type="file"
+                                                className="hidden"
+                                                accept="image/*"
+                                                onChange={handleImageUpload}
+                                                disabled={uploading}
+                                            />
+                                        </label>
+                                        {uploading && <p className="mt-2 text-sm text-[#8b7355] animate-pulse">Uploading image...</p>}
+                                    </div>
+                                </TabsContent>
+                            </Tabs>
+                            {/* Image Preview */}
+                            {form.watch("image") && (
+                                <div className="mt-4 relative w-full h-48 bg-[#353535] rounded-lg overflow-hidden border border-[#4d4d4d]">
+                                    <img src={form.watch("image")} alt="Preview" className="w-full h-full object-contain" />
+                                    <Button
+                                        type="button"
+                                        variant="destructive"
+                                        size="icon"
+                                        className="absolute top-2 right-2 rounded-full w-8 h-8"
+                                        onClick={() => form.setValue("image", "")}
+                                    >
+                                        <X className="w-4 h-4" />
+                                    </Button>
+                                </div>
+                            )}
+                        </div>
 
                         {/* Availability Checkbox */}
                         <FormField control={form.control} name="isAvailable" render={({ field }) => (
@@ -233,7 +319,7 @@ const AdminProductModal: React.FC<AdminProductModalProps> = ({ product, onOpen, 
                                         onCheckedChange={(checked) => field.onChange(checked)}
                                     />
                                 </FormControl>
-                                <FormLabel className="text-card-foreground">Available</FormLabel>
+                                <FormLabel className="text-gray-300">Available</FormLabel>
                             </FormItem>
                         )} />
 
@@ -247,7 +333,7 @@ const AdminProductModal: React.FC<AdminProductModalProps> = ({ product, onOpen, 
                             </Button>
 
                             <div className="flex space-x-2">
-                                <Button type="submit" className="bg-blue-500 hover:bg-blue-600">
+                                <Button type="submit" className="bg-[#8b7355] hover:bg-[#6d5a44] text-white">
                                     {product ? "Update" : "Add"} Product
                                 </Button>
 
@@ -255,7 +341,7 @@ const AdminProductModal: React.FC<AdminProductModalProps> = ({ product, onOpen, 
                                     <Button
                                         type="button"
                                         onClick={() => handleAction("delete")}
-                                        className="bg-red-500 hover:bg-red-600"
+                                        className="bg-red-600 hover:bg-red-700 text-white"
                                     >
                                         Delete
                                     </Button>
@@ -268,16 +354,16 @@ const AdminProductModal: React.FC<AdminProductModalProps> = ({ product, onOpen, 
                 {/* Delete Confirmation Dialog */}
                 {showConfirmDialog && (
                     <Dialog open={showConfirmDialog} onOpenChange={(open) => { if (!open) closeConfirmDialog(); }}>
-                        <DialogContent className="w-full max-w-sm mx-auto">
+                        <DialogContent className="w-full max-w-sm mx-auto bg-[#2a2a2a] border border-[#3d3d3d]">
                             <DialogHeader>
-                                <DialogTitle>Confirm Deletion</DialogTitle>
-                                <DialogDescription>
+                                <DialogTitle className="text-gray-100">Confirm Deletion</DialogTitle>
+                                <DialogDescription className="text-gray-400">
                                     Are you sure you want to delete this product? This action cannot be undone.
                                 </DialogDescription>
                             </DialogHeader>
                             <DialogFooter>
-                                <Button onClick={handleDelete} className="bg-red-600">Yes, Delete</Button>
-                                <Button onClick={closeConfirmDialog} className="bg-gray-400">Cancel</Button>
+                                <Button onClick={handleDelete} className="bg-red-600 hover:bg-red-700 text-white">Yes, Delete</Button>
+                                <Button onClick={closeConfirmDialog} className="bg-[#3d3d3d] hover:bg-[#4d4d4d] text-gray-100">Cancel</Button>
                             </DialogFooter>
                         </DialogContent>
                     </Dialog>

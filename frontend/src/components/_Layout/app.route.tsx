@@ -18,6 +18,8 @@ import AdminProductDash from "../AdminDash/pages/Dashboard/productDash";
 import LandingPage from "../pages/Landing/landing.page";
 import ProductDetailPage from "../pages/product/product-detail";
 import BecomeMemberPage from "../pages/fie-member-form";
+import AboutPage from "../pages/about.page";
+import ContactPage from "../pages/contact.page";
 import { RequireAdmin } from "./requireAdmin";
 import { useAppDispatch } from "@/core/constants";
 import { fetchUserProfile } from "@/core/store/slice/user_slice";
@@ -62,6 +64,12 @@ export const AppRoute = () => {
 
         {/* Cart */}
         <Route path="/cart" element={<CartPage />} />
+
+        {/* About Us */}
+        <Route path="/about" element={<AboutPage />} />
+
+        {/* Contact Us */}
+        <Route path="/contact" element={<ContactPage />} />
 
         {/* Catch-All 404 */}
         <Route path="*" element={<PageNotFound />} />

@@ -83,7 +83,7 @@ export interface RequestItem {
   name: string;
   phone: string;
   email: string;
-  startDate: string; 
+  startDate: string;
   endDate: string;
   tripId: string;
   tripName: string;
@@ -207,7 +207,7 @@ export interface UseTripAPI {
   currentPage: number;
   totalPages: number;
   goToPage: (page: number) => void;
-  getTrips: (page?: number, status?:TripStatus, type?: string, difficulty?: string,) => Promise<void>;
+  getTrips: (page?: number, status?: TripStatus, type?: string, difficulty?: string,) => Promise<void>;
 }
 export interface UseMailAPI {
   loading: boolean;
@@ -426,8 +426,8 @@ export interface ProductFormData {
 export interface UseProductAPI {
   products: Product[];
   loading: boolean;
-  addProduct: (productData: ProductFormData) => void;
-  editProduct: (id: string, productData: ProductFormData) => void;
+  addProduct: (productData: ProductFormData) => Promise<boolean>;
+  editProduct: (id: string, productData: ProductFormData) => Promise<boolean>;
   getProductById: (id: string) => Promise<Product | null>;
   removeProduct: (id: string) => void;
   searchProduct: (filters: Record<string, any>, isAvailable: boolean | undefined) => Promise<Product[] | void>;
