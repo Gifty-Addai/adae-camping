@@ -469,7 +469,10 @@ export interface PaymentVerifyResponse {
 export interface IUser {
   role: "user" | "admin",
   _id: string,
-  name: string
+  name: string,
+  streetAddress?: string;
+  city?: string;
+  zipCode?: string;
 }
 
 export interface User {
@@ -480,6 +483,9 @@ export interface User {
   role: "user" | "admin";
   preferences?: { [key: string]: string };
   bookings: string[];
+  streetAddress?: string;
+  city?: string;
+  zipCode?: string;
   address?: string;
   isEmailConfirmed: boolean;
   dateJoined: string;

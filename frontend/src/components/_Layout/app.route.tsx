@@ -8,6 +8,7 @@ import AdminLayout from "./admin.layout";
 import StorePage from "../pages/product/products";
 import SignInPage from "../pages/signin.page";
 import CartPage from "../pages/Cart/cart.page";
+import CheckoutPage from "../pages/checkout/checkout.page";
 import { PageNotFound } from "../pages/not_found.page";
 import { Spinner } from "../ui/loader/_spinner";
 
@@ -66,6 +67,9 @@ export const AppRoute = () => {
         {/* Cart */}
         <Route path="/cart" element={<CartPage />} />
 
+        {/* Checkout */}
+        <Route path="/checkout" element={<CheckoutPage />} />
+
         {/* About Us */}
         <Route path="/about" element={<AboutPage />} />
 
@@ -75,6 +79,13 @@ export const AppRoute = () => {
         {/* Catch-All 404 */}
         <Route path="*" element={<PageNotFound />} />
       </Route>
+
+      {/* ---------------------------------------
+          Authentication Routes
+      --------------------------------------- */}
+      <Route path="/auth" element={<SignInPage />} />
+      <Route path="/signin" element={<SignInPage />} />
+      <Route path="/signup" element={<SignInPage />} />
 
       {/* ---------------------------------------
           Admin Sign-In Route (Public)
