@@ -110,7 +110,7 @@ const AdminProductDash: React.FC = () => {
             {loading ? (
               <div
                 className={cn(
-                  'fixed top-0 left-0  flex items-center justify-center bg-primary/50'
+                  'fixed top-0 left-0 w-full h-full z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm'
                 )}
               >
                 <div className="text-center flex relative flex-col">
