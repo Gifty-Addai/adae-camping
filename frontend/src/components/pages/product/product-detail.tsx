@@ -24,7 +24,7 @@ const ProductDetailPage: React.FC = () => {
     const [product, setProduct] = useState<Product | null>(null);
     const [products, setProducts] = useState<Product[] | void>();
     const [quantity, setQuantity] = useState(1);
-    const { loading, searchProduct, getProductById } = useProductAPI();
+    const { loading, searchProduct, getProductById, trackClick } = useProductAPI();
     const navigate = useNavigate();
 
     // -- ADD THESE STATE/CONSTANTS:
@@ -39,6 +39,16 @@ const ProductDetailPage: React.FC = () => {
             if (productId) {
                 window.scrollTo({ top: 0, behavior: 'smooth' });
                 try {
+                    // Check if already viewed in this session to prevent duplicate counts on refresh
+                    const storageKey = `viewed_product_${productId}`;
+                    if (!sessionStorage.getItem(storageKey)) {
+                        console.log(`[ProductDetail] First view in session, tracking click for: ${productId}`);
+                        trackClick(productId);
+                        sessionStorage.setItem(storageKey, 'true');
+                    } else {
+                        console.log(`[ProductDetail] Already viewed in this session, skipping track: ${productId}`);
+                    }
+
                     const res = await searchProduct({ category: 'tallow' }, true);
                     setProducts(res);
                     const data = await getProductById(productId);

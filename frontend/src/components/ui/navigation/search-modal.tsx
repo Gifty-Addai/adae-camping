@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { Product } from '@/core/interfaces';
 import { postRequest } from '@/lib/api-Request/api-requests';
 import { Button } from '@/components/ui/button';
-import { useProductAPI } from '@/hooks/product.hook';
+
 
 interface SearchModalProps {
     isOpen: boolean;
@@ -17,7 +17,6 @@ const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => {
     const [products, setProducts] = useState<Product[]>([]);
     const [loading, setLoading] = useState(false);
     const inputRef = useRef<HTMLInputElement>(null);
-    const { trackClick } = useProductAPI();
 
     // Focus input on open
     useEffect(() => {
@@ -157,7 +156,6 @@ const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => {
                                                 to={`/product/${encodeURIComponent(product.name.substring(0, 30))}/${product._id}`}
                                                 onClick={() => {
                                                     onClose();
-                                                    trackClick(product._id);
                                                 }}
                                                 className="flex items-center gap-4 group p-3 rounded-lg hover:bg-white/5 transition-colors border border-transparent hover:border-[#333]"
                                             >

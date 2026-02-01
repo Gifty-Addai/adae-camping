@@ -116,6 +116,7 @@ export const searchProducts = async (
 };
 
 export const trackProductClick = async (id: string): Promise<void> => {
+  console.log(`[Frontend] Tracking click for product: ${id}`);
   await postRequest(`/api/product/click/${id}`, {});
 };
 
