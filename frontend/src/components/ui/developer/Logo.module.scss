@@ -1,0 +1,37 @@
+.logoWrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  user-select: none;
+
+  .icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    filter: drop-shadow(0 0 10px rgba(74, 103, 65, 0.3));
+  }
+
+  .text {
+    font-family: inherit;
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.02em;
+
+    .schrift {
+      color: #e5e5e5;
+    }
+
+    .flow {
+      background: linear-gradient(135deg, #4A6741 0%, #d4c5a9 100%);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      color: transparent;
+      font-style: italic;
+      margin-left: 2px;
+      padding-right: 0.1em;
+    }
+  }
+}

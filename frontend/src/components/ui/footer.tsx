@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Separator } from "./separator";
 import { Icons } from "./icons";
+import { Logo } from "./developer/logo";
 
 const Footer = () => {
   return (
@@ -115,7 +116,20 @@ const Footer = () => {
       <Separator className="my-8 bg-[#2d2d2d]" />
 
       {/* Bottom Footer */}
-      <div className="text-center text-sm text-gray-1 00">
+      <div className="text-center text-sm text-gray-100">
+        {/* developer logo and name */}
+        <div className="flex flex-col items-center justify-center gap-2 mb-6">
+          <span className="text-xs text-gray-500 uppercase tracking-widest">Designed & Developed with ❤️ by</span>
+          <a
+            href="https://schriftflow.vercel.app"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:scale-105 transition-transform duration-300 decoration-0"
+          >
+            <Logo />
+          </a>
+        </div>
+
         <p className="text-gray-400">
           &copy; 2024 The Ancestral Tallow. All rights reserved.{" "}
           <a

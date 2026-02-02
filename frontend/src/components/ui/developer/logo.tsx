@@ -1,0 +1,38 @@
+import { motion } from "framer-motion";
+import styles from './Logo.module.scss';
+
+export const Logo = () => {
+    return (
+        <div className={styles.logoWrapper}>
+            <motion.div
+                className={styles.icon}
+                whileHover={{ rotate: 180 }}
+                transition={{ duration: 0.6, ease: "easeInOut" }}
+            >
+                <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M10 8L4 16L10 24" stroke="url(#paint0_linear)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+                    <path d="M22 8L28 16L22 24" stroke="url(#paint1_linear)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+                    <path d="M18 9C13.5 6.5 10 13 16 16C22 19 18.5 25.5 14 23" stroke="url(#paint2_linear)" strokeWidth="2.5" strokeLinecap="round" />
+                    <defs>
+                        <linearGradient id="paint0_linear" x1="4" y1="8" x2="10" y2="24" gradientUnits="userSpaceOnUse">
+                            <stop stopColor="#8B5CF6" />
+                            <stop offset="1" stopColor="#6366F1" />
+                        </linearGradient>
+                        <linearGradient id="paint1_linear" x1="22" y1="8" x2="28" y2="24" gradientUnits="userSpaceOnUse">
+                            <stop stopColor="#6366F1" />
+                            <stop offset="1" stopColor="#3B82F6" />
+                        </linearGradient>
+                        <linearGradient id="paint2_linear" x1="14" y1="26" x2="18" y2="6" gradientUnits="userSpaceOnUse">
+                            <stop stopColor="#EC4899" />
+                            <stop offset="1" stopColor="#8B5CF6" />
+                        </linearGradient>
+                    </defs>
+                </svg>
+            </motion.div>
+            <div className={styles.text}>
+                <span className={styles.schrift}>Schrift</span>
+                <span className={styles.flow}>Flow</span>
+            </div>
+        </div>
+    );
+};
