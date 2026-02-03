@@ -11,6 +11,7 @@ interface CartState {
   items: CartItem[];
   totalItems: number;
   totalPrice: number;
+  isDrawerOpen: boolean;
 }
 
 // Initial state for the cart
@@ -18,6 +19,7 @@ const initialState: CartState = {
   items: [],
   totalItems: 0,
   totalPrice: 0,
+  isDrawerOpen: false,
 };
 
 // Create the cart slice with the necessary reducers
@@ -48,6 +50,9 @@ const cartSlice = createSlice({
       // Recalculate totals
       state.totalItems = state.items.reduce((total, item) => total + item.quantity, 0);
       state.totalPrice = state.items.reduce((total, item) => total + item.price * item.quantity, 0);
+
+      // Open drawer when item is added
+      state.isDrawerOpen = true;
     },
 
 
@@ -99,9 +104,17 @@ const cartSlice = createSlice({
       state.totalItems = 0;
       state.totalPrice = 0;
     },
+
+    setDrawerOpen: (state: CartState, action: PayloadAction<boolean>) => {
+      state.isDrawerOpen = action.payload;
+    },
+
+    toggleDrawer: (state: CartState) => {
+      state.isDrawerOpen = !state.isDrawerOpen;
+    }
   },
 });
 
 // Export the actions and the reducer
-export const { addToCart, removeItem, updateItemQuantity, clearCart, decreaseQuantity } = cartSlice.actions;
+export const { addToCart, removeItem, updateItemQuantity, clearCart, decreaseQuantity, setDrawerOpen, toggleDrawer } = cartSlice.actions;
 export default cartSlice.reducer;

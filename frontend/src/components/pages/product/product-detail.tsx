@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { addToCart } from '@/core/store/slice/cart.slice';
+import { addToCart, setDrawerOpen } from '@/core/store/slice/cart.slice';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useProductAPI } from '@/hooks/product.hook';
@@ -25,7 +25,7 @@ const ProductDetailPage: React.FC = () => {
     const [products, setProducts] = useState<Product[] | void>();
     const [quantity, setQuantity] = useState(1);
     const { loading, searchProduct, getProductById, trackClick } = useProductAPI();
-    const navigate = useNavigate();
+
 
     // -- ADD THESE STATE/CONSTANTS:
     const [showFullDesc, setShowFullDesc] = useState(false);
@@ -72,7 +72,7 @@ const ProductDetailPage: React.FC = () => {
     const handleBuy = () => {
         if (product) {
             dispatch(addToCart({ product, quantity }));
-            navigate('/cart');
+            // navigate('/cart'); // Removed
         }
     };
 
@@ -256,7 +256,7 @@ const ProductDetailPage: React.FC = () => {
                         </div>
                     </div>
 
-                    <Link to="/cart">
+                    <div onClick={() => dispatch(setDrawerOpen(true))}>
                         <Button className="fixed bottom-4 right-4 bg-gray-400 p-2 sm:hidden z-50 shadow-lg">
                             <div className="relative">
                                 <ShoppingCart size={24} />
@@ -267,7 +267,7 @@ const ProductDetailPage: React.FC = () => {
                                 )}
                             </div>
                         </Button>
-                    </Link>
+                    </div>
 
                     {/* People Also View Section */}
                     {products?.length! > 0 && (

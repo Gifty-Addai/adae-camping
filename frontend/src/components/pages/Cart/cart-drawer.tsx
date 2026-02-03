@@ -11,10 +11,8 @@ import { Button } from "@/components/ui/button";
 import { Minus, Plus, ShoppingCart, Trash2 } from "lucide-react";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@/core/store/store";
-import { addToCart, removeItem, decreaseQuantity } from "@/core/store/slice/cart.slice";
+import { addToCart, removeItem, decreaseQuantity, setDrawerOpen } from "@/core/store/slice/cart.slice";
 import { Link } from "react-router-dom";
-import { useState } from "react";
-
 
 interface CartDrawerProps {
     children?: React.ReactNode;
@@ -22,14 +20,20 @@ interface CartDrawerProps {
 
 export function CartDrawer({ children }: CartDrawerProps) {
     const dispatch = useDispatch();
-    const { items, totalPrice, totalItems } = useSelector((state: RootState) => state.cart);
-    const [isOpen, setIsOpen] = useState(false);
+    const { items, totalPrice, totalItems, isDrawerOpen } = useSelector((state: RootState) => state.cart);
+
+    const handleOpenChange = (open: boolean) => {
+        dispatch(setDrawerOpen(open));
+    };
 
     return (
-        <Sheet open={isOpen} onOpenChange={setIsOpen}>
+        <Sheet open={isDrawerOpen} onOpenChange={handleOpenChange}>
             <SheetTrigger asChild>
                 {children || (
-                    <div className="relative text-gray-300 hover:text-white transition-colors cursor-pointer">
+                    <div
+                        className="relative text-gray-300 hover:text-white transition-colors cursor-pointer"
+                        onClick={() => dispatch(setDrawerOpen(true))}
+                    >
                         <ShoppingCart size={24} />
                         {totalItems > 0 && (
                             <span className="absolute -top-2 -right-2 bg-white text-black text-xs rounded-full w-5 h-5 flex items-center justify-center font-medium">
@@ -39,7 +43,7 @@ export function CartDrawer({ children }: CartDrawerProps) {
                     </div>
                 )}
             </SheetTrigger>
-            <SheetContent side="right" className="w-full sm:max-w-md bg-[#1d1d1d] border-l border-[#2d2d2d] p-0 flex flex-col h-full">
+            <SheetContent side="right" className="w-full sm:max-w-md bg-[#1d1d1d] border-l border-[#2d2d2d] p-0 flex flex-col h-full text-zinc-100">
                 <SheetHeader className="px-6 py-4 border-b border-[#2d2d2d] flex flex-row items-center justify-between space-y-0">
                     <SheetTitle className="text-xl font-serif text-gray-100">Your Cart</SheetTitle>
                     {/* Close button is handled by Sheet primitive, sticking to design */}
@@ -51,7 +55,7 @@ export function CartDrawer({ children }: CartDrawerProps) {
                         <h3 className="text-lg font-medium text-gray-300 mb-2">Your cart is empty</h3>
                         <p className="text-sm text-gray-500 mb-6">Looks like you haven't added anything to your cart yet.</p>
                         <Button
-                            onClick={() => setIsOpen(false)}
+                            onClick={() => dispatch(setDrawerOpen(false))}
                             className="bg-[#4A6741] hover:bg-[#3a5232] text-white"
                         >
                             Continue Shopping
@@ -122,7 +126,7 @@ export function CartDrawer({ children }: CartDrawerProps) {
                             <p className="text-xs text-center text-gray-500">
                                 Taxes, discounts and shipping calculated at checkout.
                             </p>
-                            <Link to="/checkout" onClick={() => setIsOpen(false)}>
+                            <Link to="/checkout" onClick={() => dispatch(setDrawerOpen(false))}>
                                 <Button className="w-full bg-[#4A6741] hover:bg-[#3a5232] text-white h-12 text-lg shadow-lg hover:shadow-[#4A6741]/20 transition-all">
                                     Check out
                                 </Button>

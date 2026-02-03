@@ -7,7 +7,7 @@ import { VerifiedLayout } from "./pages.layout";
 import AdminLayout from "./admin.layout";
 import StorePage from "../pages/product/products";
 import SignInPage from "../pages/signin.page";
-import CartPage from "../pages/Cart/cart.page";
+
 import CheckoutPage from "../pages/checkout/checkout.page";
 import { PageNotFound } from "../pages/not_found.page";
 import { Spinner } from "../ui/loader/_spinner";
@@ -64,8 +64,7 @@ export const AppRoute = () => {
         {/* Product Detail */}
         <Route path="/product/:produtName/:productId" element={<ProductDetailPage />} />
 
-        {/* Cart */}
-        <Route path="/cart" element={<CartPage />} />
+
 
         {/* Checkout */}
         <Route path="/checkout" element={<CheckoutPage />} />
