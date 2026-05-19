@@ -5,9 +5,7 @@ import axios, {
 } from 'axios';
 import axiosRetry, { IAxiosRetryConfig } from 'axios-retry';
 import logger from './logger';
-import { API_BASE_URL } from '@/core/constants';
-import { postRequest } from './api-Request/api-requests';
-import { isApiError } from '@/core/interfaces/guards';
+import { API_BASE_URL } from "@/core/constants";
 
 /**
  * Access token stored in a module-level variable (in-memory).
@@ -37,7 +35,7 @@ const axiosInstance = axios.create({
   timeout: 30000,
   withCredentials: true,
   headers: {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
   },
 });
 
@@ -83,14 +81,14 @@ axiosInstance.interceptors.request.use(
 
       return config;
     } catch (error) {
-      logger.error('Request Interceptor Error:', { error });
+      logger.error("Request Interceptor Error:", { error });
       throw error;
     }
   },
   (error: AxiosError) => {
-    logger.error('Request Error:', { error });
+    logger.error("Request Error:", { error });
     return Promise.reject(error);
-  }
+  },
 );
 
 /**
@@ -100,35 +98,47 @@ axiosInstance.interceptors.request.use(
  */
 axiosInstance.interceptors.response.use(
   (response: AxiosResponse) => {
-    logger.info(
-      `Response: ${response.status} ${response.config.url}`,
-      { data: response.data }
-    );
+    logger.info(`Response: ${response.status} ${response.config.url}`, {
+      data: response.data,
+    });
     return response;
   },
   async (error: AxiosError) => {
     if (error.response) {
       const { status, config } = error.response;
-      logger.error(
-        `Response Error: ${status} on ${config?.url}`,
-        { data: error.response.data }
-      );
+      logger.error(`Response Error: ${status} on ${config?.url}`, {
+        data: error.response.data,
+      });
 
       // Handle 401 errors by refreshing the access token
-      if (status === 401 && config) {
+      const originalConfig = config as InternalAxiosRequestConfig & {
+        _retry?: boolean;
+      };
+      if (status === 401 && originalConfig && !originalConfig._retry) {
+        originalConfig._retry = true;
         try {
-          // Attempt token refresh
-          const refreshResponse = await postRequest<{ accessToken: string }>('/api/auth/refresh', {});
-          const newAccessToken = refreshResponse.accessToken;
+          // Attempt token refresh using raw axios to avoid circular dependencies and interceptor loops
+          const refreshResponse = await axios.post<{
+            success: boolean;
+            data: { accessToken: string };
+            message?: string;
+          }>(`${API_BASE_URL}/api/auth/refresh`, {}, { withCredentials: true });
 
-          if (newAccessToken) {
+          if (
+            refreshResponse.data.success &&
+            refreshResponse.data.data.accessToken
+          ) {
+            const newAccessToken = refreshResponse.data.data.accessToken;
             // Update our in-memory access token
             setAccessToken(newAccessToken);
 
             // Retry the original request
             const newConfig = {
               ...config,
-              headers: { ...config.headers, Authorization: `Bearer ${newAccessToken}` },
+              headers: {
+                ...config.headers,
+                Authorization: `Bearer ${newAccessToken}`,
+              },
             } as InternalAxiosRequestConfig;
 
             return axiosInstance.request(newConfig);
@@ -137,24 +147,16 @@ axiosInstance.interceptors.response.use(
             setAccessToken(null);
           }
         } catch (refreshError) {
-          if (isApiError(refreshError)) {
-            logger.error('Refresh token expired. Logging out user.', { error: refreshError });
-
-          }
-          else {
-
-            logger.error('Token refresh failed:', { error: refreshError });
-          }
-
+          logger.error("Token refresh failed:", { error: refreshError });
           setAccessToken(null);
         }
       }
     } else {
       // Possibly a network error or CORS issue
-      logger.error('Response Error (no response):', { error: error.message });
+      logger.error("Response Error (no response):", { error: error.message });
     }
     return Promise.reject(error);
-  }
+  },
 );
 
 
