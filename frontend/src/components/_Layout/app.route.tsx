@@ -4,7 +4,6 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/core/store/store";
 
 import { VerifiedLayout } from "./pages.layout";
-import AdminLayout from "./admin.layout";
 import StorePage from "../pages/product/products";
 import SignInPage from "../pages/signin.page";
 
@@ -12,20 +11,12 @@ import CheckoutPage from "../pages/checkout/checkout.page";
 import { PageNotFound } from "../pages/not_found.page";
 import { Spinner } from "../ui/loader/_spinner";
 
-// Admin Pages
-import AdminProductDash from "../AdminDash/pages/Dashboard/productDash";
-import AdminTallowDash from "../AdminDash/pages/Dashboard/tallowDash";
-import OverviewDash from "../AdminDash/pages/Dashboard/OverviewDash";
-import OrdersDash from "../AdminDash/pages/Dashboard/OrdersDash";
-import OrderDetailsDash from "../AdminDash/pages/Dashboard/OrderDetailsDash";
-
 // Other pages
 import LandingPage from "../pages/Landing/landing.page";
 import ProductDetailPage from "../pages/product/product-detail";
 import BecomeMemberPage from "../pages/fie-member-form";
 import AboutPage from "../pages/about.page";
 import ContactPage from "../pages/contact.page";
-import { RequireAdmin } from "./requireAdmin";
 import { useAppDispatch } from "@/core/constants";
 import { fetchUserProfile } from "@/core/store/slice/user_slice";
 
@@ -67,8 +58,6 @@ export const AppRoute = () => {
         {/* Product Detail */}
         <Route path="/product/:produtName/:productId" element={<ProductDetailPage />} />
 
-
-
         {/* Checkout */}
         <Route path="/checkout" element={<CheckoutPage />} />
 
@@ -88,40 +77,7 @@ export const AppRoute = () => {
       <Route path="/auth" element={<SignInPage />} />
       <Route path="/signin" element={<SignInPage />} />
       <Route path="/signup" element={<SignInPage />} />
-
-      {/* ---------------------------------------
-          Admin Sign-In Route (Public)
-      --------------------------------------- */}
-      <Route path="/admin/signin" element={<SignInPage />} />
-
-      {/* ---------------------------------------
-          Admin Routes (Protected by RequireAdmin)
-      --------------------------------------- */}
-      <Route element={<RequireAdmin />}>
-        <Route path="/admin" element={<AdminLayout />}>
-          {/* 
-            Admin child routes inside this layout. 
-            Because of <RequireAdmin />, only users with role="admin" can see these.
-          */}
-
-
-          {/* Orders Management */}
-          <Route path="orders" element={<OrdersDash />} />
-          <Route path="orders/:id" element={<OrderDetailsDash />} />
-
-          {/* Product Management */}
-          <Route path="overview" element={<OverviewDash />} />
-          <Route index element={<OverviewDash />} />
-          <Route path="products">
-            <Route index element={<AdminProductDash />} />
-            <Route path="new" element={<AdminProductDash />} />
-            <Route path="tallow" element={<AdminTallowDash />} />
-          </Route>
-
-          {/* Fallback 404 for Admin */}
-          <Route path="*" element={<PageNotFound />} />
-        </Route>
-      </Route>
     </Routes>
   );
 };
+

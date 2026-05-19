@@ -1,0 +1,90 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Base Colors - Organic/Earth Theme */
+    --landing: 180 36.5% 11%;
+
+    /* Creamy Off-White Background (#FDFBF7) */
+    --background: 40 33% 98%;
+
+    /* Dark Forest Green Foreground (#2F3E30) */
+    --foreground: 125 14% 21%;
+
+    /* White Card Background */
+    --card: 0 0% 100%;
+    --card-foreground: 125 14% 21%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 125 14% 21%;
+
+    /* Natural Green Primary (#4A6741) */
+    --primary: 106 23% 33%;
+    --primary-foreground: 0 0% 100%;
+
+    /* Soft Brown/Tan Accent (#C4A484) */
+    --accent: 30 38% 64%;
+    --accent-foreground: 0 0% 100%;
+
+    /* Muted colors */
+    --secondary: 40 20% 94%; /* Light beige for secondary backgrounds */
+    --secondary-foreground: 125 14% 21%;
+
+    --muted: 40 20% 90%;
+    --muted-foreground: 125 5% 45%;
+
+    --destructive: 0 70% 50%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 40 20% 90%;
+    --input: 40 20% 90%;
+    --ring: 106 23% 33%;
+
+    --radius: 0.5rem;
+
+    /* Sidebar - keeping consistent with main theme */
+    --sidebar-background: 40 33% 98%;
+    --sidebar-foreground: 125 14% 21%;
+    --sidebar-primary: 106 23% 33%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 30 38% 64%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 40 20% 90%;
+    --sidebar-ring: 106 23% 33%;
+    --sidebar-icon-color: 106 23% 33%;
+
+    /* Chart Colors (Updated to match earthy tones) */
+    --chart-1: 106 23% 33%; /* Green */
+    --chart-2: 30 38% 64%; /* Tan */
+    --chart-3: 125 14% 21%; /* Dark Green */
+    --chart-4: 35 50% 40%; /* Brown */
+    --chart-5: 180 40% 60%; /* Teal accent */
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+    font-family: AdaeBrightnessMontserrat !important;
+    font-weight: lighter;
+    color: #e5e5e5;
+  }
+
+  body {
+    @apply bg-[#2a2a2a] text-white;
+    overflow-x: hidden;
+    font-family: AdaeBrightnessMontserrat, sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 300;
+    font-style: normal;
+    font-size: 14.5px;
+    font-variation-settings: "slnt" 0;
+  }
+}
+
+@import "./fonts.scss";
+@import "./animate.scss";
+@import "./animate.scss";
+@import "./sidebar.scss";

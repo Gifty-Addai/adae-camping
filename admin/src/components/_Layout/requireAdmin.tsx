@@ -10,7 +10,6 @@ import { isDev } from '@/core/constants';
 export const RequireAdmin: React.FC = () => {
   const { user } = useSelector((state: RootState) => state.userSlice);
 
-
   if (isDev || (user && user.role === 'admin')) {
     return <Outlet />;
   }

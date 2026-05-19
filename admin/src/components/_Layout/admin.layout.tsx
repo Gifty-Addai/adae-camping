@@ -1,10 +1,8 @@
-// src/components/AdminDash/layout/AdminLayout.tsx
-
 import { SidebarProvider, SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
-import { Separator } from "../ui/separator";
+import { Separator } from "@/components/ui/separator";
 import { Outlet } from "react-router-dom";
-import { AppSidebar } from "../AdminDash/AdComponents/side_bar";
-import Breadcrumbs from "../AdminDash/pages/trip/admin-breadcumb";
+import { AppSidebar } from "@/components/AdminDash/AdComponents/side_bar";
+import Breadcrumbs from "@/components/AdminDash/pages/trip/admin-breadcumb";
 
 export default function AdminLayout() {
   return (

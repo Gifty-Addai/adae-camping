@@ -280,12 +280,27 @@ const AdminProductModal: React.FC<AdminProductModalProps> = ({ product, onOpen, 
                                 </TabsContent>
                                 <TabsContent value="upload" className="mt-4">
                                     <div className="flex flex-col items-center justify-center w-full">
-                                        <label htmlFor="image-upload" className="flex flex-col items-center justify-center w-full h-32 border-2 border-[#4d4d4d] border-dashed rounded-lg cursor-pointer bg-[#353535] hover:bg-[#3d3d3d] transition-colors">
-                                            <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                                                <Upload className="w-8 h-8 mb-3 text-gray-400" />
-                                                <p className="mb-2 text-sm text-gray-400"><span className="font-semibold">Click to upload</span> or drag and drop</p>
-                                                <p className="text-xs text-gray-500">SVG, PNG, JPG or GIF (MAX. 5MB)</p>
-                                            </div>
+                                        <label
+                                            htmlFor="image-upload"
+                                            className={`flex flex-col items-center justify-center w-full h-32 border-2 border-[#4d4d4d] border-dashed rounded-lg bg-[#353535] transition-all select-none ${
+                                                uploading
+                                                    ? "opacity-60 cursor-not-allowed pointer-events-none border-[#8b7355]/40"
+                                                    : "cursor-pointer hover:bg-[#3d3d3d] hover:border-[#8b7355]/60"
+                                            }`}
+                                        >
+                                            {uploading ? (
+                                                <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                                                    <Upload className="w-8 h-8 mb-3 text-[#8b7355] animate-bounce" />
+                                                    <p className="mb-2 text-sm text-[#8b7355] font-semibold animate-pulse">Uploading image...</p>
+                                                    <p className="text-xs text-gray-500">Please wait, saving your file</p>
+                                                </div>
+                                            ) : (
+                                                <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                                                    <Upload className="w-8 h-8 mb-3 text-gray-400" />
+                                                    <p className="mb-2 text-sm text-gray-400"><span className="font-semibold">Click to upload</span> or drag and drop</p>
+                                                    <p className="text-xs text-gray-500">SVG, PNG, JPG or GIF (MAX. 5MB)</p>
+                                                </div>
+                                            )}
                                             <Input
                                                 id="image-upload"
                                                 type="file"
@@ -295,7 +310,6 @@ const AdminProductModal: React.FC<AdminProductModalProps> = ({ product, onOpen, 
                                                 disabled={uploading}
                                             />
                                         </label>
-                                        {uploading && <p className="mt-2 text-sm text-[#8b7355] animate-pulse">Uploading image...</p>}
                                     </div>
                                 </TabsContent>
                             </Tabs>
