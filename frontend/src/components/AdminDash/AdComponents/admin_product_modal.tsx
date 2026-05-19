@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Product, ProductFormData } from "@/core/interfaces";
+import { Product, ProductFormData, UploadImageResponse } from "@/core/interfaces";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useForm } from "react-hook-form";
@@ -14,7 +14,7 @@ import { Input } from "@/components/ui/input";
 import Textarea from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Upload, X } from "lucide-react";
-import axios from "axios";
+import { postRequest } from "@/lib/api-Request/api-requests";
 import { toast } from "react-toastify";
 
 // Define Zod validation schema for product
@@ -70,18 +70,19 @@ const AdminProductModal: React.FC<AdminProductModalProps> = ({ product, onOpen, 
 
         setUploading(true);
         try {
-            // Retrieve token from localStorage (adjust key as needed based on auth implementation)
-            const token = localStorage.getItem("accessToken") || localStorage.getItem("token");
 
-            const response = await axios.post(`${import.meta.env.VITE_APP_BASE_URL}/api/image/upload-image`, formData, {
-                headers: {
-                    "Content-Type": "multipart/form-data",
-                    Authorization: `Bearer ${token}`
-                },
-            });
+            const response = await postRequest<UploadImageResponse>(
+                "/api/image/upload-image",
+                formData,
+                {
+                    headers: {
+                        "Content-Type": "multipart/form-data",
+                    },
+                }
+            );
 
-            if (response.data.success) {
-                form.setValue("image", response.data.data.url);
+            if (response && response.url) {
+                form.setValue("image", response.url);
                 toast.success("Image uploaded successfully!");
             } else {
                 toast.error("Failed to upload image");

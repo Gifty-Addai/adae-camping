@@ -19,7 +19,7 @@ export default function AdminLayout() {
               <Breadcrumbs />
             </div>
           </header>
-          <main className="p-4 mt-16">
+          <main className="flex-1 overflow-auto">
             <Outlet />
           </main>
         </SidebarInset>

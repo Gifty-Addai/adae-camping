@@ -15,6 +15,9 @@ import { Spinner } from "../ui/loader/_spinner";
 // Admin Pages
 import AdminProductDash from "../AdminDash/pages/Dashboard/productDash";
 import AdminTallowDash from "../AdminDash/pages/Dashboard/tallowDash";
+import OverviewDash from "../AdminDash/pages/Dashboard/OverviewDash";
+import OrdersDash from "../AdminDash/pages/Dashboard/OrdersDash";
+import OrderDetailsDash from "../AdminDash/pages/Dashboard/OrderDetailsDash";
 
 // Other pages
 import LandingPage from "../pages/Landing/landing.page";
@@ -101,7 +104,14 @@ export const AppRoute = () => {
             Because of <RequireAdmin />, only users with role="admin" can see these.
           */}
 
+
+          {/* Orders Management */}
+          <Route path="orders" element={<OrdersDash />} />
+          <Route path="orders/:id" element={<OrderDetailsDash />} />
+
           {/* Product Management */}
+          <Route path="overview" element={<OverviewDash />} />
+          <Route index element={<OverviewDash />} />
           <Route path="products">
             <Route index element={<AdminProductDash />} />
             <Route path="new" element={<AdminProductDash />} />

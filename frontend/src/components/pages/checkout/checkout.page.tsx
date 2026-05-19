@@ -9,7 +9,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Loader2, Lock } from 'lucide-react';
+import { Loader2, Lock, CheckCircle2 } from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 
 const FREE_SHIPPING_THRESHOLD = 100;
 const FLAT_SHIPPING_RATE = 15;
@@ -37,6 +38,9 @@ const CheckoutPage = () => {
     const [pickupLocation] = useState('Main Store - Accra');
     const [billingSameAsShipping, setBillingSameAsShipping] = useState(true);
 
+    const [showSuccessModal, setShowSuccessModal] = useState(false);
+    const [orderId, setOrderId] = useState<string | null>(null);
+
     // Calculate Fees
     const deliveryFee =
         deliveryMethod === 'Pickup' ? 0 :
@@ -45,10 +49,10 @@ const CheckoutPage = () => {
     const finalTotal = totalPrice + deliveryFee;
 
     useEffect(() => {
-        if (items.length === 0) {
+        if (items.length === 0 && !showSuccessModal) {
             navigate('/products');
         }
-    }, [items, navigate]);
+    }, [items, navigate, showSuccessModal]);
 
     const handleAddressChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -65,19 +69,34 @@ const CheckoutPage = () => {
             })),
             deliveryMethod,
             shippingAddress: deliveryMethod === 'Shipping' ? {
+                firstName: shippingAddress.firstName,
+                lastName: shippingAddress.lastName,
+                phone: shippingAddress.phone,
                 street: shippingAddress.address,
                 city: shippingAddress.city,
                 zipCode: shippingAddress.postalCode,
-                country: shippingAddress.country
+                country: shippingAddress.country,
+                landmark: shippingAddress.apartment
             } : undefined,
             pickupLocation: deliveryMethod === 'Pickup' ? pickupLocation : undefined,
             paymentMethod: 'CashOnDelivery'
         };
 
         try {
-            await createOrder(payload);
+            const response: any = await createOrder(payload);
+            // Assuming createOrder returns the full response object based on previous edits
+            // or we might need to adjust the hook return type. 
+            // The backend returns { ... , data: newOrder }. 
+            // Our useOrderAPI probably returns response.data or similar.
+            // Let's safe check.
+            if (response && response.orderId) {
+                setOrderId(response.orderId);
+            } else if (response && response.data && response.data.orderId) {
+                setOrderId(response.data.orderId);
+            }
+            setShowSuccessModal(true);
             dispatch(clearCart());
-            navigate('/orders');
+            // Navigate is now handled by modal close
         } catch (err) {
             // Error handled in hook
         }
@@ -159,23 +178,36 @@ const CheckoutPage = () => {
                                 />
                                 <Input
                                     name="apartment"
-                                    placeholder="Apartment, suite, etc. (optional)"
+                                    placeholder="Nearest Landmark (e.g. Opposite Shell Filling Station)"
                                     value={shippingAddress.apartment}
                                     onChange={handleAddressChange}
                                     className="bg-white border-gray-300 text-gray-900"
                                 />
                                 <div className="grid grid-cols-2 gap-3">
-                                    <Input
-                                        name="city"
-                                        placeholder="City"
+                                    <Select
+                                        name="region"
                                         value={shippingAddress.city}
-                                        onChange={handleAddressChange}
-                                        required
-                                        className="bg-white border-gray-300 text-gray-900"
-                                    />
+                                        onValueChange={(val) => setShippingAddress(prev => ({ ...prev, city: val }))}
+                                    >
+                                        <SelectTrigger className="bg-white border-gray-300 text-gray-900">
+                                            <SelectValue placeholder="Select Region" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="Greater Accra">Greater Accra</SelectItem>
+                                            <SelectItem value="Ashanti">Ashanti</SelectItem>
+                                            <SelectItem value="Central">Central</SelectItem>
+                                            <SelectItem value="Eastern">Eastern</SelectItem>
+                                            <SelectItem value="Western">Western</SelectItem>
+                                            <SelectItem value="Volta">Volta</SelectItem>
+                                            <SelectItem value="Northern">Northern</SelectItem>
+                                            <SelectItem value="Upper East">Upper East</SelectItem>
+                                            <SelectItem value="Upper West">Upper West</SelectItem>
+                                            <SelectItem value="Bono">Bono</SelectItem>
+                                        </SelectContent>
+                                    </Select>
                                     <Input
                                         name="postalCode"
-                                        placeholder="Postal code (optional)"
+                                        placeholder="Digital Address (GPS)"
                                         value={shippingAddress.postalCode}
                                         onChange={handleAddressChange}
                                         className="bg-white border-gray-300 text-gray-900"
@@ -250,7 +282,7 @@ const CheckoutPage = () => {
                             disabled={loading}
                             className="w-full bg-[#89CFF0] hover:bg-[#7ABFE0] text-gray-900 font-semibold h-14 text-lg mt-6 shadow-sm rounded-md transition-all"
                         >
-                            {loading ? <Loader2 className="animate-spin mr-2" /> : 'Pay now'}
+                            {loading ? <Loader2 className="animate-spin mr-2" /> : 'Order now'}
                         </Button>
 
                         <div className="text-xs text-center space-x-4 text-gray-500 mt-8 pt-6 border-t border-gray-200">
@@ -326,6 +358,32 @@ const CheckoutPage = () => {
                     </div>
                 </div>
             </div>
+            {/* Success Modal */}
+            <Dialog open={showSuccessModal} onOpenChange={setShowSuccessModal}>
+                <DialogContent className="sm:max-w-md">
+                    <DialogHeader>
+                        <div className="mx-auto bg-green-100 p-3 rounded-full mb-4">
+                            <CheckCircle2 className="h-8 w-8 text-green-600" />
+                        </div>
+                        <DialogTitle className="text-center text-xl">Order Placed Successfully!</DialogTitle>
+                        <DialogDescription className="text-center pt-2">
+                            Thank you for your purchase. Your order ID is <span className="font-bold text-gray-900">{orderId}</span>.
+                            We have received your order and are processing it.
+                        </DialogDescription>
+                    </DialogHeader>
+                    <DialogFooter className="sm:justify-center mt-4">
+                        <Button
+                            className="bg-[#4A6741] hover:bg-[#3a5232] w-full sm:w-auto text-white"
+                            onClick={() => {
+                                setShowSuccessModal(false);
+                                navigate('/products');
+                            }}
+                        >
+                            Continue Shopping
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
         </div>
     );
 };

@@ -38,6 +38,20 @@ export const breadcrumbConfig: BreadcrumbConfigItem[] = [
         ],
     },
     {
+        title: "Orders",
+        url: "/admin/orders",
+        icon: LucideShoppingCart,
+        isActive: false,
+        breadcrumb: "Orders",
+        children: [
+            {
+                title: "All Orders",
+                url: "/admin/orders",
+                breadcrumb: "All Orders",
+            }
+        ]
+    },
+    {
         title: "Products",
         url: "/admin/products",
         icon: LucideShoppingCart,
