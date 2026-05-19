@@ -2,7 +2,7 @@
 import { LucideIcon } from "lucide-react";
 
 import {
-    Shield as LucideShield,
+    Home as LucideHome,
     ShoppingCart as LucideShoppingCart,
     Users as LucideUsers,
 } from "lucide-react";
@@ -18,24 +18,11 @@ export interface BreadcrumbConfigItem {
 
 export const breadcrumbConfig: BreadcrumbConfigItem[] = [
     {
-        title: "Authentication",
-        url: "/admin/auth",
-        icon: LucideShield,
+        title: "Dashboard",
+        url: "/admin",
+        icon: LucideHome,
         isActive: false,
-        breadcrumb: "Authentication",
-        children: [
-            {
-                title: "Sign In",
-                url: "/admin/signin",
-                breadcrumb: "Sign In",
-            },
-            {
-                title: "Sign Up",
-                url: "/admin/signup",
-                breadcrumb: "Sign Up",
-            },
-            // Add more auth routes if needed
-        ],
+        breadcrumb: "Dashboard",
     },
     {
         title: "Orders",
