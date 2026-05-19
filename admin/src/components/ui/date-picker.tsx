@@ -46,7 +46,7 @@ const DatePicker: React.FC<DatePickerProps> = ({
           mode="single"
           selected={selected || undefined} // Ensure `null` is converted to `undefined`
           onSelect={handleDateChange}
-          disabled={(date) =>
+          disabled={(date: Date) =>
             disabled || date < new Date() // Disable past dates
           }
         />

@@ -22,7 +22,6 @@ import { fetchUserProfile } from "@/core/store/slice/user_slice";
 export const AppRoute = () => {
   const dispatch = useAppDispatch();
 
-  const { user } = useSelector((state: RootState) => state.userSlice);
   const { isLoading: appLoading } = useSelector((state: RootState) => state.appSlice);
 
   useEffect(() => {
