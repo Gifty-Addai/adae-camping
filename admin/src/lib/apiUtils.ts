@@ -146,7 +146,7 @@ export const searchTrips = async (
 
 // Fetch the current user's profile
 export const fetchUserProfile = async (): Promise<User> => {
-  const data = await getRequest<User>("/api/users/getUserProfile");
+  const data = await getRequest<User>("/api/user/getUserProfile");
   return data;
 };
 
@@ -173,7 +173,7 @@ export const fetchAllUsers = async (): Promise<User[]> => {
 
 // Fetch a user by ID (admin or authorized)
 export const fetchUserByIdAPI = async (id: string): Promise<User> => {
-  const data = await getRequest<User>(`/api/users/${id}`);
+  const data = await getRequest<User>(`/api/user/${id}`);
   return data;
 };
 

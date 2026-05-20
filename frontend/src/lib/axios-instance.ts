@@ -8,16 +8,23 @@ import logger from './logger';
 import { API_BASE_URL } from "@/core/constants";
 
 /**
- * Access token stored in a module-level variable (in-memory).
- * - This prevents XSS attacks from reading it (unlike localStorage).
+ * Access token stored in a module-level variable (in-memory) with a localStorage fallback.
+ * - This allows the session to persist across page refreshes in cross-site environments.
  */
-let inMemoryAccessToken: string | null = null;
+let inMemoryAccessToken: string | null = typeof window !== 'undefined' ? localStorage.getItem('accessToken') : null;
 
 /**
- * Set the access token in memory.
+ * Set the access token in memory and local storage.
  */
 export function setAccessToken(token: string | null) {
   inMemoryAccessToken = token;
+  if (typeof window !== 'undefined') {
+    if (token) {
+      localStorage.setItem('accessToken', token);
+    } else {
+      localStorage.removeItem('accessToken');
+    }
+  }
 }
 
 /**
