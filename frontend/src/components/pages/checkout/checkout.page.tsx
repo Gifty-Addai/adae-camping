@@ -36,7 +36,7 @@ const CheckoutPage = () => {
         phone: '',
         country: 'Ghana'
     });
-    const [pickupLocation] = useState('Main Store - Accra');
+    // const [pickupLocation] = useState('Main Store - Accra');
 
     const [showSuccessModal, setShowSuccessModal] = useState(false);
     const [orderId, setOrderId] = useState<string | null>(null);
