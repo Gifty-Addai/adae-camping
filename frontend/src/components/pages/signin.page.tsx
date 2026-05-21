@@ -46,8 +46,10 @@ const SignInPage = () => {
   const onSubmit = async (data: SignInFormValues) => {
     try {
       setPhoneNumber(data.phone);
-      await dispatch(loginAndSendOTP(data)).unwrap();
-      setOtpDialogVisible(true);
+      const result = await dispatch(loginAndSendOTP(data)).unwrap();
+      if (!result.otpDisabled) {
+        setOtpDialogVisible(true);
+      }
     } catch (err) {
       console.error("Login error:", err);
     }

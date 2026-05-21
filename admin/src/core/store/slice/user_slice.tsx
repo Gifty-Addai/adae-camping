@@ -33,11 +33,24 @@ export const loginAndSendOTP = createAsyncThunk(
     { rejectWithValue }
   ) => {
     try {
-      const response = await postRequest<{ ussd_code: string }>('/api/auth/login', {
+      const response = await postRequest<{
+        ussd_code?: string;
+        accessToken?: string;
+        refreshToken?: string;
+        user?: IUser;
+        otpDisabled?: boolean;
+      }>('/api/auth/login', {
         password,
         phone,
       });
-      return response.ussd_code;
+
+      if (response.accessToken) {
+        setAccessToken(response.accessToken);
+        if (response.refreshToken) {
+          setRefreshToken(response.refreshToken);
+        }
+      }
+      return response;
     } catch (err) {
       const error = err as AxiosError;
       const errorMessage =
@@ -144,10 +157,13 @@ export const userSlice = createSlice({
       state.status = 'loading';
       state.error = null;
     });
-    builder.addCase(loginAndSendOTP.fulfilled, (state,action) => {
+    builder.addCase(loginAndSendOTP.fulfilled, (state, action) => {
       state.status = 'succeeded';
       state.error = null;
-      state.code = action.payload
+      if (action.payload.otpDisabled && action.payload.user) {
+        state.user = action.payload.user;
+      }
+      state.code = action.payload.ussd_code || "";
     });
     builder.addCase(loginAndSendOTP.rejected, (state, action) => {
       state.status = 'failed';
