@@ -214,6 +214,16 @@ const OrderDetailsDash: React.FC = () => {
                                                     {order.shippingAddress.city}, {order.shippingAddress.zipCode}<br />
                                                     {order.shippingAddress.country}
                                                     {order.shippingAddress.landmark && <span className="block text-gray-500 mt-1 italic">Note: {order.shippingAddress.landmark}</span>}
+                                                    {order.shippingAddress.googleMapsLink && (
+                                                        <a 
+                                                            href={order.shippingAddress.googleMapsLink} 
+                                                            target="_blank" 
+                                                            rel="noopener noreferrer" 
+                                                            className="text-[#8b7355] hover:underline flex items-center gap-1 mt-2 text-xs font-semibold"
+                                                        >
+                                                            <MapPin size={12} /> Open Google Maps Location
+                                                        </a>
+                                                    )}
                                                 </p>
                                             </div>
                                         </div>

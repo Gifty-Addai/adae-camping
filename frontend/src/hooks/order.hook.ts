@@ -14,6 +14,9 @@ export interface OrderPayload {
     zipCode: string;
     country: string;
     landmark?: string;
+    latitude?: number;
+    longitude?: number;
+    googleMapsLink?: string;
   };
   pickupLocation?: string;
   paymentMethod: string;

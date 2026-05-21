@@ -10,6 +10,7 @@ import { Loader2, Lock, CheckCircle2 } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { MapPicker } from '@/components/ui/map-picker';
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from '@/components/ui/tooltip';
+import { useOrderAPI } from '@/hooks/order.hook';
 
 const FREE_SHIPPING_THRESHOLD = 100;
 const FLAT_SHIPPING_RATE = 15;
@@ -20,7 +21,7 @@ const CheckoutPage = () => {
     const dispatch = useDispatch();
     const { items, totalPrice } = useSelector((state: RootState) => state.cart);
     const { user } = useSelector((state: RootState) => state.userSlice);
-    const loading = false;
+    const { createOrder, loading } = useOrderAPI();
 
     const [deliveryMethod] = useState<'Shipping' | 'Pickup'>('Shipping');
     const [email, setEmail] = useState('');
@@ -58,63 +59,76 @@ const CheckoutPage = () => {
         const { name, value } = e.target;
         setShippingAddress(prev => ({ ...prev, [name]: value }));
     };
-
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        // 1. Construct the items list message
-        const itemsList = items.map(item => 
-            `• ${item.quantity}x ${item.name} - GHS ${(item.price * item.quantity).toFixed(2)}`
-        ).join('\n');
-
-        // 2. Format delivery address string
-        const locationLink = deliveryLocation 
-            ? `https://www.google.com/maps?q=${deliveryLocation.lat},${deliveryLocation.lng}`
-            : 'Not provided';
-
-        const addressDetails = deliveryMethod === 'Shipping' ? `
-*📍 Delivery Address:*
-• Name: ${shippingAddress.firstName} ${shippingAddress.lastName}
-• Phone: ${shippingAddress.phone}
-• Street: ${shippingAddress.address}
-• Landmark: ${shippingAddress.apartment || 'N/A'}
-• Region/City: ${shippingAddress.city}
-• Digital Address (GPS): ${shippingAddress.postalCode || 'N/A'}
-• Country: ${shippingAddress.country}
-• Google Maps Location: ${locationLink}` : `
-*📍 Pickup Location:*
-• Location: ${pickupLocation}`;
-
-        // 3. Construct the full message
-        const message = `*🆕 NEW ORDER PLACED!*
-
-*👤 Customer Details:*
-• Email: ${email || 'N/A'}
-${addressDetails}
-
-*🛒 Order Items:*
-${itemsList}
-
-*💵 Totals:*
-• Subtotal: GHS ${totalPrice.toFixed(2)}
-• Shipping: GHS ${deliveryFee.toFixed(2)}
-• *Total Amount:* *GHS ${finalTotal.toFixed(2)}*
-
-*Payment Method:* Cash on Delivery`;
-
-        // 4. Encode message and build wa.me URL
-        const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
+        // 1. Construct the backend payload
+        const orderData = {
+            products: items.map(item => ({
+                product: item._id,
+                quantity: item.quantity
+            })),
+            deliveryMethod: 'Shipping' as const,
+            shippingAddress: {
+                firstName: shippingAddress.firstName,
+                lastName: shippingAddress.lastName,
+                phone: shippingAddress.phone,
+                street: shippingAddress.address,
+                city: shippingAddress.city,
+                zipCode: shippingAddress.postalCode,
+                country: shippingAddress.country,
+                landmark: shippingAddress.apartment || undefined,
+                latitude: deliveryLocation?.lat,
+                longitude: deliveryLocation?.lng,
+                googleMapsLink: deliveryLocation 
+                    ? `https://www.google.com/maps?q=${deliveryLocation.lat},${deliveryLocation.lng}`
+                    : undefined
+            },
+            paymentMethod: 'CashOnDelivery'
+        };
 
         try {
-            // 5. Open WhatsApp in a new tab/window
+            // Save to backend database first
+            const resOrder: any = await createOrder(orderData);
+            if (!resOrder) {
+                return;
+            }
+
+            const resOrderId = resOrder.orderId || "AT-UNKNOWN";
+
+            // 2. Construct concise WhatsApp summary message
+            const itemsSummary = items.map(item => 
+                `• ${item.quantity}x ${item.name}`
+            ).join('\n');
+
+            const locationLink = deliveryLocation 
+                ? `https://www.google.com/maps?q=${deliveryLocation.lat},${deliveryLocation.lng}`
+                : '';
+
+            const summaryMessage = `*🆕 ORDER PLACED!*
+*Order Reference:* ${resOrderId}
+
+*👤 Customer:* ${shippingAddress.firstName} ${shippingAddress.lastName} (${shippingAddress.phone})
+*📍 Delivery City:* ${shippingAddress.city}
+${locationLink ? `*🗺️ Google Maps:* ${locationLink}` : `*🏠 Address:* ${shippingAddress.address}`}
+
+*🛒 Items:*
+${itemsSummary}
+
+*💵 Total:* *GHS ${finalTotal.toFixed(2)}*
+*Payment:* Cash on Delivery`;
+
+            // 3. Open WhatsApp in a new tab/window
+            const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(summaryMessage)}`;
             window.open(whatsappUrl, '_blank');
 
-            // 6. Clear cart and show Success Modal
-            setOrderId("WA-" + Math.floor(100000 + Math.random() * 900000));
+            // 4. Update order ID, clear cart and show Success Modal
+            setOrderId(resOrderId);
             setShowSuccessModal(true);
             dispatch(clearCart());
         } catch (err) {
-            console.error("WhatsApp redirect error:", err);
+            console.error("Order submit flow error:", err);
+            // toast is already displayed inside the useOrderAPI hook
         }
     };
 
