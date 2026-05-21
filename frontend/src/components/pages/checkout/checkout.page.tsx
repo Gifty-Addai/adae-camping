@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '@/core/store/store';
 import { clearCart } from '@/core/store/slice/cart.slice';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -311,11 +311,10 @@ ${itemsSummary}
                         </Button>
 
                         <div className="text-xs text-center space-x-4 text-gray-500 mt-8 pt-6 border-t border-gray-200">
-                            <a href="#" className="underline">Refund policy</a>
-                            <a href="#" className="underline">Shipping</a>
-                            <a href="#" className="underline">Privacy policy</a>
-                            <a href="#" className="underline">Terms of service</a>
-                            <a href="#" className="underline">Contact</a>
+                            <Link to="/refund-policy" className="underline">Refund policy</Link>
+                            <Link to="/shipping-policy" className="underline">Shipping</Link>
+                            <Link to="/privacy-policy" className="underline">Privacy policy</Link>
+                            <Link to="/contact" className="underline">Contact</Link>
                         </div>
                     </form>
                 </div>

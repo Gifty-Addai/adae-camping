@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "./separator";
 import { Icons } from "./icons";
 import { Logo } from "./developer/logo";
+import { Link } from "react-router-dom";
 
 const Footer = () => {
   return (
@@ -132,19 +133,26 @@ const Footer = () => {
 
         <p className="text-gray-400">
           &copy; 2024 The Ancestral Tallow. All rights reserved.{" "}
-          <a
-            // href="/terms"
-            className="text-gray-300 hover:text-white transition-colors"
+          <Link
+            to="/refund-policy"
+            className="text-gray-300 hover:text-white transition-colors mx-1 underline"
           >
-            Terms of Service
-          </a>{" "}
+            Refund Policy
+          </Link>{" "}
           |{" "}
-          <a
-            // href="/privacy"
-            className="text-gray-300 hover:text-white transition-colors"
+          <Link
+            to="/shipping-policy"
+            className="text-gray-300 hover:text-white transition-colors mx-1 underline"
+          >
+            Shipping Policy
+          </Link>{" "}
+          |{" "}
+          <Link
+            to="/privacy-policy"
+            className="text-gray-300 hover:text-white transition-colors mx-1 underline"
           >
             Privacy Policy
-          </a>
+          </Link>
         </p>
       </div>
     </footer>

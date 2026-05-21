@@ -17,6 +17,9 @@ import ProductDetailPage from "../pages/product/product-detail";
 import BecomeMemberPage from "../pages/fie-member-form";
 import AboutPage from "../pages/about.page";
 import ContactPage from "../pages/contact.page";
+import RefundPolicyPage from "../pages/refund-policy.page";
+import ShippingPolicyPage from "../pages/shipping-policy.page";
+import PrivacyPolicyPage from "../pages/privacy-policy.page";
 import { useAppDispatch } from "@/core/constants";
 import { fetchUserProfile } from "@/core/store/slice/user_slice";
 
@@ -66,6 +69,15 @@ export const AppRoute = () => {
 
         {/* Contact Us */}
         <Route path="/contact" element={<ContactPage />} />
+
+        {/* Refund Policy */}
+        <Route path="/refund-policy" element={<RefundPolicyPage />} />
+
+        {/* Shipping Policy */}
+        <Route path="/shipping-policy" element={<ShippingPolicyPage />} />
+
+        {/* Privacy Policy */}
+        <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
 
         {/* Catch-All 404 */}
         <Route path="*" element={<PageNotFound />} />
