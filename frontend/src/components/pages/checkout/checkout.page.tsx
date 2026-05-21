@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '@/core/store/store';
 import { clearCart } from '@/core/store/slice/cart.slice';
-import { useOrderAPI, OrderPayload } from '@/hooks/order.hook';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -14,13 +13,14 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, Di
 
 const FREE_SHIPPING_THRESHOLD = 100;
 const FLAT_SHIPPING_RATE = 15;
+const WHATSAPP_NUMBER = import.meta.env.VITE_WHATSAPP_NUMBER || "233247413964";
 
 const CheckoutPage = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const { items, totalPrice } = useSelector((state: RootState) => state.cart);
     const { user } = useSelector((state: RootState) => state.userSlice);
-    const { createOrder, loading } = useOrderAPI();
+    const loading = false;
 
     const [deliveryMethod] = useState<'Shipping' | 'Pickup'>('Shipping');
     const [email, setEmail] = useState('');
@@ -62,43 +62,54 @@ const CheckoutPage = () => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        const payload: OrderPayload = {
-            products: items.map(item => ({
-                product: item._id,
-                quantity: item.quantity
-            })),
-            deliveryMethod,
-            shippingAddress: deliveryMethod === 'Shipping' ? {
-                firstName: shippingAddress.firstName,
-                lastName: shippingAddress.lastName,
-                phone: shippingAddress.phone,
-                street: shippingAddress.address,
-                city: shippingAddress.city,
-                zipCode: shippingAddress.postalCode,
-                country: shippingAddress.country,
-                landmark: shippingAddress.apartment
-            } : undefined,
-            pickupLocation: deliveryMethod === 'Pickup' ? pickupLocation : undefined,
-            paymentMethod: 'CashOnDelivery'
-        };
+        // 1. Construct the items list message
+        const itemsList = items.map(item => 
+            `• ${item.quantity}x ${item.name} - GHS ${(item.price * item.quantity).toFixed(2)}`
+        ).join('\n');
+
+        // 2. Format delivery address string
+        const addressDetails = deliveryMethod === 'Shipping' ? `
+*📍 Delivery Address:*
+• Name: ${shippingAddress.firstName} ${shippingAddress.lastName}
+• Phone: ${shippingAddress.phone}
+• Street: ${shippingAddress.address}
+• Landmark: ${shippingAddress.apartment || 'N/A'}
+• Region/City: ${shippingAddress.city}
+• Digital Address (GPS): ${shippingAddress.postalCode || 'N/A'}
+• Country: ${shippingAddress.country}` : `
+*📍 Pickup Location:*
+• Location: ${pickupLocation}`;
+
+        // 3. Construct the full message
+        const message = `*🆕 NEW ORDER PLACED!*
+
+*👤 Customer Details:*
+• Email: ${email || 'N/A'}
+${addressDetails}
+
+*🛒 Order Items:*
+${itemsList}
+
+*💵 Totals:*
+• Subtotal: GHS ${totalPrice.toFixed(2)}
+• Shipping: GHS ${deliveryFee.toFixed(2)}
+• *Total Amount:* *GHS ${finalTotal.toFixed(2)}*
+
+*Payment Method:* Cash on Delivery`;
+
+        // 4. Encode message and build wa.me URL
+        const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
 
         try {
-            const response: any = await createOrder(payload);
-            // Assuming createOrder returns the full response object based on previous edits
-            // or we might need to adjust the hook return type. 
-            // The backend returns { ... , data: newOrder }. 
-            // Our useOrderAPI probably returns response.data or similar.
-            // Let's safe check.
-            if (response && response.orderId) {
-                setOrderId(response.orderId);
-            } else if (response && response.data && response.data.orderId) {
-                setOrderId(response.data.orderId);
-            }
+            // 5. Open WhatsApp in a new tab/window
+            window.open(whatsappUrl, '_blank');
+
+            // 6. Clear cart and show Success Modal
+            setOrderId("WA-" + Math.floor(100000 + Math.random() * 900000));
             setShowSuccessModal(true);
             dispatch(clearCart());
-            // Navigate is now handled by modal close
         } catch (err) {
-            // Error handled in hook
+            console.error("WhatsApp redirect error:", err);
         }
     };
 
