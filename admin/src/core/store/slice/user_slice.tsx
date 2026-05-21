@@ -1,6 +1,6 @@
 import { IUser, User } from '@/core/interfaces';
 import { getRequest, postRequest } from '@/lib/api-Request/api-requests';
-import { setAccessToken } from '@/lib/axios-instance';
+import { setAccessToken, setRefreshToken } from '@/lib/axios-instance';
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { AxiosError } from 'axios';
 
@@ -61,6 +61,7 @@ export const verifyOTPAndLogin = createAsyncThunk(
     try {
       const response = await postRequest<{
         accessToken: string;
+        refreshToken?: string;
         user: IUser;
       }>('/api/user/verifyOTP', {
         number,
@@ -68,6 +69,9 @@ export const verifyOTPAndLogin = createAsyncThunk(
       });
 
       setAccessToken(response.accessToken);
+      if (response.refreshToken) {
+        setRefreshToken(response.refreshToken);
+      }
       return response.user as IUser;
     } catch (err) {
       const error = err as AxiosError;
@@ -110,6 +114,7 @@ export const logout = createAsyncThunk(
     try {
       await postRequest('/api/auth/logout', {});
       setAccessToken(null);
+      setRefreshToken(null);
       return true;
     } catch (err) {
       const error = err as AxiosError;

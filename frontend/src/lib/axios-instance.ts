@@ -12,6 +12,7 @@ import { API_BASE_URL } from "@/core/constants";
  * - This allows the session to persist across page refreshes in cross-site environments.
  */
 let inMemoryAccessToken: string | null = typeof window !== 'undefined' ? localStorage.getItem('accessToken') : null;
+let inMemoryRefreshToken: string | null = typeof window !== 'undefined' ? localStorage.getItem('refreshToken') : null;
 
 /**
  * Set the access token in memory and local storage.
@@ -32,6 +33,27 @@ export function setAccessToken(token: string | null) {
  */
 export function getAccessToken(): string | null {
   return inMemoryAccessToken;
+}
+
+/**
+ * Set the refresh token in memory and local storage.
+ */
+export function setRefreshToken(token: string | null) {
+  inMemoryRefreshToken = token;
+  if (typeof window !== 'undefined') {
+    if (token) {
+      localStorage.setItem('refreshToken', token);
+    } else {
+      localStorage.removeItem('refreshToken');
+    }
+  }
+}
+
+/**
+ * Get the refresh token from memory.
+ */
+export function getRefreshToken(): string | null {
+  return inMemoryRefreshToken;
 }
 
 /**
@@ -125,11 +147,19 @@ axiosInstance.interceptors.response.use(
         originalConfig._retry = true;
         try {
           // Attempt token refresh using raw axios to avoid circular dependencies and interceptor loops
+          const refreshToken = getRefreshToken();
+          const refreshHeaders: Record<string, string> = {};
+          if (refreshToken) {
+            refreshHeaders['x-refresh-token'] = refreshToken;
+          }
           const refreshResponse = await axios.post<{
             success: boolean;
             data: { accessToken: string };
             message?: string;
-          }>(`${API_BASE_URL}/api/auth/refresh`, {}, { withCredentials: true });
+          }>(`${API_BASE_URL}/api/auth/refresh`, {}, { 
+            withCredentials: true,
+            headers: refreshHeaders
+          });
 
           if (
             refreshResponse.data.success &&
@@ -152,10 +182,12 @@ axiosInstance.interceptors.response.use(
           } else {
             // No new token received, clear session
             setAccessToken(null);
+            setRefreshToken(null);
           }
         } catch (refreshError) {
           logger.error("Token refresh failed:", { error: refreshError });
           setAccessToken(null);
+          setRefreshToken(null);
         }
       }
     } else {
