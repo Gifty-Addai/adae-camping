@@ -49,10 +49,24 @@ const ProductDetailPage: React.FC = () => {
                         console.log(`[ProductDetail] Already viewed in this session, skipping track: ${productId}`);
                     }
 
-                    const res = await searchProduct({ category: 'tallow' }, true);
-                    setProducts(res);
                     const data = await getProductById(productId);
                     setProduct(data);
+
+                    if (data) {
+                        const category = data.category || 'tallow';
+                        const res = await searchProduct({ category }, true);
+                        let related = (res || []).filter((p) => p._id !== productId);
+
+                        if (related.length < 5) {
+                            const fallbackRes = await searchProduct({}, true);
+                            const fallbackFiltered = (fallbackRes || []).filter(
+                                (p) => p._id !== productId && !related.some((r) => r._id === p._id)
+                            );
+                            related = [...related, ...fallbackFiltered];
+                        }
+
+                        setProducts(related.slice(0, 5));
+                    }
                 } catch (error) {
                     console.error('Error fetching product:', error);
                     toast.error('Failed to load product details.');
@@ -121,7 +135,7 @@ const ProductDetailPage: React.FC = () => {
 
                         {/* Product Details */}
                         <div className="w-full md:w-1/2 md:pl-8 lg:pl-12 mt-6 md:mt-0">
-                            {!loading && products?.length! > 0 ? (
+                            {!loading && product ? (
                                 <div>
                                     <h1 className="text-3xl text-center md:text-4xl font-extrabold text-gray-100 mb-3 md:mb-4">
                                         {product?.name}
