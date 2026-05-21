@@ -16,6 +16,7 @@ import OrdersDash from "../AdminDash/pages/Dashboard/OrdersDash";
 import OrderDetailsDash from "../AdminDash/pages/Dashboard/OrderDetailsDash";
 import AllUsersDash from "../AdminDash/pages/Dashboard/AllUsersDash";
 import CreateUserDash from "../AdminDash/pages/Dashboard/CreateUserDash";
+import AdminProfileDash from "../AdminDash/pages/Dashboard/AdminProfileDash";
 
 import { RequireAdmin } from "./requireAdmin";
 import { useAppDispatch } from "@/core/constants";
@@ -68,6 +69,9 @@ export const AppRoute = () => {
           {/* User Management */}
           <Route path="users" element={<AllUsersDash />} />
           <Route path="users/new" element={<CreateUserDash />} />
+
+          {/* Profile Management */}
+          <Route path="profile" element={<AdminProfileDash />} />
 
           {/* Catch-All 404 under layout */}
           <Route path="*" element={<PageNotFound />} />

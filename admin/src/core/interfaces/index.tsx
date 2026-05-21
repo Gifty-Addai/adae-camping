@@ -300,8 +300,17 @@ export interface ConfirmMembershipResponse {
 
 export interface UpdateUserPayload {
   name?: string;
+  email?: string;
   phone?: string;
-  address?: string;
+  streetAddress?: string;
+  address2?: string;
+  city?: string;
+  zipCode?: string;
+  gender?: string;
+  age?: number;
+  dob?: string;
+  currentPassword?: string;
+  password?: string;
   preferences?: Record<string, string>;
   role?: "user" | "admin";
 }
@@ -467,12 +476,18 @@ export interface PaymentVerifyResponse {
 }
 
 export interface IUser {
-  role: "user" | "admin",
-  _id: string,
-  name: string,
+  role: "user" | "admin";
+  _id: string;
+  name: string;
+  email?: string;
+  phone?: string;
   streetAddress?: string;
+  address2?: string;
   city?: string;
   zipCode?: string;
+  gender?: string;
+  dob?: string;
+  age?: number;
 }
 
 export interface User {
@@ -484,9 +499,12 @@ export interface User {
   preferences?: { [key: string]: string };
   bookings: string[];
   streetAddress?: string;
+  address2?: string;
   city?: string;
   zipCode?: string;
   address?: string;
+  gender?: string;
+  dob?: string;
   isEmailConfirmed: boolean;
   dateJoined: string;
   age?: number;

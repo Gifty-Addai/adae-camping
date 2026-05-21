@@ -100,7 +100,7 @@ export function NavUser() {
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem className="text-gray-100 hover:bg-[#353535]">
+              <DropdownMenuItem className="text-gray-100 hover:bg-[#353535] cursor-pointer" onClick={() => navigate("/admin/profile")}>
                 <BadgeCheck className="mr-2 h-4 w-4" />
                 Account
               </DropdownMenuItem>
