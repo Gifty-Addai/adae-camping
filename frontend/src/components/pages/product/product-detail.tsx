@@ -53,18 +53,8 @@ const ProductDetailPage: React.FC = () => {
                     setProduct(data);
 
                     if (data) {
-                        const category = data.category || 'tallow';
-                        const res = await searchProduct({ category }, true);
+                        const res = await searchProduct({ category: 'tallow' }, true);
                         let related = (res || []).filter((p) => p._id !== productId);
-
-                        if (related.length < 5) {
-                            const fallbackRes = await searchProduct({}, true);
-                            const fallbackFiltered = (fallbackRes || []).filter(
-                                (p) => p._id !== productId && !related.some((r) => r._id === p._id)
-                            );
-                            related = [...related, ...fallbackFiltered];
-                        }
-
                         setProducts(related.slice(0, 5));
                     }
                 } catch (error) {
