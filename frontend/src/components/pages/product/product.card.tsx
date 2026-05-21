@@ -4,8 +4,6 @@ import { PlusIcon, ShoppingBag } from 'lucide-react';
 import { useDispatch } from 'react-redux';
 import { Product } from '@/core/interfaces';
 import { Button } from '@/components/ui/button';
-import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import { addToCart } from '@/core/store/slice/cart.slice';
 import { Link } from 'react-router-dom';
 
@@ -25,7 +23,6 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onOpenModal }) => {
     e.stopPropagation();
     console.info("product adding", product);
     dispatch(addToCart({ product, quantity }));
-    toast.success(`${product.name} added to cart!`);
   };
 
   return (

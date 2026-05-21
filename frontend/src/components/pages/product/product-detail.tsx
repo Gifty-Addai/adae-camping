@@ -65,7 +65,6 @@ const ProductDetailPage: React.FC = () => {
     const handleAddToCart = () => {
         if (product) {
             dispatch(addToCart({ product, quantity }));
-            toast.success(`${product.name} added to cart!`);
         }
     };
 

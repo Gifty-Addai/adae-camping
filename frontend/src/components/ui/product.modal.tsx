@@ -26,7 +26,6 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, isOpen, onClose })
     if (product !== null) {
       console.info("product adding", product);
       dispatch(addToCart({ product, quantity }));
-      toast.success(`${product.name} added to cart!`);
     } else {
       toast.error("Product is unavailable.");
     }
