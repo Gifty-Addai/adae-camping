@@ -5,11 +5,11 @@ import { clearCart } from '@/core/store/slice/cart.slice';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Loader2, Lock, CheckCircle2 } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
+import { MapPicker } from '@/components/ui/map-picker';
+import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from '@/components/ui/tooltip';
 
 const FREE_SHIPPING_THRESHOLD = 100;
 const FLAT_SHIPPING_RATE = 15;
@@ -36,10 +36,10 @@ const CheckoutPage = () => {
         country: 'Ghana'
     });
     const [pickupLocation] = useState('Main Store - Accra');
-    const [billingSameAsShipping, setBillingSameAsShipping] = useState(true);
 
     const [showSuccessModal, setShowSuccessModal] = useState(false);
     const [orderId, setOrderId] = useState<string | null>(null);
+    const [deliveryLocation, setDeliveryLocation] = useState<{ lat: number; lng: number } | null>(null);
 
     // Calculate Fees
     const deliveryFee =
@@ -68,6 +68,10 @@ const CheckoutPage = () => {
         ).join('\n');
 
         // 2. Format delivery address string
+        const locationLink = deliveryLocation 
+            ? `https://www.google.com/maps?q=${deliveryLocation.lat},${deliveryLocation.lng}`
+            : 'Not provided';
+
         const addressDetails = deliveryMethod === 'Shipping' ? `
 *📍 Delivery Address:*
 • Name: ${shippingAddress.firstName} ${shippingAddress.lastName}
@@ -76,7 +80,8 @@ const CheckoutPage = () => {
 • Landmark: ${shippingAddress.apartment || 'N/A'}
 • Region/City: ${shippingAddress.city}
 • Digital Address (GPS): ${shippingAddress.postalCode || 'N/A'}
-• Country: ${shippingAddress.country}` : `
+• Country: ${shippingAddress.country}
+• Google Maps Location: ${locationLink}` : `
 *📍 Pickup Location:*
 • Location: ${pickupLocation}`;
 
@@ -233,21 +238,35 @@ ${itemsList}
                                         required
                                         className="bg-white border-gray-300 text-gray-900 pr-10"
                                     />
-                                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs">?</span>
+                                    <TooltipProvider>
+                                        <Tooltip>
+                                            <TooltipTrigger asChild>
+                                                <button 
+                                                    type="button" 
+                                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 text-xs cursor-pointer focus:outline-none"
+                                                >
+                                                    ?
+                                                </button>
+                                            </TooltipTrigger>
+                                            <TooltipContent>
+                                                <p>In case we need to contact you about your delivery.</p>
+                                            </TooltipContent>
+                                        </Tooltip>
+                                    </TooltipProvider>
                                 </div>
                                 <div className="flex items-center space-x-2">
                                     <input type="checkbox" id="save-info" className="rounded border-gray-300 text-[#4A6741] focus:ring-[#4A6741]" />
                                     <label htmlFor="save-info" className="text-sm text-gray-600">Save this information for next time</label>
                                 </div>
-                            </div>
-                        </section>
 
-                        {/* Shipping Method */}
-                        <section>
-                            <h2 className="text-lg font-semibold text-gray-800 mb-3">Shipping method</h2>
-                            <div className="flex justify-between items-center p-4 border border-gray-200 rounded-lg bg-gray-50">
-                                <span className="text-sm text-gray-700">Standard Shipping</span>
-                                <span className="text-sm font-medium text-gray-900">GHS {deliveryFee.toFixed(2)}</span>
+                                {deliveryMethod === 'Shipping' && (
+                                    <div className="pt-4 border-t border-gray-100">
+                                        <MapPicker 
+                                            value={deliveryLocation} 
+                                            onChange={(lat, lng) => setDeliveryLocation({ lat, lng })} 
+                                        />
+                                    </div>
+                                )}
                             </div>
                         </section>
 
@@ -269,29 +288,10 @@ ${itemsList}
                             </div>
                         </section>
 
-                        {/* Billing Address */}
-                        <section>
-                            <h2 className="text-lg font-semibold text-gray-800 mb-3">Billing address</h2>
-                            <RadioGroup value={billingSameAsShipping ? 'same' : 'different'} onValueChange={(v) => setBillingSameAsShipping(v === 'same')}>
-                                <div className={`border rounded-lg overflow-hidden ${billingSameAsShipping ? 'border-[#4A6741] bg-[#f0f9eb]' : 'border-gray-200'}`}>
-                                    <div className="flex items-center p-4 space-x-2">
-                                        <RadioGroupItem value="same" id="billing-same" className="text-[#4A6741]" />
-                                        <Label htmlFor="billing-same" className="cursor-pointer font-medium text-gray-700">Same as shipping address</Label>
-                                    </div>
-                                </div>
-                                <div className={`border rounded-lg overflow-hidden mt-3 ${!billingSameAsShipping ? 'border-[#4A6741] bg-[#f0f9eb]' : 'border-gray-200'}`}>
-                                    <div className="flex items-center p-4 space-x-2">
-                                        <RadioGroupItem value="different" id="billing-diff" className="text-[#4A6741]" />
-                                        <Label htmlFor="billing-diff" className="cursor-pointer font-medium text-gray-700">Use a different billing address</Label>
-                                    </div>
-                                </div>
-                            </RadioGroup>
-                        </section>
-
                         <Button
                             type="submit"
                             disabled={loading}
-                            className="w-full bg-[#89CFF0] hover:bg-[#7ABFE0] text-gray-900 font-semibold h-14 text-lg mt-6 shadow-sm rounded-md transition-all"
+                            className="w-full bg-[#4A6741] hover:bg-[#3a5232] text-white font-semibold h-14 text-lg mt-6 shadow-sm rounded-md transition-all"
                         >
                             {loading ? <Loader2 className="animate-spin mr-2" /> : 'Order now'}
                         </Button>
@@ -371,28 +371,56 @@ ${itemsList}
             </div>
             {/* Success Modal */}
             <Dialog open={showSuccessModal} onOpenChange={setShowSuccessModal}>
-                <DialogContent className="sm:max-w-md">
-                    <DialogHeader>
-                        <div className="mx-auto bg-green-100 p-3 rounded-full mb-4">
-                            <CheckCircle2 className="h-8 w-8 text-green-600" />
+                <DialogContent className="sm:max-w-md bg-white border-0 shadow-2xl rounded-2xl overflow-hidden p-0">
+                    <div className="bg-gradient-to-br from-[#4A6741]/10 via-transparent to-transparent p-6 pb-0">
+                        <div className="mx-auto bg-[#f0f9eb] border border-[#e5ebe2] p-4 rounded-full w-16 h-16 flex items-center justify-center mb-4">
+                            <CheckCircle2 className="h-10 w-10 text-[#4A6741] animate-pulse" />
                         </div>
-                        <DialogTitle className="text-center text-xl">Order Placed Successfully!</DialogTitle>
-                        <DialogDescription className="text-center pt-2">
-                            Thank you for your purchase. Your order ID is <span className="font-bold text-gray-900">{orderId}</span>.
-                            We have received your order and are processing it.
-                        </DialogDescription>
-                    </DialogHeader>
-                    <DialogFooter className="sm:justify-center mt-4">
-                        <Button
-                            className="bg-[#4A6741] hover:bg-[#3a5232] w-full sm:w-auto text-white"
-                            onClick={() => {
-                                setShowSuccessModal(false);
-                                navigate('/products');
-                            }}
-                        >
-                            Continue Shopping
-                        </Button>
-                    </DialogFooter>
+                        <DialogHeader>
+                            <DialogTitle className="text-center text-2xl font-bold text-gray-900 tracking-tight">
+                                Order Placed! 🎉
+                            </DialogTitle>
+                            <DialogDescription className="text-center pt-2 text-sm text-gray-500">
+                                Reference ID: <span className="font-semibold text-gray-800">{orderId}</span>
+                            </DialogDescription>
+                        </DialogHeader>
+                    </div>
+
+                    <div className="p-6 pt-4 space-y-6">
+                        <div className="space-y-4">
+                            <div className="bg-[#fcfdfa] border border-[#e5ebe2] rounded-xl p-5 shadow-sm space-y-3">
+                                <p className="text-sm font-semibold text-gray-900">What happens next?</p>
+                                <p className="text-xs text-gray-600 leading-relaxed">
+                                    We will **call or message you shortly** to confirm your delivery address and location.
+                                </p>
+                                <p className="text-xs text-gray-600 leading-relaxed">
+                                    Once verified, your package will be shipped immediately. You can pay with **Cash or Mobile Money (Momo)** upon delivery.
+                                </p>
+                            </div>
+
+                            <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 flex items-center gap-3">
+                                <span className="relative flex h-3 w-3 flex-shrink-0">
+                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+                                    <span className="relative inline-flex rounded-full h-3 w-3 bg-amber-500"></span>
+                                </span>
+                                <p className="text-xs text-amber-800 font-medium leading-normal">
+                                    Please keep your phone active—we'll reach out to you within **15 minutes**!
+                                </p>
+                            </div>
+                        </div>
+
+                        <DialogFooter className="sm:justify-center flex-col sm:flex-row gap-2 mt-2">
+                            <Button
+                                className="bg-[#4A6741] hover:bg-[#3d5535] text-white font-semibold py-2.5 px-6 rounded-xl transition-all shadow-md w-full"
+                                onClick={() => {
+                                    setShowSuccessModal(false);
+                                    navigate('/products');
+                                }}
+                            >
+                                Got it, I'll watch my phone!
+                            </Button>
+                        </DialogFooter>
+                    </div>
                 </DialogContent>
             </Dialog>
         </div>
