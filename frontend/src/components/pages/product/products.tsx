@@ -47,10 +47,10 @@ const StorePage: React.FC = () => {
             </h2>
 
             {loading ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                 {/* Placeholder skeletons for products */}
-                {[...Array(6)].map((_, index) => (
-                  <div key={index} className="bg-gray-200 rounded-3xl animate-pulse h-96 border border-gray-300"></div>
+                {[...Array(8)].map((_, index) => (
+                  <div key={index} className="bg-gray-200 rounded-2xl animate-pulse h-72 border border-gray-300"></div>
                 ))}
               </div>
             ) : products.length === 0 && !isSuggestion ? (
@@ -84,7 +84,7 @@ const StorePage: React.FC = () => {
                   </div>
                 )}
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                   {products.map((product) => (
                     <ProductCard
                       key={product._id}
