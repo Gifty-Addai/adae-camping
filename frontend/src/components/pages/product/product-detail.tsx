@@ -225,13 +225,40 @@ const ProductDetailPage: React.FC = () => {
 
                                     {/* Delivery & Returns */}
                                     <div className="border-t pt-4 md:pt-6 mt-4 md:mt-6">
-                                        <h3 className="text-md md:text-lg font-semibold text-gray-100 mb-2">
-                                            Delivery & Returns
+                                        <h3 className="text-md md:text-lg font-semibold text-gray-100 mb-3">
+                                            Delivery &amp; Returns
                                         </h3>
-                                        <ul className="list-disc list-inside text-sm md:text-base text-gray-300">
-                                            <li className="text-gray-300">Delivery: Within Accra same day, next day for other regions when ordered before 12pm</li>
-                                            <li className="text-gray-300">Returns: Item is not refundable</li>
-                                        </ul>
+                                        {/* Delivery breakdown */}
+                                        <div className="mb-3">
+                                            <p className="text-sm md:text-base font-medium text-[#d4c5a9] mb-2">🚚 Delivery</p>
+                                            <div className="ml-2 space-y-2">
+                                                <div className="flex items-start gap-2 text-sm md:text-base text-gray-300">
+                                                    <span className="text-green-400 mt-0.5">📍</span>
+                                                    <div>
+                                                        <span className="font-semibold text-gray-100">Accra</span>
+                                                        <span className="mx-2 text-gray-500">→</span>
+                                                        <span>Same day delivery</span>
+                                                    </div>
+                                                </div>
+                                                <div className="flex items-start gap-2 text-sm md:text-base text-gray-300">
+                                                    <span className="text-yellow-400 mt-0.5">🗺️</span>
+                                                    <div>
+                                                        <span className="font-semibold text-gray-100">Outside Accra</span>
+                                                        <span className="mx-2 text-gray-500">→</span>
+                                                        <span>Next day delivery <span className="text-gray-400 text-xs">(orders placed before 12pm)</span></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {/* Returns */}
+                                        <div className="flex items-start gap-2 text-sm md:text-base text-gray-300">
+                                            <span className="mt-0.5">↩️</span>
+                                            <div>
+                                                <span className="font-semibold text-gray-100">Returns</span>
+                                                <span className="mx-2 text-gray-500">→</span>
+                                                <span>Item is not refundable</span>
+                                            </div>
+                                        </div>
                                     </div>
 
                                     {/* Product Details */}
