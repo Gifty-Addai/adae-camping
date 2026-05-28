@@ -25,50 +25,45 @@ const RefundPolicyPage = () => {
                                 <div>
                                     <h2 className="text-3xl font-serif text-gray-100 mb-4 font-semibold">1. Overview</h2>
                                     <p>
-                                        At <strong>The Ancestral Tallow</strong>, we stand behind the quality of our handcrafted, natural tallow products. Due to the personal care and perishable nature of our products, we have established guidelines for returns and refunds to ensure fairness and product safety.
+                                        At <strong>The Ancestral Tallow</strong>, we stand behind the quality of our handcrafted, natural tallow products. Due to the personal care, hygiene, and perishable nature of our products, <strong>all sales are final. All items are strictly non-refundable and non-returnable once purchased.</strong>
                                     </p>
                                 </div>
 
                                 <div>
-                                    <h2 className="text-3xl font-serif text-gray-100 mb-4 font-semibold">2. Perishable Goods Notice</h2>
+                                    <h2 className="text-3xl font-serif text-gray-100 mb-4 font-semibold">2. No-Refund Policy</h2>
                                     <p>
-                                        Because our products are made from natural fats and contain no synthetic preservatives, they are classified as perishable. We generally <strong>do not accept returns or offer refunds</strong> for products that have been opened, used, or altered after delivery.
+                                        Because our products are made from natural organic fats and contain no synthetic preservatives, they are classified as perishable goods. Once an order is placed and delivered, <strong>we do not accept returns or offer monetary refunds</strong> under any circumstances.
                                     </p>
                                 </div>
 
                                 <div>
                                     <h2 className="text-3xl font-serif text-gray-100 mb-4 font-semibold">3. Damaged or Defective Items</h2>
                                     <p>
-                                        If your order arrives damaged (e.g., broken glass jar, leakage) or defective, we will gladly send a replacement or issue a refund.
+                                        We partner with third-party dispatch services and riders for order deliveries. While we pack our items securely, if your order arrives damaged (e.g., broken glass jar, leakage) due to transit/handling by the rider, please notify us within <strong>12 hours</strong> of receiving your delivery.
                                     </p>
                                     <p className="mt-2">
-                                        To qualify for a replacement or refund for damaged items:
+                                        Reporting the damage promptly allows us to file a claim with the third-party delivery provider and process a replacement for you.
+                                    </p>
+                                    <p className="mt-2">
+                                        To qualify for a <strong>replacement item</strong>:
                                     </p>
                                     <ul className="list-disc list-inside ml-4 mt-2 space-y-2">
-                                        <li>You must notify us within <strong>12 hours</strong> of receiving your delivery.</li>
-                                        <li>Please send photo evidence of the damaged package and product to our contact channels (Email or WhatsApp).</li>
+                                        <li>You must contact us via WhatsApp or Email within 12 hours of delivery.</li>
+                                        <li>Please provide clear photos of the damaged packaging and the product.</li>
                                     </ul>
+                                    <p className="mt-2">
+                                        Please note that we do not issue monetary refunds for damaged shipments; we will only dispatch a replacement product once verified.
+                                    </p>
                                 </div>
 
                                 <div>
-                                    <h2 className="text-3xl font-serif text-gray-100 mb-4 font-semibold">4. Refund Processing</h2>
+                                    <h2 className="text-3xl font-serif text-gray-100 mb-4 font-semibold">4. Contact Us</h2>
                                     <p>
-                                        Once your claim is reviewed and approved, we will process your refund or initiate a dispatch for a replacement.
-                                    </p>
-                                    <ul className="list-disc list-inside ml-4 mt-2 space-y-2">
-                                        <li>Refunds are typically processed within <strong>2 to 5 business days</strong>.</li>
-                                        <li>Approved refunds will be sent directly to your original payment method (Mobile Money or Bank Transfer).</li>
-                                    </ul>
-                                </div>
-
-                                <div>
-                                    <h2 className="text-3xl font-serif text-gray-100 mb-4 font-semibold">5. Need Help?</h2>
-                                    <p>
-                                        If you have any questions or require support regarding your order, please do not hesitate to contact us at:
+                                        If you have any questions or concerns regarding your order, please reach out to us:
                                     </p>
                                     <ul className="list-none ml-4 mt-2 space-y-1">
                                         <li><strong>Email:</strong> info@ancestraltallow.gh</li>
-                                        <li><strong>WhatsApp / Call:</strong> +233 XX XXX XXXX</li>
+                                        <li><strong>WhatsApp / Call:</strong> +233 24 741 3964</li>
                                     </ul>
                                 </div>
                             </div>

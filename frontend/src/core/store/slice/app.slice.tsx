@@ -3,13 +3,13 @@ import { createSlice } from '@reduxjs/toolkit';
 
 
 const initialState: IAppState = {
-    appName:"adae-akoben",
+    appName:"Tallow",
     isLoading: false,
     error: false,
 };
 
 const appSlice = createSlice({
-    name:'adae-akoben',
+    name:'Tallow',
     initialState,
     reducers :{
          setAppLoading : (state, action)=>{

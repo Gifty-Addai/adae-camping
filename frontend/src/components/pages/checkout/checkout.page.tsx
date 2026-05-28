@@ -89,7 +89,7 @@ const CheckoutPage = () => {
 
         try {
             // Save to backend database first
-            const resOrder: any = await createOrder(orderData);
+            const resOrder = await createOrder(orderData);
             if (!resOrder) {
                 return;
             }
@@ -307,7 +307,7 @@ ${itemsSummary}
                             disabled={loading}
                             className="w-full bg-[#4A6741] hover:bg-[#3a5232] text-white font-semibold h-14 text-lg mt-6 shadow-sm rounded-md transition-all"
                         >
-                            {loading ? <Loader2 className="animate-spin mr-2" /> : 'Order now'}
+                            {loading ? <Loader2 className="animate-spin mr-2" /> : 'Order via WhatsApp'}
                         </Button>
 
                         <div className="text-xs text-center space-x-4 text-gray-500 mt-8 pt-6 border-t border-gray-200">

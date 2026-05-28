@@ -22,7 +22,7 @@ const ProductDetailPage: React.FC = () => {
     const dispatch = useDispatch();
     const totalItems = useSelector((state: RootState) => state.cart.totalItems);
     const [product, setProduct] = useState<Product | null>(null);
-    const [products, setProducts] = useState<Product[] | void>();
+    const [products, setProducts] = useState<Product[]>();
     const [quantity, setQuantity] = useState(1);
     const { loading, searchProduct, getProductById, trackClick } = useProductAPI();
 
@@ -54,7 +54,7 @@ const ProductDetailPage: React.FC = () => {
 
                     if (data) {
                         const res = await searchProduct({ category: 'tallow' }, true);
-                        let related = (res || []).filter((p) => p._id !== productId);
+                        const related = (res || []).filter((p) => p._id !== productId);
                         setProducts(related.slice(0, 5));
                     }
                 } catch (error) {
@@ -229,7 +229,7 @@ const ProductDetailPage: React.FC = () => {
                                             Delivery & Returns
                                         </h3>
                                         <ul className="list-disc list-inside text-sm md:text-base text-gray-300">
-                                            <li className="text-gray-300">Delivery: Within 4-7 working days</li>
+                                            <li className="text-gray-300">Delivery: Within Accra same day, next day for other regions when ordered before 12pm</li>
                                             <li className="text-gray-300">Returns: Item is not refundable</li>
                                         </ul>
                                     </div>
@@ -273,7 +273,7 @@ const ProductDetailPage: React.FC = () => {
                     </div>
 
                     {/* People Also View Section */}
-                    {products?.length! > 0 && (
+                    {products && products.length > 0 && (
                         <div className="mt-8 md:mt-12">
                             <h2 className="text-xl md:text-2xl font-semibold text-gray-100 mb-4 md:mb-6">
                                 People Also View

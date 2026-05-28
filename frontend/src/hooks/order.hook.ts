@@ -22,13 +22,24 @@ export interface OrderPayload {
   paymentMethod: string;
 }
 
+export interface OrderResult {
+  _id: string;
+  orderId: string;
+  totalAmount?: number;
+  deliveryFee?: number;
+  status?: string;
+  deliveryMethod?: "Shipping" | "Pickup";
+  paymentMethod?: string;
+  paymentStatus?: string;
+}
+
 export const useOrderAPI = () => {
   const [loading, setLoading] = useState(false);
 
-  const createOrder = async (orderData: OrderPayload) => {
+  const createOrder = async (orderData: OrderPayload): Promise<OrderResult> => {
     setLoading(true);
     try {
-      const response = await postRequest("/api/orders", orderData);
+      const response = await postRequest<OrderResult>("/api/orders", orderData);
       toast.success("Order placed successfully!");
       return response;
     } catch (error: any) {
