@@ -32,56 +32,17 @@ const LandingPage = () => {
     return (
         <div className="flex flex-col min-h-screen bg-background text-foreground font-sans">
             {/* ---------------------------------------HERO SECTION--------------------------------------- */}
-            <section className="relative w-full min-h-[5vh] flex items-center overflow-hidden bg-transparent">
-                <div className="container mx-auto px-6">
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-center">
-                        {/* Left Side - Content */}
-                        <div className="flex gap-2 lg:gap-12">
-                            {/* Slide Numbers */}
-                            <div className="hidden lg:flex flex-col gap-6 text-gray-400 flex-shrink-0">
-                                <div className="text-2xl font-light text-gray-800">02</div>
-                                <div className="w-px h-24 bg-gray-300 mx-auto"></div>
-                                <div className="text-2xl font-light text-gray-800">04</div>
-                            </div>
-
-                            <div className="space-y-6 flex-1">
-                                <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-gray-900 leading-tight">
-                                    Ancestral{' '}
-                                    <span className="block mt-2 text-gray-700">Beef & Goat</span>
-                                    <span className="block mt-2 text-gray-700">Tallow Collection</span>
-                                </h1>
-
-                                <p className="text-lg md:text-xl text-gray-600 italic font-light max-w-md">
-                                    Pure, ancestral goodness in every jar.
-                                </p>
-
-                                <div className="pt-4">
-                                    <Link to="/products">
-                                        <Button
-                                            size="lg"
-                                            className="bg-[#1d1d1d] hover:bg-[#333] text-white rounded-md px-10 py-6 text-base font-semibold transition-all duration-300 shadow-lg hover:shadow-xl"
-                                        >
-                                            Try Now
-                                        </Button>
-                                    </Link>
-                                </div>
-                            </div>
-                        </div>
-
-                       
-                    </div>
-                </div>
-            </section>
+           
 
             {/* ---------------------------------------
           FEATURED PRODUCTS SHOWCASE
       --------------------------------------- */}
             {featuredProducts.length > 0 && (
-                <section className="py-5 bg-white">
+                <section className="py-0 bg-white">
                     <div className="container px-4">
-                        <div className="text-center mb-12">
-                            <h2 className="text-3xl md:text-4xl font-serif text-gray-900 mb-4 font-bold">Featured Products</h2>
-                            <p className="text-gray-600 text-lg">Our customers' favorites</p>
+                        <div className="text-center mb-5">
+                            {/* <h2 className="text-3xl md:text-4xl font-serif text-gray-900 mb-4 font-bold">Featured Products</h2> */}
+                            <p className="text-gray-900 uppercase text-lg">Our customers' favorites</p>
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto place-items-center">
                             {featuredProducts.map((product) => (
