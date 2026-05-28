@@ -22,9 +22,6 @@ const DesktopMenu: React.FC = () => {
             <Link to="/products" className="text-gray-300 hover:text-white font-medium transition-colors">
               Shop
             </Link>
-            <Link to="/blog" className="text-gray-300 hover:text-white font-medium transition-colors">
-              Blog
-            </Link>
             <Link to="/about" className="text-gray-300 hover:text-white font-medium transition-colors">
               About Us
             </Link>

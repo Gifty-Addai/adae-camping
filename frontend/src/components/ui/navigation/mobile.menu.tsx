@@ -102,13 +102,6 @@ const MobileMenu: React.FC = () => {
             Shop
           </Link>
           <Link
-            to="/blog"
-            onClick={handleLinkClick}
-            className="text-gray-300 hover:text-white text-lg font-medium transition-colors"
-          >
-            Blog
-          </Link>
-          <Link
             to="/about"
             onClick={handleLinkClick}
             className="text-gray-300 hover:text-white text-lg font-medium transition-colors"
