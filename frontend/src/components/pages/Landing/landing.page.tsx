@@ -14,7 +14,7 @@ const LandingPage = () => {
     const { products: allProducts } = useProductAPI(true);
 
     // Derived state or just variable
-    const featuredProducts = allProducts ? allProducts.slice(0, 3) : [];
+    const featuredProducts = allProducts ? allProducts.slice(0, 6) : [];
 
     const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
