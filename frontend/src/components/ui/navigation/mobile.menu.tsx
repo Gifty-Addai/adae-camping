@@ -115,13 +115,6 @@ const MobileMenu: React.FC = () => {
           >
             Contact Us
           </Link>
-          <Link
-            to="/account"
-            onClick={handleLinkClick}
-            className="text-gray-300 hover:text-white text-lg font-medium transition-colors"
-          >
-            Account
-          </Link>
         </nav>
 
         {/* Footer */}

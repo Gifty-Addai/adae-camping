@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Search, ShoppingCart, User } from "lucide-react";
+import { Search, ShoppingCart } from "lucide-react";
 import { useSelector } from "react-redux";
 import { RootState } from "@/core/store/store";
 import { useState } from "react";
@@ -54,10 +54,6 @@ const DesktopMenu: React.FC = () => {
             </button>
             <SearchModal isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
 
-            {/* User Icon */}
-            <Link to="/account" className="text-gray-300 hover:text-white transition-colors">
-              <User size={24} />
-            </Link>
 
             {/* Cart Drawer Trigger */}
             <CartDrawer>

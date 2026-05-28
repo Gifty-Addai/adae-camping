@@ -65,7 +65,7 @@ export const Page = ({
     <>
       <div
         className={cn(
-          "flex-1 overflow-y-auto px-4 py-16 relative mx-auto",
+          "flex-1 overflow-y-auto px-4 py-5 relative mx-auto",
           "max-w-[920px]",
           renderFooter != undefined && "-mb-10 pb-12 max-h-[97vh]",
           scrollable && "max-h-[100vh]"

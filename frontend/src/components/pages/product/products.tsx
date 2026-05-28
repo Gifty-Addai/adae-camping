@@ -39,6 +39,7 @@ const StorePage: React.FC = () => {
       <Page
 
         pageTitle='Products'
+        
         renderBody={() => (
           <div className="">
             {/* Product Grid */}
