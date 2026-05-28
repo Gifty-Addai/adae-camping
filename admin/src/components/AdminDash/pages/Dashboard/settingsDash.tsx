@@ -8,7 +8,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormDescription, For
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { useSettingsAPI, SettingsData } from "@/hooks/settings.hook";
+import { useSettingsAPI } from "@/hooks/settings.hook";
 import { toast } from "react-toastify";
 import { Settings as SettingsIcon, Save, RefreshCw } from "lucide-react";
 import Textarea from "@/components/ui/textarea";
