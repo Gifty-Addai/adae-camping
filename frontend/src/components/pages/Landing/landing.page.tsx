@@ -11,7 +11,7 @@ import { useProductAPI } from '@/hooks/product.hook';
 
 const LandingPage = () => {
     // Use the hook at the top level correctly
-    const { products: allProducts } = useProductAPI(true);
+    const { products: allProducts, loading } = useProductAPI(true);
 
     // Derived state or just variable
     const featuredProducts = allProducts ? allProducts.slice(0, 6) : [];
@@ -37,29 +37,62 @@ const LandingPage = () => {
             {/* ---------------------------------------
           FEATURED PRODUCTS SHOWCASE
       --------------------------------------- */}
-            {featuredProducts.length > 0 && (
+            {(loading || featuredProducts.length > 0) && (
                 <section className="py-0 bg-white">
                     <div className="container px-4">
                         <div className="text-center mb-5">
                             {/* <h2 className="text-3xl md:text-4xl font-serif text-gray-900 mb-4 font-bold">Featured Products</h2> */}
                             <p className="text-gray-900 uppercase text-lg">Our customers' favorites</p>
                         </div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto place-items-center">
-                            {featuredProducts.map((product) => (
-                                <ProductCard
-                                    key={product._id}
-                                    product={product}
-                                    onOpenModal={openModal}
-                                />
-                            ))}
-                        </div>
-                        <div className="text-center mt-12">
-                            <Link to="/products">
-                                <Button className="bg-[#1d1d1d] text-white hover:bg-[#333] px-8 py-6 rounded-full text-lg">
-                                    View All Products
-                                </Button>
-                            </Link>
-                        </div>
+
+                        {loading ? (
+                            /* Shimmer skeleton grid */
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+                                {[...Array(6)].map((_, i) => (
+                                    <div
+                                        key={i}
+                                        className="w-full rounded-2xl overflow-hidden border border-gray-100 shadow-sm"
+                                    >
+                                        {/* Image placeholder */}
+                                        <div className="relative h-64 bg-gray-200 overflow-hidden">
+                                            <div className="absolute inset-0 -translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-white/60 to-transparent" />
+                                        </div>
+                                        {/* Text placeholders */}
+                                        <div className="p-4 space-y-3">
+                                            <div className="relative h-4 w-3/4 rounded bg-gray-200 overflow-hidden">
+                                                <div className="absolute inset-0 -translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-white/60 to-transparent" />
+                                            </div>
+                                            <div className="relative h-4 w-1/2 rounded bg-gray-200 overflow-hidden">
+                                                <div className="absolute inset-0 -translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-white/60 to-transparent" />
+                                            </div>
+                                            <div className="relative h-9 w-full rounded-lg bg-gray-200 overflow-hidden mt-2">
+                                                <div className="absolute inset-0 -translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-white/60 to-transparent" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        ) : (
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto place-items-center">
+                                {featuredProducts.map((product) => (
+                                    <ProductCard
+                                        key={product._id}
+                                        product={product}
+                                        onOpenModal={openModal}
+                                    />
+                                ))}
+                            </div>
+                        )}
+
+                        {!loading && (
+                            <div className="text-center mt-12">
+                                <Link to="/products">
+                                    <Button className="bg-[#1d1d1d] text-white hover:bg-[#333] px-8 py-6 rounded-full text-lg">
+                                        View All Products
+                                    </Button>
+                                </Link>
+                            </div>
+                        )}
                     </div>
                 </section>
             )}
