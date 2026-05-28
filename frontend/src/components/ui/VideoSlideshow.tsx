@@ -1,8 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { getRequest } from '@/lib/api-Request/api-requests';
 
 interface Video {
-    id: number;
+    id?: number | string;
+    _id?: string;
     title: string;
     category: string;
     thumbnail: string;
@@ -10,7 +12,7 @@ interface Video {
     embedUrl?: string;
 }
 
-const videos: Video[] = [
+const fallbackVideos: Video[] = [
     { id: 1, title: "Cooking with Goat Tallow", category: "Cooking Oils", thumbnail: "/thumbnails/cooking-1.jpg" },
     { id: 2, title: "Beef Tallow Recipes", category: "Cooking Oils", thumbnail: "/thumbnails/cooking-2.jpg" },
     {
@@ -21,10 +23,10 @@ const videos: Video[] = [
         embedUrl: "https://player.cloudinary.com/embed/?cloud_name=dyua9sfez&public_id=Snapchat-926365825_skyuqb&player[muted]=true&player[autoplay]=true&player[loop]=true"
     },
     { id: 4, title: "Hair Treatment", category: "Hair Care", thumbnail: "/thumbnails/hair-1.jpg" },
-    { id: 5, title: "Traditional Methods", category: "Cooking Oils", thumbnail: "/thumbnails/cooking-3.jpg" },
 ];
 
 export const VideoSlideshow = () => {
+    const [videos, setVideos] = useState<Video[]>(fallbackVideos);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [isAnimating, setIsAnimating] = useState(false);
     const [isHovered, setIsHovered] = useState(false);
@@ -47,25 +49,43 @@ export const VideoSlideshow = () => {
     };
 
     useEffect(() => {
-        if (!isHovered) {
+        const fetchVideos = async () => {
+            try {
+                const data = await getRequest<Video[]>('/api/video/getAllVideos');
+                if (data && data.length >= 2) {
+                    setVideos(data);
+                }
+            } catch (error) {
+                console.error('Failed to fetch slideshow videos from backend, using fallbacks:', error);
+            }
+        };
+        fetchVideos();
+    }, []);
+
+    useEffect(() => {
+        setCurrentIndex(0);
+    }, [videos]);
+
+    // Auto-advance only when not hovered
+    useEffect(() => {
+        if (!isHovered && videos.length > 0) {
             const interval = setInterval(nextSlide, 5000);
             return () => clearInterval(interval);
         }
-    }, [isHovered]);
+    }, [isHovered, videos.length, currentIndex]);
 
-    // Play video when it's the center card
+    // Play the center <video> element; pause all others
     useEffect(() => {
-        videoRefs.current.forEach((video, index) => {
-            if (video) {
-                if (index === currentIndex && videos[index].videoUrl) {
-                    video.play().catch(err => console.log('Video play failed:', err));
-                } else {
-                    video.pause();
-                    video.currentTime = 0;
-                }
+        videoRefs.current.forEach((videoEl, index) => {
+            if (!videoEl) return;
+            if (index === currentIndex) {
+                videoEl.play().catch(() => { /* autoplay blocked – fine, poster still shows */ });
+            } else {
+                videoEl.pause();
+                videoEl.currentTime = 0;
             }
         });
-    }, [currentIndex]);
+    }, [currentIndex, videos]);
 
     const getSlidePosition = (index: number) => {
         const diff = index - currentIndex;
@@ -86,10 +106,11 @@ export const VideoSlideshow = () => {
             <div className="relative w-full h-full flex items-center justify-center">
                 {videos.map((video, index) => {
                     const position = getSlidePosition(index);
+                    const isCenter = position === 'center';
 
                     return (
                         <div
-                            key={video.id}
+                            key={video._id || video.id}
                             className={`absolute transition-all duration-700 ease-out ${position === 'center'
                                 ? 'z-30 scale-100 opacity-100'
                                 : position === 'left'
@@ -109,37 +130,60 @@ export const VideoSlideshow = () => {
                             }}
                         >
                             <div className="w-[350px] h-[500px] bg-gradient-to-br from-[#2a2a2a] to-[#1d1d1d] rounded-3xl overflow-hidden shadow-2xl border border-[#3d3d3d] group cursor-pointer">
-                                {/* Thumbnail/Video Container - Portrait Aspect Ratio */}
+                                {/* Thumbnail / Video Container */}
                                 <div className="relative w-full h-[400px] bg-[#353535] overflow-hidden">
-                                    {/* Video, Embed, or Placeholder */}
-                                    {video.embedUrl ? (
+
+                                    {/* ── Thumbnail always shown as base layer ── */}
+                                    {video.thumbnail && (
+                                        <img
+                                            src={video.thumbnail}
+                                            alt={video.title}
+                                            className="absolute inset-0 w-full h-full object-cover"
+                                            onError={(e) => {
+                                                (e.target as HTMLImageElement).style.display = 'none';
+                                            }}
+                                        />
+                                    )}
+
+                                    {/* ── Embed iframe — only mount on the center card ── */}
+                                    {video.embedUrl && isCenter && (
                                         <iframe
                                             src={video.embedUrl}
                                             className="absolute inset-0 w-full h-full"
                                             allow="autoplay; fullscreen; encrypted-media; picture-in-picture"
                                             frameBorder="0"
+                                            title={video.title}
                                         />
-                                    ) : video.videoUrl ? (
+                                    )}
+
+                                    {/* ── Direct video file ── */}
+                                    {video.videoUrl && !video.embedUrl && (
                                         <video
-                                            ref={(el) => videoRefs.current[index] = el}
+                                            ref={(el) => { videoRefs.current[index] = el; }}
                                             src={video.videoUrl}
+                                            poster={video.thumbnail}
                                             className="absolute inset-0 w-full h-full object-cover"
                                             loop
                                             muted
                                             playsInline
                                         />
-                                    ) : (
+                                    )}
+
+                                    {/* ── Fallback when no media at all ── */}
+                                    {!video.embedUrl && !video.videoUrl && !video.thumbnail && (
                                         <div className="absolute inset-0 bg-gradient-to-br from-amber-900/20 to-amber-600/10 flex items-center justify-center">
                                             <div className="text-6xl opacity-20">▶</div>
                                         </div>
                                     )}
 
-                                    {/* Hover overlay */}
-                                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-all duration-300 flex items-center justify-center">
-                                        <div className="w-16 h-16 rounded-full bg-white/0 group-hover:bg-white/90 flex items-center justify-center transform scale-0 group-hover:scale-100 transition-all duration-300">
-                                            <div className="text-2xl text-black">▶</div>
+                                    {/* Hover overlay — hidden for iframe cards */}
+                                    {!video.embedUrl && (
+                                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-all duration-300 flex items-center justify-center">
+                                            <div className="w-16 h-16 rounded-full bg-white/0 group-hover:bg-white/90 flex items-center justify-center transform scale-0 group-hover:scale-100 transition-all duration-300">
+                                                <div className="text-2xl text-black">▶</div>
+                                            </div>
                                         </div>
-                                    </div>
+                                    )}
 
                                     {/* Category badge */}
                                     <div className="absolute top-4 left-4 px-4 py-2 bg-black/60 backdrop-blur-sm rounded-full text-xs font-semibold text-white border border-white/20">

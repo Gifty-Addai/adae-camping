@@ -3,8 +3,10 @@ import { Separator } from "./separator";
 import { Icons } from "./icons";
 import { Logo } from "./developer/logo";
 import { Link } from "react-router-dom";
+import { useSettings } from "@/context/settings_context";
 
 const Footer = () => {
+  const { settings } = useSettings();
   return (
     <footer className="bg-[#1d1d1d] text-white py-12 border-t border-[#2d2d2d]">
       <div className="container mx-auto px-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -66,7 +68,7 @@ const Footer = () => {
               className="hover:bg-pink-500"
               asChild
             >
-              <a href="https://www.instagram.com/outdoorscamps?igsh=MnF5YmRlbjA2YWd3" target="_blank" rel="noopener noreferrer">
+              <a href={settings.instagramLink} target="_blank" rel="noopener noreferrer">
                 <Icons.instagram className="h-6 w-6 text-gray-300 hover:text-white" />
               </a>
             </Button>
@@ -75,7 +77,7 @@ const Footer = () => {
               className="hover:bg-blue-600"
               asChild
             >
-              <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer">
+              <a href={settings.linkedinLink} target="_blank" rel="noopener noreferrer">
                 <Icons.linkedin className="h-6 w-6 text-gray-300 hover:text-white" />
               </a>
             </Button>
@@ -100,10 +102,10 @@ const Footer = () => {
             >
               <Icons.mail className="h-5 w-5" />
               <a
-                href="mailto:info@adaeakobenadventure.com"
+                href={`mailto:${settings.supportEmail}`}
                 className="hover:text-white transition-colors text-gray-300"
               >
-                info@adaeakobenadventure.com
+                {settings.supportEmail}
               </a>
             </Button>
             <li className="flex items-center">

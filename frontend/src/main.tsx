@@ -8,6 +8,7 @@ import { AppRoute } from './components/_Layout/app.route';
 import { I18nextProvider } from 'react-i18next';
 import i18n from './i18n';
 import { ModalProvider } from './context/signIn_modal_context';
+import { SettingsProvider } from './context/settings_context';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import ScrollToTop from './components/utils/ScrollToTop';
@@ -17,11 +18,13 @@ createRoot(document.getElementById('root')!).render(
     <StrictMode>
       <ModalProvider>
         <Provider store={store}>
-          <BrowserRouter>
-            <ScrollToTop />
-            <AppRoute />
-            <ToastContainer />
-          </BrowserRouter>
+          <SettingsProvider>
+            <BrowserRouter>
+              <ScrollToTop />
+              <AppRoute />
+              <ToastContainer />
+            </BrowserRouter>
+          </SettingsProvider>
         </Provider>
       </ModalProvider>
     </StrictMode>

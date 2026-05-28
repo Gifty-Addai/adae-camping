@@ -1,6 +1,8 @@
 import { Page } from '@/components/ui/page';
+import { useSettings } from '@/context/settings_context';
 
 const RefundPolicyPage = () => {
+    const { settings } = useSettings();
     return (
         <Page
             pageTitle="Refund Policy"
@@ -62,8 +64,8 @@ const RefundPolicyPage = () => {
                                         If you have any questions or concerns regarding your order, please reach out to us:
                                     </p>
                                     <ul className="list-none ml-4 mt-2 space-y-1">
-                                        <li><strong>Email:</strong> info@ancestraltallow.gh</li>
-                                        <li><strong>WhatsApp / Call:</strong> +233 24 741 3964</li>
+                                        <li><strong>Email:</strong> {settings.supportEmail}</li>
+                                        <li><strong>WhatsApp / Call:</strong> {settings.supportPhone}</li>
                                     </ul>
                                 </div>
                             </div>

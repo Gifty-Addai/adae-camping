@@ -1,16 +1,18 @@
 import { X } from "lucide-react";
 import { useState } from "react";
+import { useSettings } from "@/context/settings_context";
 
 const PromoBanner = () => {
     const [isVisible, setIsVisible] = useState(true);
+    const { settings } = useSettings();
 
-    if (!isVisible) return null;
+    if (!isVisible || !settings.promoEnabled) return null;
 
     return (
         <div className="relative bg-[#1d1d1d] text-gray-300 py-2 px-4 text-center text-sm font-medium border-b border-[#2d2d2d]">
             <p className="flex items-center justify-center gap-2">
                 <span>🫖</span>
-                <span>VALENTINE'S DAY OFFER 💝 - FLAT 25% OFF - USE CODE "SELFLOVE25"</span>
+                <span>{settings.promoMessage}</span>
                 <span>🫖</span>
             </p>
             <button

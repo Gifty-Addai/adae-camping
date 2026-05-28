@@ -1,6 +1,8 @@
 import { Page } from '@/components/ui/page';
+import { useSettings } from '@/context/settings_context';
 
 const ShippingPolicyPage = () => {
+    const { settings } = useSettings();
     return (
         <Page
             pageTitle="Shipping Policy"
@@ -74,8 +76,8 @@ const ShippingPolicyPage = () => {
                                         For tracking updates or to modify a delivery pin, reach out to us at:
                                     </p>
                                     <ul className="list-none ml-4 mt-2 space-y-1">
-                                        <li><strong>Email:</strong> info@ancestraltallow.gh</li>
-                                        <li><strong>WhatsApp / Call:</strong> +233 XX XXX XXXX</li>
+                                        <li><strong>Email:</strong> {settings.supportEmail}</li>
+                                        <li><strong>WhatsApp / Call:</strong> {settings.supportPhone}</li>
                                     </ul>
                                 </div>
                             </div>

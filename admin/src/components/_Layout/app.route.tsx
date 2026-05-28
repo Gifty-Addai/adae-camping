@@ -17,6 +17,8 @@ import OrderDetailsDash from "../AdminDash/pages/Dashboard/OrderDetailsDash";
 import AllUsersDash from "../AdminDash/pages/Dashboard/AllUsersDash";
 import CreateUserDash from "../AdminDash/pages/Dashboard/CreateUserDash";
 import AdminProfileDash from "../AdminDash/pages/Dashboard/AdminProfileDash";
+import AdminSettingsDash from "../AdminDash/pages/Dashboard/settingsDash";
+import AdminVideoDash from "../AdminDash/pages/Dashboard/videoDash";
 
 import { RequireAdmin } from "./requireAdmin";
 import { useAppDispatch } from "@/core/constants";
@@ -72,6 +74,12 @@ export const AppRoute = () => {
 
           {/* Profile Management */}
           <Route path="profile" element={<AdminProfileDash />} />
+
+          {/* Settings Management */}
+          <Route path="settings" element={<AdminSettingsDash />} />
+
+          {/* Video Management */}
+          <Route path="videos" element={<AdminVideoDash />} />
 
           {/* Catch-All 404 under layout */}
           <Route path="*" element={<PageNotFound />} />

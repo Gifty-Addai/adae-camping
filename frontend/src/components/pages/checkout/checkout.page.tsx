@@ -11,10 +11,10 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, Di
 import { MapPicker } from '@/components/ui/map-picker';
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from '@/components/ui/tooltip';
 import { useOrderAPI } from '@/hooks/order.hook';
+import { useSettings } from '@/context/settings_context';
 
 const FREE_SHIPPING_THRESHOLD = 100;
 const FLAT_SHIPPING_RATE = 15;
-const WHATSAPP_NUMBER = import.meta.env.VITE_WHATSAPP_NUMBER || "233247413964";
 
 const CheckoutPage = () => {
     const navigate = useNavigate();
@@ -22,6 +22,7 @@ const CheckoutPage = () => {
     const { items, totalPrice } = useSelector((state: RootState) => state.cart);
     const { user } = useSelector((state: RootState) => state.userSlice);
     const { createOrder, loading } = useOrderAPI();
+    const { settings } = useSettings();
 
     const [deliveryMethod] = useState<'Shipping' | 'Pickup'>('Shipping');
     const [email, setEmail] = useState('');
@@ -119,7 +120,7 @@ ${itemsSummary}
 *Payment:* Cash on Delivery`;
 
             // 3. Open WhatsApp in a new tab/window
-            const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(summaryMessage)}`;
+            const whatsappUrl = `https://wa.me/${settings.whatsappNumber}?text=${encodeURIComponent(summaryMessage)}`;
             window.open(whatsappUrl, '_blank');
 
             // 4. Update order ID, clear cart and show Success Modal

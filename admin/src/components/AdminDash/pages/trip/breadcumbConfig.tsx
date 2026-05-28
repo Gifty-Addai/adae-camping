@@ -5,6 +5,8 @@ import {
     Home as LucideHome,
     ShoppingCart as LucideShoppingCart,
     Users as LucideUsers,
+    Settings as LucideSettings,
+    Film as LucideVideo,
 } from "lucide-react";
 
 export interface BreadcrumbConfigItem {
@@ -84,5 +86,18 @@ export const breadcrumbConfig: BreadcrumbConfigItem[] = [
             // Add more user routes if needed
         ],
     },
-    // Add more sections as needed
+    {
+        title: "Settings",
+        url: "/admin/settings",
+        icon: LucideSettings,
+        isActive: false,
+        breadcrumb: "Settings",
+    },
+    {
+        title: "Videos",
+        url: "/admin/videos",
+        icon: LucideVideo,
+        isActive: false,
+        breadcrumb: "Videos",
+    },
 ]

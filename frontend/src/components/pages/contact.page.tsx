@@ -7,7 +7,10 @@ import { useState } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+import { useSettings } from '@/context/settings_context';
+
 const ContactPage = () => {
+    const { settings } = useSettings();
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -136,7 +139,7 @@ const ContactPage = () => {
                                                 </div>
                                                 <div>
                                                     <h3 className="text-xl font-serif text-gray-100 mb-2 font-semibold">Email Us</h3>
-                                                    <p className="text-gray-300">info@ancestraltallow.gh</p>
+                                                    <p className="text-gray-300">{settings.supportEmail}</p>
                                                     <p className="text-gray-400 text-sm mt-1">We'll respond within 24 hours</p>
                                                 </div>
                                             </div>
@@ -150,7 +153,7 @@ const ContactPage = () => {
                                                 </div>
                                                 <div>
                                                     <h3 className="text-xl font-serif text-gray-100 mb-2 font-semibold">Call Us</h3>
-                                                    <p className="text-gray-300">+233 XX XXX XXXX</p>
+                                                    <p className="text-gray-300">{settings.supportPhone}</p>
                                                     <p className="text-gray-400 text-sm mt-1">Mon-Fri: 9am - 6pm GMT</p>
                                                 </div>
                                             </div>
