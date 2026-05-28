@@ -68,38 +68,7 @@ const LandingPage = () => {
                             </div>
                         </div>
 
-                        {/* Right Side - Product Image */}
-                        <div className="hidden lg:flex relative items-center justify-center">
-                            {/* Decorative Circle Background */}
-                            <div className="absolute right-0 top-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full bg-gray-100 opacity-60 blur-3xl"></div>
-
-                            {/* Product Container */}
-                            <div className="relative z-10 w-full max-w-md lg:max-w-lg">
-                                {/* Green leaf decoration - left */}
-                                <div className="absolute -left-12 top-1/2 -translate-y-1/2 w-32 h-48 opacity-40">
-                                    <svg viewBox="0 0 100 150" className="w-full h-full">
-                                        <path d="M50 10 Q30 50 40 100 Q50 110 50 140 Q50 110 60 100 Q70 50 50 10" fill="#7a9b5a" opacity="0.6" />
-                                    </svg>
-                                </div>
-
-                                {/* Green leaf decoration - right */}
-                                <div className="absolute -right-8 top-1/4 w-40 h-56 opacity-40">
-                                    <svg viewBox="0 0 120 180" className="w-full h-full">
-                                        <path d="M60 20 Q40 60 50 120 Q60 135 60 170 Q60 135 70 120 Q80 60 60 20" fill="#8aaa6a" opacity="0.7" />
-                                        <path d="M80 40 Q65 75 72 125 Q80 138 80 165 Q80 138 88 125 Q95 75 80 40" fill="#7a9b5a" opacity="0.5" />
-                                    </svg>
-                                </div>
-
-                                {/* Product Image */}
-                                <div className="relative mx-auto w-full aspect-square flex items-center justify-center">
-                                    <img
-                                        src="/product-hero.svg"
-                                        alt="Ancestral Beef Tallow"
-                                        className="w-3/4 h-3/4 object-contain relative z-20"
-                                    />
-                                </div>
-                            </div>
-                        </div>
+                       
                     </div>
                 </div>
             </section>
