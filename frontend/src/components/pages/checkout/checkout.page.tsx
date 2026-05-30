@@ -119,9 +119,16 @@ ${itemsSummary}
 *💵 Total:* *GHS ${finalTotal.toFixed(2)}*
 *Payment:* Cash on Delivery`;
 
-            // 3. Open WhatsApp in a new tab/window
+            // 3. Open WhatsApp — use anchor click to bypass mobile popup blockers
+            // (window.open after await is blocked on iOS/Android as it loses the user gesture context)
             const whatsappUrl = `https://wa.me/${settings.whatsappNumber}?text=${encodeURIComponent(summaryMessage)}`;
-            window.open(whatsappUrl, '_blank');
+            const anchor = document.createElement('a');
+            anchor.href = whatsappUrl;
+            anchor.target = '_blank';
+            anchor.rel = 'noopener noreferrer';
+            document.body.appendChild(anchor);
+            anchor.click();
+            document.body.removeChild(anchor);
 
             // 4. Update order ID, clear cart and show Success Modal
             setOrderId(resOrderId);
