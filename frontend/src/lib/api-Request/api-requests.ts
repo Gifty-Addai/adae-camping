@@ -1,8 +1,88 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // apiRequests.ts
 import axios, { AxiosRequestConfig, CancelToken } from 'axios';
 import axiosInstance from '../axios-instance';
 import { ApiError } from '../apiUtils';
 import logger from '../logger';
+
+interface CacheEntry {
+  data: unknown;
+  expiry: number;
+}
+
+// Global in-memory cache store
+const cacheMap = new Map<string, CacheEntry>();
+const DEFAULT_TTL = 5 * 60 * 1000; // 5 minutes in milliseconds
+
+// Endpoints that are safe and beneficial to cache
+const CACHEABLE_URLS = [
+  '/api/settings',
+  '/api/product/getTallowProducts',
+  '/api/product/getProductById',
+  '/api/product/searchProducts',
+  '/api/trip/getTripById',
+  '/api/trip/getTrips',
+  '/api/trip/searchTrips'
+];
+
+// Write/mutation endpoints that should clear the cache
+const MUTATION_URLS = [
+  '/api/product/createProduct',
+  '/api/product/updateProduct',
+  '/api/product/deleteProduct',
+  '/api/trip/createTrip',
+  '/api/trip/updateTrip',
+  '/api/trip/deleteTrip',
+  '/api/order',
+  '/api/mail/bookingMail'
+];
+
+/**
+ * Checks if a request is cacheable based on URL and method.
+ */
+const isCacheableRequest = (url: string, method: string): boolean => {
+  const upperMethod = method.toUpperCase();
+  if (upperMethod === 'GET') {
+    return CACHEABLE_URLS.some(path => url.includes(path));
+  }
+  if (upperMethod === 'POST') {
+    // Only cache read-like POST queries
+    return url.includes('/api/product/searchProducts') || url.includes('/api/trip/searchTrips');
+  }
+  return false;
+};
+
+/**
+ * Checks if a request is a mutation that should clear the cache.
+ */
+const isMutationRequest = (url: string, method: string): boolean => {
+  const upperMethod = method.toUpperCase();
+  if (['PUT', 'DELETE', 'PATCH'].includes(upperMethod)) return true;
+  if (upperMethod === 'POST') {
+    return MUTATION_URLS.some(path => url.includes(path));
+  }
+  return false;
+};
+
+/**
+ * Generates a unique cache key based on URL and request configuration or payload.
+ */
+const generateCacheKey = (url: string, payload?: unknown): string => {
+  const payloadStr = payload ? JSON.stringify(payload) : '';
+  return `${url}::${payloadStr}`;
+};
+
+/**
+ * Clears expired cache entries.
+ */
+const cleanExpiredCache = () => {
+  const now = Date.now();
+  for (const [key, entry] of cacheMap.entries()) {
+    if (now > entry.expiry) {
+      cacheMap.delete(key);
+    }
+  }
+};
 
 /**
  * Generic GET request with advanced features:
@@ -10,6 +90,7 @@ import logger from '../logger';
  * - Request cancellation
  * - Enhanced error handling
  * - Logging
+ * - Local Memory Caching
  *
  * @template T - The expected response data type
  * @param {string} url - API endpoint (relative to baseURL)
@@ -21,10 +102,28 @@ export const getRequest = async <T>(
   url: string,
   config?: AxiosRequestConfig & { cancelToken?: CancelToken }
 ): Promise<T> => {
+  cleanExpiredCache();
+  const cacheKey = generateCacheKey(url, config?.params);
+
+  if (isCacheableRequest(url, 'GET')) {
+    const cached = cacheMap.get(cacheKey);
+    if (cached && Date.now() < cached.expiry) {
+      logger.info(`[Cache HIT] GET ${url}`);
+      return cached.data as T;
+    }
+  }
+
   try {
     const response = await axiosInstance.get<{ success: boolean; data: T; message?: string }>(url, config);
 
     if (response.data.success) {
+      if (isCacheableRequest(url, 'GET')) {
+        cacheMap.set(cacheKey, {
+          data: response.data.data,
+          expiry: Date.now() + DEFAULT_TTL
+        });
+        logger.info(`[Cache SET] GET ${url}`);
+      }
       return response.data.data;
     } else {
       // Handle business logic errors
@@ -41,6 +140,7 @@ export const getRequest = async <T>(
  * - Request cancellation
  * - Enhanced error handling
  * - Logging
+ * - Cache Invalidation
  *
  * @template T - The expected response data type
  * @param {string} url - API endpoint (relative to baseURL)
@@ -54,6 +154,11 @@ export const putRequest = async <T>(
   data: any,
   config?: AxiosRequestConfig & { cancelToken?: CancelToken }
 ): Promise<T> => {
+  if (isMutationRequest(url, 'PUT')) {
+    logger.info(`[Cache Invalidation] PUT mutation on ${url}. Clearing cache.`);
+    cacheMap.clear();
+  }
+
   try {
     const response = await axiosInstance.put<{ success: boolean; data: T; message?: string }>(url, data, config);
 
@@ -74,6 +179,7 @@ export const putRequest = async <T>(
  * - Request cancellation
  * - Enhanced error handling
  * - Logging
+ * - Cache Invalidation
  *
  * @template T - The expected response data type
  * @param {string} url - API endpoint (relative to baseURL)
@@ -85,6 +191,11 @@ export const deleteRequest = async <T>(
   url: string,
   config?: AxiosRequestConfig & { cancelToken?: CancelToken }
 ): Promise<T> => {
+  if (isMutationRequest(url, 'DELETE')) {
+    logger.info(`[Cache Invalidation] DELETE mutation on ${url}. Clearing cache.`);
+    cacheMap.clear();
+  }
+
   try {
     const response = await axiosInstance.delete<{ success: boolean; data: T; message?: string }>(url, config);
 
@@ -105,6 +216,7 @@ export const deleteRequest = async <T>(
  * - Request cancellation
  * - Enhanced error handling
  * - Logging
+ * - Cache Invalidation
  *
  * @template T - The expected response data type
  * @param {string} url - API endpoint (relative to baseURL)
@@ -118,6 +230,11 @@ export const patchRequest = async <T>(
   data: any,
   config?: AxiosRequestConfig & { cancelToken?: CancelToken }
 ): Promise<T> => {
+  if (isMutationRequest(url, 'PATCH')) {
+    logger.info(`[Cache Invalidation] PATCH mutation on ${url}. Clearing cache.`);
+    cacheMap.clear();
+  }
+
   try {
     const response = await axiosInstance.patch<{ success: boolean; data: T; message?: string }>(url, data, config);
 
@@ -138,6 +255,7 @@ export const patchRequest = async <T>(
  * - Request cancellation
  * - Enhanced error handling
  * - Logging
+ * - Local Memory Caching & Cache Invalidation
  *
  * @template T - The expected response data type
  * @param {string} url - API endpoint (relative to baseURL)
@@ -151,10 +269,34 @@ export const postRequest = async <T>(
   data: any,
   config?: AxiosRequestConfig & { cancelToken?: CancelToken }
 ): Promise<T> => {
+  cleanExpiredCache();
+
+  if (isMutationRequest(url, 'POST')) {
+    logger.info(`[Cache Invalidation] POST mutation on ${url}. Clearing cache.`);
+    cacheMap.clear();
+  }
+
+  const cacheKey = generateCacheKey(url, data);
+
+  if (isCacheableRequest(url, 'POST')) {
+    const cached = cacheMap.get(cacheKey);
+    if (cached && Date.now() < cached.expiry) {
+      logger.info(`[Cache HIT] POST ${url}`);
+      return cached.data as T;
+    }
+  }
+
   try {
     const response = await axiosInstance.post<{ success: boolean; data: T; message?: string }>(url, data, config);
 
     if (response.data.success) {
+      if (isCacheableRequest(url, 'POST')) {
+        cacheMap.set(cacheKey, {
+          data: response.data.data,
+          expiry: Date.now() + DEFAULT_TTL
+        });
+        logger.info(`[Cache SET] POST ${url}`);
+      }
       return response.data.data;
     } else {
       // Handle business logic errors
@@ -197,3 +339,4 @@ const handleRequestError = (error: any, method: string, url: string): never => {
     throw new ApiError('An unexpected error occurred.', 500);
   }
 };
+
