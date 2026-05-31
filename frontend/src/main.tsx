@@ -12,14 +12,17 @@ import { SettingsProvider } from './context/settings_context';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import ScrollToTop from './components/utils/ScrollToTop';
+import FacebookPixel from './facebookPixel';
 
 createRoot(document.getElementById('root')!).render(
+  <>
   <I18nextProvider i18n={i18n}>
     <StrictMode>
       <ModalProvider>
         <Provider store={store}>
           <SettingsProvider>
             <BrowserRouter>
+              <FacebookPixel />
               <ScrollToTop />
               <AppRoute />
               <ToastContainer />
@@ -29,4 +32,5 @@ createRoot(document.getElementById('root')!).render(
       </ModalProvider>
     </StrictMode>
   </I18nextProvider>
+  </>
 );

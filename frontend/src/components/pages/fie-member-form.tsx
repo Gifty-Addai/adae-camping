@@ -29,6 +29,12 @@ const BecomeMemberPage: React.FC = () => {
 
     const onSubmit = (data: SignupFormValues) => {
         console.log(data);
+        if (window.fbq) {
+            window.fbq('track', 'CompleteRegistration', {
+                content_name: 'Become Member',
+                status: 'success'
+            });
+        }
         // navigate("/success");
     };
 

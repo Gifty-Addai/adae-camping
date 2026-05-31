@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '@/core/store/store';
 import { clearCart } from '@/core/store/slice/cart.slice';
@@ -23,6 +23,7 @@ const CheckoutPage = () => {
     const { user } = useSelector((state: RootState) => state.userSlice);
     const { createOrder, loading } = useOrderAPI();
     const { settings } = useSettings();
+    const hasInitiatedCheckout = useRef(false);
 
     const [deliveryMethod] = useState<'Shipping' | 'Pickup'>('Shipping');
     const [email, setEmail] = useState('');
@@ -53,8 +54,22 @@ const CheckoutPage = () => {
     useEffect(() => {
         if (items.length === 0 && !showSuccessModal) {
             navigate('/products');
+        } else if (items.length > 0 && !hasInitiatedCheckout.current && window.fbq) {
+            hasInitiatedCheckout.current = true;
+            window.fbq('track', 'InitiateCheckout', {
+                content_ids: items.map(item => item._id),
+                content_type: 'product',
+                contents: items.map(item => ({
+                    id: item._id,
+                    quantity: item.quantity,
+                    item_price: item.price
+                })),
+                currency: 'GHS',
+                value: totalPrice,
+                num_items: items.reduce((acc, item) => acc + item.quantity, 0)
+            });
         }
-    }, [items, navigate, showSuccessModal]);
+    }, [items, navigate, showSuccessModal, totalPrice]);
 
     const handleAddressChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -63,7 +78,9 @@ const CheckoutPage = () => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        // 1. Construct the backend payload
+
+        if (window.fbq) window.fbq('track', 'Lead');
+
         const orderData = {
             products: items.map(item => ({
                 product: item._id,
@@ -95,6 +112,7 @@ const CheckoutPage = () => {
                 return;
             }
 
+
             const resOrderId = resOrder.orderId || "AT-UNKNOWN";
 
             // 2. Construct concise WhatsApp summary message
@@ -119,8 +137,7 @@ ${itemsSummary}
 *💵 Total:* *GHS ${finalTotal.toFixed(2)}*
 *Payment:* Cash on Delivery`;
 
-            // 3. Open WhatsApp — use anchor click to bypass mobile popup blockers
-            // (window.open after await is blocked on iOS/Android as it loses the user gesture context)
+
             const whatsappUrl = `https://wa.me/${settings.whatsappNumber}?text=${encodeURIComponent(summaryMessage)}`;
             const anchor = document.createElement('a');
             anchor.href = whatsappUrl;
@@ -130,8 +147,24 @@ ${itemsSummary}
             anchor.click();
             document.body.removeChild(anchor);
 
-            // 4. Update order ID, clear cart and show Success Modal
             setOrderId(resOrderId);
+            if(window.fbq){
+                window.fbq("track", "Purchase", {
+                    currency: "GHS",
+                    value: finalTotal,
+                    content_type: "product",
+                    content_ids: items.map(item => item._id),
+                    contents: items.map(item => ({
+                        id: item._id,
+                        quantity: item.quantity,
+                        item_price: item.price
+                    })),
+                    product_names: items.map(item => item.name),
+                    product_type: items.map(item => item.category),
+                    product_prices: items.map(item => item.price),
+                    product_quantities: items.map(item => item.quantity)
+                });
+            }
             setShowSuccessModal(true);
             dispatch(clearCart());
         } catch (err) {

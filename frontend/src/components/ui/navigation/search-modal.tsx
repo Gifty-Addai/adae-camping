@@ -46,6 +46,12 @@ const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => {
 
             setLoading(true);
             try {
+                if (window.fbq) {
+                    window.fbq('track', 'Search', {
+                        search_string: query,
+                        content_category: 'tallow'
+                    });
+                }
                 // Search specifically for tallow products
                 // Search specifically for tallow products
                 const response = await postRequest<{

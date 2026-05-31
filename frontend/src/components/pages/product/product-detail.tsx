@@ -27,9 +27,8 @@ const ProductDetailPage: React.FC = () => {
     const { loading, searchProduct, getProductById, trackClick } = useProductAPI();
 
 
-    // -- ADD THESE STATE/CONSTANTS:
     const [showFullDesc, setShowFullDesc] = useState(false);
-    const MAX_DESC_LENGTH = 200; // Adjust this limit as you like
+    const MAX_DESC_LENGTH = 200;
 
     const incrementQuantity = () => setQuantity((prev) => prev + 1);
     const decrementQuantity = () => setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
@@ -39,7 +38,6 @@ const ProductDetailPage: React.FC = () => {
             if (productId) {
                 window.scrollTo({ top: 0, behavior: 'smooth' });
                 try {
-                    // Check if already viewed in this session to prevent duplicate counts on refresh
                     const storageKey = `viewed_product_${productId}`;
                     if (!sessionStorage.getItem(storageKey)) {
                         console.log(`[ProductDetail] First view in session, tracking click for: ${productId}`);
@@ -53,6 +51,16 @@ const ProductDetailPage: React.FC = () => {
                     setProduct(data);
 
                     if (data) {
+                        if (window.fbq) {
+                            window.fbq('track', 'Product Details Page', {
+                                content_name: data.name,
+                                content_category: data.category,
+                                content_ids: [data._id],
+                                content_type: 'product',
+                                value: data.price,
+                                currency: 'GHS'
+                            });
+                        }
                         const res = await searchProduct({ category: 'tallow' }, true);
                         const related = (res || []).filter((p) => p._id !== productId);
                         setProducts(related.slice(0, 5));
@@ -67,12 +75,37 @@ const ProductDetailPage: React.FC = () => {
     }, [productId]);
 
     const handleAddToCart = () => {
+
+        if (window.fbq) {
+            window.fbq("track", "Product AddToCart", {
+                content_name: product?.name,
+                content_category: product?.name,
+                content_ids: product ? [product._id] : [],
+                content_type: "product",
+                value: (product?.price || 0) * quantity,
+                currency: "GHS",
+                quantity: quantity,
+            })
+        }
+
         if (product) {
             dispatch(addToCart({ product, quantity }));
         }
     };
 
     const handleBuy = () => {
+        if (window.fbq) {
+            window.fbq("track", "Product AddToCart", {
+                content_name: product?.name,
+                content_category: product?.name,
+                content_ids: product ? [product._id] : [],
+                content_type: "product",
+                value: (product?.price || 0) * quantity,
+                currency: "GHS",
+                quantity: quantity,
+            })
+        }
+
         if (product) {
             dispatch(addToCart({ product, quantity }));
             // navigate('/cart'); // Removed

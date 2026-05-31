@@ -22,6 +22,16 @@ const LandingPage = () => {
     const openModal = (product: Product) => {
         setSelectedProduct(product);
         setIsModalOpen(true);
+
+        if (window.fbq) {
+            window.fbq.push("trackCustom", "View Product Content", {
+                content_category: [product.name],
+                content_ids: [product.name],
+                content_type: "product",
+                value: product.price,
+                currency: "GHS",
+            })
+        }
     };
 
     const closeModal = () => {
@@ -32,7 +42,7 @@ const LandingPage = () => {
     return (
         <div className="flex flex-col min-h-screen bg-background text-foreground font-sans">
             {/* ---------------------------------------HERO SECTION--------------------------------------- */}
-           
+
 
             {/* ---------------------------------------
           FEATURED PRODUCTS SHOWCASE

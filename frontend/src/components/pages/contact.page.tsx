@@ -8,6 +8,7 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 import { useSettings } from '@/context/settings_context';
+import { postRequest } from '@/lib/api-Request/api-requests';
 
 const ContactPage = () => {
     const { settings } = useSettings();
@@ -18,12 +19,19 @@ const ContactPage = () => {
         message: ''
     });
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        // Here you would typically send the data to your backend
-        console.log('Contact form submitted:', formData);
-        toast.success('Thank you for contacting us! We\'ll get back to you soon.');
-        setFormData({ name: '', email: '', phone: '', message: '' });
+        try {
+            await postRequest('/api/contact', formData);
+            if (window.fbq) {
+                window.fbq('track', 'Contact');
+            }
+            toast.success('Thank you for contacting us! We\'ll get back to you soon.');
+            setFormData({ name: '', email: '', phone: '', message: '' });
+        } catch (err: any) {
+            console.error('Contact submission error:', err);
+            toast.error(err.message || 'Failed to send message. Please try again.');
+        }
     };
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {

@@ -5,7 +5,7 @@ import { useDispatch } from 'react-redux';
 import { Product } from '@/core/interfaces';
 import { Button } from '@/components/ui/button';
 import { addToCart } from '@/core/store/slice/cart.slice';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 
 
@@ -16,6 +16,7 @@ interface ProductCardProps {
 
 const ProductCard: React.FC<ProductCardProps> = ({ product, onOpenModal }) => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [quantity] = useState(1);
 
   const handleAddToCart = (e: React.MouseEvent) => {
@@ -23,15 +24,47 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onOpenModal }) => {
     e.stopPropagation();
     console.info("product adding", product);
     dispatch(addToCart({ product, quantity }));
+
+
+    if (window.fbq) {
+      window.fbq("track", "AddToCart", {
+        content_name: product.name,
+        content_category: product.name,
+        content_ids: [product._id],
+        content_type: "product",
+        value: product.price,
+        currency: "GHS",
+        quantity: quantity,
+      })
+    }
+
+
   };
 
+  const handleOpenDetails = (e: React.MouseEvent, productId: string) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (window.fbq) {
+      window.fbq("track", "ViewContent", {
+        content_name: product.name,
+        content_category: product.category,
+        content_ids: [product._id],
+        content_type: "product",
+        value: product.price,
+        currency: "GHS",
+      })
+    }
+
+    navigate(`/product/${encodeURIComponent(product.name.substring(0, 30))}/${productId}`);
+  };
   return (
     <div className="group w-full cursor-pointer">
       {/* Modern Tallow Card Container */}
       <div className="relative bg-gradient-to-br from-[#2a2a2a] to-[#1d1d1d] rounded-2xl overflow-hidden border border-[#3d3d3d] transition-all duration-500 hover:border-[#8b7355] hover:shadow-2xl hover:shadow-amber-950/30">
 
         {/* Image Container */}
-        <Link to={`/product/${encodeURIComponent(product.name.substring(0, 30))}/${product._id}`} className="block">
+        <div onClick={(e) => handleOpenDetails(e, product._id)} className="block cursor-pointer">
           <div className="relative aspect-square w-full overflow-hidden">
             {/* Product Image */}
             <div className="absolute inset-0 flex items-center justify-center transition-transform duration-700 group-hover:scale-110 pointer-events-none">
@@ -60,7 +93,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onOpenModal }) => {
               </Button>
             </div>
           </div>
-        </Link>
+        </div>
 
         {/* Product Details Section */}
         <div className="p-4 space-y-2">

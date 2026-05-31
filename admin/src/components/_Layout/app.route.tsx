@@ -19,6 +19,7 @@ import CreateUserDash from "../AdminDash/pages/Dashboard/CreateUserDash";
 import AdminProfileDash from "../AdminDash/pages/Dashboard/AdminProfileDash";
 import AdminSettingsDash from "../AdminDash/pages/Dashboard/settingsDash";
 import AdminVideoDash from "../AdminDash/pages/Dashboard/videoDash";
+import ContactsDash from "../AdminDash/pages/Dashboard/ContactsDash";
 
 import { RequireAdmin } from "./requireAdmin";
 import { useAppDispatch } from "@/core/constants";
@@ -80,6 +81,9 @@ export const AppRoute = () => {
 
           {/* Video Management */}
           <Route path="videos" element={<AdminVideoDash />} />
+
+          {/* Contact Messages Management */}
+          <Route path="contacts" element={<ContactsDash />} />
 
           {/* Catch-All 404 under layout */}
           <Route path="*" element={<PageNotFound />} />

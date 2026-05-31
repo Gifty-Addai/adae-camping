@@ -7,6 +7,7 @@ import {
     Users as LucideUsers,
     Settings as LucideSettings,
     Film as LucideVideo,
+    Mail as LucideMail,
 } from "lucide-react";
 
 export interface BreadcrumbConfigItem {
@@ -99,5 +100,12 @@ export const breadcrumbConfig: BreadcrumbConfigItem[] = [
         icon: LucideVideo,
         isActive: false,
         breadcrumb: "Videos",
+    },
+    {
+        title: "Contacts",
+        url: "/admin/contacts",
+        icon: LucideMail,
+        isActive: false,
+        breadcrumb: "Contacts",
     },
 ]
