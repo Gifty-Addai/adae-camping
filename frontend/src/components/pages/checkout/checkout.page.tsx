@@ -56,7 +56,7 @@ const CheckoutPage = () => {
             navigate('/products');
         } else if (items.length > 0 && !hasInitiatedCheckout.current && window.fbq) {
             hasInitiatedCheckout.current = true;
-            window.fbq('track', 'InitiateCheckout', {
+            window.fbq('trackCustom', 'InitiateCheckout', {
                 content_ids: items.map(item => item._id),
                 content_type: 'product',
                 contents: items.map(item => ({
@@ -98,7 +98,7 @@ const CheckoutPage = () => {
                 landmark: shippingAddress.apartment || undefined,
                 latitude: deliveryLocation?.lat,
                 longitude: deliveryLocation?.lng,
-                googleMapsLink: deliveryLocation 
+                googleMapsLink: deliveryLocation
                     ? `https://www.google.com/maps?q=${deliveryLocation.lat},${deliveryLocation.lng}`
                     : undefined
             },
@@ -116,11 +116,11 @@ const CheckoutPage = () => {
             const resOrderId = resOrder.orderId || "AT-UNKNOWN";
 
             // 2. Construct concise WhatsApp summary message
-            const itemsSummary = items.map(item => 
+            const itemsSummary = items.map(item =>
                 `• ${item.quantity}x ${item.name}`
             ).join('\n');
 
-            const locationLink = deliveryLocation 
+            const locationLink = deliveryLocation
                 ? `https://www.google.com/maps?q=${deliveryLocation.lat},${deliveryLocation.lng}`
                 : '';
 
@@ -148,7 +148,7 @@ ${itemsSummary}
             document.body.removeChild(anchor);
 
             setOrderId(resOrderId);
-            if(window.fbq){
+            if (window.fbq) {
                 window.fbq("track", "Purchase", {
                     currency: "GHS",
                     value: finalTotal,
@@ -296,8 +296,8 @@ ${itemsSummary}
                                     <TooltipProvider>
                                         <Tooltip>
                                             <TooltipTrigger asChild>
-                                                <button 
-                                                    type="button" 
+                                                <button
+                                                    type="button"
                                                     className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 text-xs cursor-pointer focus:outline-none"
                                                 >
                                                     ?
@@ -316,9 +316,9 @@ ${itemsSummary}
 
                                 {deliveryMethod === 'Shipping' && (
                                     <div className="pt-4 border-t border-gray-100">
-                                        <MapPicker 
-                                            value={deliveryLocation} 
-                                            onChange={(lat, lng) => setDeliveryLocation({ lat, lng })} 
+                                        <MapPicker
+                                            value={deliveryLocation}
+                                            onChange={(lat, lng) => setDeliveryLocation({ lat, lng })}
                                         />
                                     </div>
                                 )}

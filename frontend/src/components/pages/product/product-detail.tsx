@@ -52,10 +52,11 @@ const ProductDetailPage: React.FC = () => {
 
                     if (data) {
                         if (window.fbq) {
-                            window.fbq('track', 'Product Details Page', {
+                            window.fbq('track', 'ViewContent', {
                                 content_name: data.name,
                                 content_category: data.category,
                                 content_ids: [data._id],
+                                contents: [{ id: data._id, quantity: 1 }],
                                 content_type: 'product',
                                 value: data.price,
                                 currency: 'GHS'
@@ -77,10 +78,11 @@ const ProductDetailPage: React.FC = () => {
     const handleAddToCart = () => {
 
         if (window.fbq) {
-            window.fbq("track", "Product AddToCart", {
+            window.fbq("track", "AddToCart", {
                 content_name: product?.name,
                 content_category: product?.name,
                 content_ids: product ? [product._id] : [],
+                contents: product ? [{ id: product._id, quantity }] : [],
                 content_type: "product",
                 value: (product?.price || 0) * quantity,
                 currency: "GHS",
@@ -95,10 +97,11 @@ const ProductDetailPage: React.FC = () => {
 
     const handleBuy = () => {
         if (window.fbq) {
-            window.fbq("track", "Product AddToCart", {
+            window.fbq("track", "AddToCart", {
                 content_name: product?.name,
                 content_category: product?.name,
                 content_ids: product ? [product._id] : [],
+                contents: product ? [{ id: product._id, quantity }] : [],
                 content_type: "product",
                 value: (product?.price || 0) * quantity,
                 currency: "GHS",
