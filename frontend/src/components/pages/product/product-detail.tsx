@@ -322,18 +322,7 @@ const ProductDetailPage: React.FC = () => {
                         </div>
                     </div>
 
-                    <div onClick={() => dispatch(setDrawerOpen(true))}>
-                        <Button className="fixed bottom-4 right-4 bg-gray-400 p-2 sm:hidden z-50 shadow-lg">
-                            <div className="relative">
-                                <ShoppingCart size={24} />
-                                {totalItems > 0 && (
-                                    <span className="absolute top-0 right-0 bg-accent text-white text-xs rounded-full w-5 h-5 flex items-center justify-center -mt-1 -mr-1">
-                                        {totalItems}
-                                    </span>
-                                )}
-                            </div>
-                        </Button>
-                    </div>
+
 
                     {/* People Also View Section */}
                     {products && products.length > 0 && (

@@ -1,4 +1,3 @@
-
 import {
     Sheet,
     SheetContent,
@@ -11,8 +10,13 @@ import { Button } from "@/components/ui/button";
 import { Minus, Plus, ShoppingCart, Trash2 } from "lucide-react";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@/core/store/store";
-import { addToCart, removeItem, decreaseQuantity, setDrawerOpen } from "@/core/store/slice/cart.slice";
-import { Link } from "react-router-dom";
+import {
+    addToCart,
+    removeItem,
+    decreaseQuantity,
+    setDrawerOpen,
+} from "@/core/store/slice/cart.slice";
+import { useSettings } from "@/context/settings_context";
 
 interface CartDrawerProps {
     children?: React.ReactNode;
@@ -20,12 +24,66 @@ interface CartDrawerProps {
 
 export function CartDrawer({ children }: CartDrawerProps) {
     const dispatch = useDispatch();
-    const { items, totalPrice, totalItems, isDrawerOpen } = useSelector((state: RootState) => state.cart);
+    const { settings } = useSettings();
+    const { items, totalPrice, totalItems, isDrawerOpen } = useSelector(
+        (state: RootState) => state.cart,
+    );
 
     const handleOpenChange = (open: boolean) => {
         dispatch(setDrawerOpen(open));
     };
 
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+
+        if (window.fbq) {
+            window.fbq("track", "Purchase", {
+                currency: "GHS",
+                value: totalPrice,
+                content_type: "product",
+                content_ids: items.map((item) => item._id),
+                contents: items.map((item) => ({
+                    id: item._id,
+                    quantity: item.quantity,
+                    item_price: item.price,
+                })),
+                product_names: items.map((item) => item.name),
+                product_type: items.map((item) => item.category),
+                product_prices: items.map((item) => item.price),
+                product_quantities: items.map((item) => item.quantity),
+            });
+        }
+
+        try {
+
+            // 2. Construct concise WhatsApp summary message
+            const itemsSummary = items
+                .map((item) => `• ${item.quantity}x ${item.name}`)
+                .join("\n");
+
+
+            const summaryMessage = `*🆕 I want to place this ORDER!*
+*Order Reference:* ${Math.random().toString(16).substring(2, 10)}
+
+
+*🛒 Items:*
+${itemsSummary}
+
+*💵 Total:* *GHS ${totalPrice.toFixed(2)}*`;
+
+            const whatsappUrl = `https://wa.me/${settings.whatsappNumber}?text=${encodeURIComponent(summaryMessage)}`;
+            const anchor = document.createElement("a");
+            anchor.href = whatsappUrl;
+            anchor.target = "_blank";
+            anchor.rel = "noopener noreferrer";
+            document.body.appendChild(anchor);
+            anchor.click();
+            document.body.removeChild(anchor);
+
+        } catch (err) {
+            console.error("Order submit flow error:", err);
+        }
+    };
     return (
         <Sheet open={isDrawerOpen} onOpenChange={handleOpenChange}>
             <SheetTrigger asChild>
@@ -43,17 +101,26 @@ export function CartDrawer({ children }: CartDrawerProps) {
                     </div>
                 )}
             </SheetTrigger>
-            <SheetContent side="right" className="w-full sm:max-w-md bg-[#1d1d1d] border-l border-[#2d2d2d] p-0 flex flex-col h-full text-zinc-100">
+            <SheetContent
+                side="right"
+                className="w-full sm:max-w-md bg-[#1d1d1d] border-l border-[#2d2d2d] p-0 flex flex-col h-full text-zinc-100"
+            >
                 <SheetHeader className="px-6 py-4 border-b border-[#2d2d2d] flex flex-row items-center justify-between space-y-0">
-                    <SheetTitle className="text-xl font-serif text-gray-100">Your Cart</SheetTitle>
+                    <SheetTitle className="text-xl font-serif text-gray-100">
+                        Your Cart
+                    </SheetTitle>
                     {/* Close button is handled by Sheet primitive, sticking to design */}
                 </SheetHeader>
 
                 {items.length === 0 ? (
                     <div className="flex-1 flex flex-col items-center justify-center p-6 text-center">
                         <ShoppingCart className="h-16 w-16 text-gray-600 mb-4" />
-                        <h3 className="text-lg font-medium text-gray-300 mb-2">Your cart is empty</h3>
-                        <p className="text-sm text-gray-500 mb-6">Looks like you haven't added anything to your cart yet.</p>
+                        <h3 className="text-lg font-medium text-gray-300 mb-2">
+                            Your cart is empty
+                        </h3>
+                        <p className="text-sm text-gray-500 mb-6">
+                            Looks like you haven't added anything to your cart yet.
+                        </p>
                         <Button
                             onClick={() => dispatch(setDrawerOpen(false))}
                             className="bg-[#4A6741] hover:bg-[#3a5232] text-white"
@@ -80,7 +147,9 @@ export function CartDrawer({ children }: CartDrawerProps) {
                                         <div className="flex flex-1 flex-col justify-between">
                                             <div className="flex justify-between items-start">
                                                 <div>
-                                                    <h3 className="text-base font-medium text-gray-200 line-clamp-1">{item.name}</h3>
+                                                    <h3 className="text-base font-medium text-gray-200 line-clamp-1">
+                                                        {item.name}
+                                                    </h3>
                                                     {/* Variant removed as not in interface */}
                                                 </div>
                                                 <p className="text-base font-medium text-[#d4c5a9]">
@@ -90,14 +159,22 @@ export function CartDrawer({ children }: CartDrawerProps) {
                                             <div className="flex items-center justify-between text-sm">
                                                 <div className="flex items-center border border-[#3d3d3d] rounded-full">
                                                     <button
-                                                        onClick={() => dispatch(decreaseQuantity({ _id: item._id }))}
+                                                        onClick={() =>
+                                                            dispatch(decreaseQuantity({ _id: item._id }))
+                                                        }
                                                         className="p-2 hover:text-white text-gray-400 transition-colors"
                                                     >
                                                         <Minus size={14} />
                                                     </button>
-                                                    <span className="px-2 font-medium text-gray-200 min-w-[20px] text-center">{item.quantity}</span>
+                                                    <span className="px-2 font-medium text-gray-200 min-w-[20px] text-center">
+                                                        {item.quantity}
+                                                    </span>
                                                     <button
-                                                        onClick={() => dispatch(addToCart({ product: item, quantity: 1 }))}
+                                                        onClick={() =>
+                                                            dispatch(
+                                                                addToCart({ product: item, quantity: 1 }),
+                                                            )
+                                                        }
                                                         className="p-2 hover:text-white text-gray-400 transition-colors"
                                                     >
                                                         <Plus size={14} />
@@ -126,11 +203,17 @@ export function CartDrawer({ children }: CartDrawerProps) {
                             <p className="text-xs text-center text-gray-500">
                                 Taxes, discounts and shipping calculated at checkout.
                             </p>
-                            <Link to="/checkout" onClick={() => dispatch(setDrawerOpen(false))}>
-                                <Button className="w-full bg-[#4A6741] hover:bg-[#3a5232] text-white h-12 text-lg shadow-lg hover:shadow-[#4A6741]/20 transition-all">
-                                    Check out
-                                </Button>
-                            </Link>
+                            {/* <Link to="/checkout" onClick={() => { */}
+
+                            <Button
+                                onClick={(e: React.FormEvent) => {
+                                    handleSubmit(e);
+                                    dispatch(setDrawerOpen(false));
+                                }}
+                                className="w-full bg-[#4A6741] hover:bg-[#3a5232] text-white h-12 text-lg shadow-lg hover:shadow-[#4A6741]/20 transition-all"
+                            >
+                                {` Order on WhatsApp - GHS ${totalPrice.toFixed(2)}`}
+                            </Button>
                         </div>
                     </>
                 )}

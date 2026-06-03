@@ -50,9 +50,6 @@ const cartSlice = createSlice({
       // Recalculate totals
       state.totalItems = state.items.reduce((total, item) => total + item.quantity, 0);
       state.totalPrice = state.items.reduce((total, item) => total + item.price * item.quantity, 0);
-
-      // Open drawer when item is added
-      state.isDrawerOpen = true;
     },
 
 

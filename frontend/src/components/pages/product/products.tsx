@@ -8,16 +8,13 @@ import { Button } from '@/components/ui/button';
 import { Page } from '@/components/ui/page';
 import Pagination from '../../ui/pagination';
 import { ShoppingCart } from 'lucide-react';
-import { Link } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import { RootState } from '@/core/store/store';
 import { useProductAPI } from '@/hooks/product.hook';
 
 const StorePage: React.FC = () => {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { products, loading, isSuggestion, totalPages, currentPage, goToPage } = useProductAPI(true);
-  const totalItems = useSelector((state: RootState) => state.cart.totalItems);
+  // const totalItems = useSelector((state: RootState) => state.cart.totalItems);
 
 
   const openModal = (product: Product) => {
@@ -39,7 +36,7 @@ const StorePage: React.FC = () => {
       <Page
 
         pageTitle='Products'
-        
+
         renderBody={() => (
           <div className="">
             {/* Product Grid */}
@@ -97,18 +94,7 @@ const StorePage: React.FC = () => {
               </>
             )}
 
-            <Link to="/cart">
-              <Button className="fixed bottom-4 right-4 bg-gray-800 p-2 sm:hidden z-50 shadow-lg text-white">
-                <div className="relative">
-                  <ShoppingCart size={24} />
-                  {totalItems > 0 && (
-                    <span className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center -mt-1 -mr-1">
-                      {totalItems}
-                    </span>
-                  )}
-                </div>
-              </Button>
-            </Link>
+
 
             {totalPages > 1 && (
               <Pagination currentPage={currentPage} totalPages={totalPages} goToPage={goToPage}
