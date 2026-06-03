@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import { addToCart, setDrawerOpen } from '@/core/store/slice/cart.slice';
+import { useDispatch } from 'react-redux';
+import { addToCart } from '@/core/store/slice/cart.slice';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useProductAPI } from '@/hooks/product.hook';
@@ -11,16 +11,14 @@ import Countdown, { CountdownRendererFn } from 'react-countdown';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import ProductCard from './product.card';
-import { MinusIcon, PlusIcon, ShoppingCart } from 'lucide-react';
+import { MinusIcon, PlusIcon } from 'lucide-react';
 import { ShareButtons } from '@/components/ui/share-button';
 import InnerImageZoom from 'react-inner-image-zoom';
 import 'react-inner-image-zoom/lib/InnerImageZoom/styles.css';
-import { RootState } from '@/core/store/store';
 
 const ProductDetailPage: React.FC = () => {
     const { productId } = useParams<{ productId: string }>();
     const dispatch = useDispatch();
-    const totalItems = useSelector((state: RootState) => state.cart.totalItems);
     const [product, setProduct] = useState<Product | null>(null);
     const [products, setProducts] = useState<Product[]>();
     const [quantity, setQuantity] = useState(1);
