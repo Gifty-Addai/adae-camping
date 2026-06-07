@@ -141,7 +141,8 @@ const ProductDetailPage: React.FC = () => {
             key={product?._id}
             pageTitle={product ? product.name : 'Product Details'}
             renderBody={() => (
-                <div className="max-w-6xl mx-auto mb-10 bg-[#2a2a2a] rounded-none sm:rounded-2xl shadow-2xl sm:p-6 lg:p-12 border-x-0 sm:border border-[#3d3d3d]">
+                <div className="px-4 sm:px-0 w-full">
+                    <div className="max-w-6xl mx-auto mb-10 bg-[#2a2a2a] rounded-2xl shadow-2xl p-4 sm:p-6 lg:p-12 border border-[#3d3d3d]">
                     <div className="flex flex-col md:flex-row gap-6 md:gap-0">
 
                         {/* Product Image with Zoom */}
@@ -157,7 +158,7 @@ const ProductDetailPage: React.FC = () => {
                                         zoomType="hover"
                                         zoomPreload={true}
                                         fadeDuration={150}
-                                        className="w-full h-full [&_img]:object-contain [&_img]:w-full [&_img]:h-full [&_img]:rounded-2xl"
+                                        className="w-full h-full [&_.iiz__img]:object-contain [&_.iiz__img]:w-full [&_.iiz__img]:h-full [&_.iiz__img]:rounded-2xl"
                                     />
                                     
                                     {/* Expand Indicator on Hover */}
@@ -387,6 +388,7 @@ const ProductDetailPage: React.FC = () => {
                     )}
 
                     <ToastContainer position="top-right" autoClose={3000} />
+                </div>
                 </div>
             )}
         />
