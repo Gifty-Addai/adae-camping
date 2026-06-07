@@ -58,34 +58,34 @@ const StorePage: React.FC = () => {
             </h2>
 
             {/* Sub-Category Filter Tabs */}
-            <div className="flex flex-wrap items-center gap-3 mb-8 border-b border-[#2d2d2d] pb-4">
+            <div className="mb-8 border-b border-[#2d2d2d] pb-4">
               <Tabs
                 value={activeSubCategory || "all"}
                 onValueChange={(val) => handleTabChange(val === "all" ? "" : val)}
-                className="w-full sm:w-auto"
+                className="w-full"
               >
-                <TabsList className="bg-[#1d1d1d] border border-[#2d2d2d] h-auto p-1.5 rounded-full flex flex-wrap gap-1">
+                <TabsList className="bg-[#1d1d1d] border border-[#2d2d2d] h-auto p-1.5 rounded-full flex flex-nowrap gap-1 overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden w-full max-w-full justify-start">
                   <TabsTrigger
                     value="all"
-                    className="rounded-full px-6 py-2 text-sm font-medium transition-all duration-300 data-[state=active]:bg-[#8b7355] data-[state=active]:text-white text-gray-400 hover:text-white data-[state=active]:shadow-lg"
+                    className="rounded-full px-6 py-2 text-sm font-medium transition-all duration-300 data-[state=active]:bg-[#8b7355] data-[state=active]:text-white text-gray-400 hover:text-white data-[state=active]:shadow-lg whitespace-nowrap"
                   >
                     All Collection
                   </TabsTrigger>
                   <TabsTrigger
                     value="Oils"
-                    className="rounded-full px-6 py-2 text-sm font-medium transition-all duration-300 data-[state=active]:bg-[#8b7355] data-[state=active]:text-white text-gray-400 hover:text-white data-[state=active]:shadow-lg"
+                    className="rounded-full px-6 py-2 text-sm font-medium transition-all duration-300 data-[state=active]:bg-[#8b7355] data-[state=active]:text-white text-gray-400 hover:text-white data-[state=active]:shadow-lg whitespace-nowrap"
                   >
                     Cooking Oils
                   </TabsTrigger>
                   <TabsTrigger
                     value="skin & hair"
-                    className="rounded-full px-6 py-2 text-sm font-medium transition-all duration-300 data-[state=active]:bg-[#8b7355] data-[state=active]:text-white text-gray-400 hover:text-white data-[state=active]:shadow-lg"
+                    className="rounded-full px-6 py-2 text-sm font-medium transition-all duration-300 data-[state=active]:bg-[#8b7355] data-[state=active]:text-white text-gray-400 hover:text-white data-[state=active]:shadow-lg whitespace-nowrap"
                   >
                     Skin & Hair Care
                   </TabsTrigger>
                   <TabsTrigger
                     value="broth"
-                    className="rounded-full px-6 py-2 text-sm font-medium transition-all duration-300 data-[state=active]:bg-[#8b7355] data-[state=active]:text-white text-gray-400 hover:text-white data-[state=active]:shadow-lg"
+                    className="rounded-full px-6 py-2 text-sm font-medium transition-all duration-300 data-[state=active]:bg-[#8b7355] data-[state=active]:text-white text-gray-400 hover:text-white data-[state=active]:shadow-lg whitespace-nowrap"
                   >
                     Broth
                   </TabsTrigger>
