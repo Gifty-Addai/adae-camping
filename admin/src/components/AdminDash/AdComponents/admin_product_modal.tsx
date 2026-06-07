@@ -53,7 +53,7 @@ const AdminProductModal: React.FC<AdminProductModalProps> = ({ product, onOpen, 
             description: "",
             price: undefined,
             category: defaultCategory || "accessories", // Use defaultCategory if provided
-            subCategory: "",
+            subCategory: defaultCategory === "tallow" ? "Oils" : "",
             stock: 0,
             image: "",
             isAvailable: false,
@@ -106,7 +106,7 @@ const AdminProductModal: React.FC<AdminProductModalProps> = ({ product, onOpen, 
                 description: product.description,
                 price: product.price,
                 category: product.category || "accessories",
-                subCategory: product.subCategory || "",
+                subCategory: product.subCategory || (product.category === "tallow" ? "Oils" : ""),
                 stock: product.stock,
                 image: product.imageUrl || "",
                 isAvailable: product.isAvailable,
@@ -118,7 +118,7 @@ const AdminProductModal: React.FC<AdminProductModalProps> = ({ product, onOpen, 
                 description: "",
                 price: undefined,
                 category: defaultCategory || "accessories",
-                subCategory: "",
+                subCategory: defaultCategory === "tallow" ? "Oils" : "",
                 stock: 0,
                 image: "",
                 isAvailable: false,
@@ -243,7 +243,14 @@ const AdminProductModal: React.FC<AdminProductModalProps> = ({ product, onOpen, 
                             <FormItem>
                                 <FormLabel className="text-gray-300">Category</FormLabel>
                                 <Select
-                                    onValueChange={field.onChange}
+                                    onValueChange={(val) => {
+                                        field.onChange(val);
+                                        if (val === "tallow") {
+                                            form.setValue("subCategory", "Oils");
+                                        } else {
+                                            form.setValue("subCategory", "");
+                                        }
+                                    }}
                                     value={field.value}
                                     disabled={!!defaultCategory} // Disable if fixed category
                                 >
@@ -269,7 +276,7 @@ const AdminProductModal: React.FC<AdminProductModalProps> = ({ product, onOpen, 
                                     <FormLabel className="text-gray-300">Sub-category</FormLabel>
                                     <Select
                                         onValueChange={field.onChange}
-                                        value={field.value}
+                                        value={field.value || "Oils"}
                                     >
                                         <SelectTrigger>
                                             <SelectValue placeholder="Select sub-category" />
@@ -277,6 +284,7 @@ const AdminProductModal: React.FC<AdminProductModalProps> = ({ product, onOpen, 
                                         <SelectContent>
                                             <SelectItem value="Oils">Oils</SelectItem>
                                             <SelectItem value="skin & hair">skin & hair</SelectItem>
+                                            <SelectItem value="broth">Broth</SelectItem>
                                         </SelectContent>
                                     </Select>
                                     <FormMessage />
