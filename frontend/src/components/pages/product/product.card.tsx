@@ -61,7 +61,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onOpenModal }) => {
     navigate(`/product/${encodeURIComponent(product.name.substring(0, 30))}/${productId}`);
   };
   return (
-    <div className="group w-full cursor-pointer">
+    <div className="group mb-5 w-full cursor-pointer">
       {/* Modern Tallow Card Container */}
       <div className="relative bg-gradient-to-br from-[#2a2a2a] to-[#1d1d1d] rounded-2xl overflow-hidden border border-[#3d3d3d] transition-all duration-500 hover:border-[#8b7355] hover:shadow-2xl hover:shadow-amber-950/30">
 

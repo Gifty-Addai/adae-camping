@@ -124,14 +124,14 @@ const LandingPage = () => {
                                 <img
                                     src="https://res.cloudinary.com/dyua9sfez/image/upload/v1769895230/photo_7_2026-01-31_21-33-30_piv24z.jpg"
                                     alt="Cooking Oils - Goat, Beef Tallow & Ghee"
-                                    className="absolute inset-0 w-full h-full object-cover"
+                                    className="absolute inset-0 w-full h-full object-fill"
                                 />
                                 {/* Overlay on hover */}
                                 <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-300" />
                             </div>
                             <h3 className="text-xl font-serif text-gray-900 mb-2 font-semibold">Cooking Oils</h3>
                             <p className="text-sm text-gray-600 mb-2">Goat, Beef Tallow & Ghee</p>
-                            <Link to="/products">
+                            <Link to="/products?subCategory=Oils">
                                 <Button variant="link" className="text-gray-700 hover:text-black font-medium">Shop Now <ArrowRight size={16} className="ml-2" /></Button>
                             </Link>
                         </div>
@@ -142,14 +142,14 @@ const LandingPage = () => {
                                 <img
                                     src="https://res.cloudinary.com/dyua9sfez/image/upload/v1735639715/trip_images/kkorgq4e8d9uuc8qfr6b.jpg"
                                     alt="Skin Care - Nourishing Tallow Balms"
-                                    className="absolute inset-0 w-full h-full object-cover"
+                                    className="absolute inset-0 w-full h-full object-fill"
                                 />
                                 {/* Overlay on hover */}
                                 <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-300" />
                             </div>
-                            <h3 className="text-xl font-serif text-gray-900 mb-2 font-semibold">Skin Care</h3>
+                            <h3 className="text-xl font-serif text-gray-900 mb-2 font-semibold">Skin & Hair Care</h3>
                             <p className="text-sm text-gray-600 mb-2">Nourishing Tallow Balms</p>
-                            <Link to="/products">
+                            <Link to="/products?subCategory=skin %26 hair">
                                 <Button variant="link" className="text-gray-700 hover:text-black font-medium">Shop Now <ArrowRight size={16} className="ml-2" /></Button>
                             </Link>
                         </div>
@@ -158,16 +158,16 @@ const LandingPage = () => {
                         <div className="flex flex-col items-center text-center group cursor-pointer">
                             <div className="w-full h-80 rounded-[40px] overflow-hidden bg-gray-100 mb-6 relative transition-all duration-300 group-hover:shadow-2xl group-hover:scale-105 border border-gray-200">
                                 <img
-                                    src="https://res.cloudinary.com/dyua9sfez/image/upload/v1735639715/trip_images/kkorgq4e8d9uuc8qfr6b.jpg"
+                                    src="https://res.cloudinary.com/dyua9sfez/image/upload/v1780651416/trip_images/lnnbox90aj8bzgctegym.jpg"
                                     alt="Hair Care - Traditional Nourishment"
-                                    className="absolute inset-0 w-full h-full object-cover"
+                                    className="w-full h-full object-fill"
                                 />
                                 {/* Overlay on hover */}
                                 <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-300" />
                             </div>
-                            <h3 className="text-xl font-serif text-gray-900 mb-2 font-semibold">Hair Care</h3>
-                            <p className="text-sm text-gray-600 mb-2">Traditional Nourishment</p>
-                            <Link to="/products">
+                            <h3 className="text-xl font-serif text-gray-900 mb-2 font-semibold">Broths</h3>
+                            <p className="text-sm text-gray-600 mb-2">Bone Broth</p>
+                            <Link to="/products?subCategory=broth">
                                 <Button variant="link" className="text-gray-700 hover:text-black font-medium">Shop Now <ArrowRight size={16} className="ml-2" /></Button>
                             </Link>
                         </div>

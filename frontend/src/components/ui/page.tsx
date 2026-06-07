@@ -42,7 +42,7 @@ export const Page = ({
   const appState = useSelector((state: RootState) => state.appSlice);
 
   useEffect(() => {
-    console.log("Page is loading",isLoading)
+    console.log("Page is loading", isLoading)
     dispatch(setAppLoading(isLoading));
   }, [isLoading]);
 
@@ -65,7 +65,7 @@ export const Page = ({
     <>
       <div
         className={cn(
-          "flex-1 overflow-y-auto px-4 py-5 relative mx-auto",
+          "flex-1 overflow-y-auto mt-0 px-0 py-0 relative mx-auto",
           "max-w-[920px]",
           renderFooter != undefined && "-mb-10 pb-12 max-h-[97vh]",
           scrollable && "max-h-[100vh]"

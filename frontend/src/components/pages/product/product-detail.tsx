@@ -302,6 +302,9 @@ const ProductDetailPage: React.FC = () => {
                                         </h3>
                                         <ul className="list-disc list-inside text-sm md:text-base text-gray-300">
                                             <li className="text-gray-300">Category: {product?.category}</li>
+                                            {product?.subCategory && (
+                                                <li className="text-gray-300">Sub-category: {product?.subCategory}</li>
+                                            )}
                                             <li className="text-gray-300">
                                                 Available: {product?.isAvailable ? 'Yes' : 'No'}
                                             </li>

@@ -9,13 +9,21 @@ import { Page } from '@/components/ui/page';
 import Pagination from '../../ui/pagination';
 import { ShoppingCart } from 'lucide-react';
 import { useProductAPI } from '@/hooks/product.hook';
+import { useSearchParams } from 'react-router-dom';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 const StorePage: React.FC = () => {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { products, loading, isSuggestion, totalPages, currentPage, goToPage } = useProductAPI(true);
-  // const totalItems = useSelector((state: RootState) => state.cart.totalItems);
 
+  const [searchParams, setSearchParams] = useSearchParams();
+  const activeSubCategory = searchParams.get('subCategory') || '';
+
+  const { products, loading, isSuggestion, totalPages, currentPage, goToPage } = useProductAPI(
+    true,
+    false,
+    activeSubCategory ? { subCategory: activeSubCategory } : {}
+  );
 
   const openModal = (product: Product) => {
     setSelectedProduct(product);
@@ -27,13 +35,18 @@ const StorePage: React.FC = () => {
     setIsModalOpen(false);
   };
 
-
-
-
+  const handleTabChange = (subCat: string) => {
+    if (subCat) {
+      setSearchParams({ subCategory: subCat });
+    } else {
+      setSearchParams({});
+    }
+  };
 
   return (
     <>
       <Page
+
 
         pageTitle='Products'
 
@@ -43,6 +56,42 @@ const StorePage: React.FC = () => {
             <h2 className="text-2xl font-bold mt-0 text-gray-900 mb-4 font-serif">
               Explore Our Products!
             </h2>
+
+            {/* Sub-Category Filter Tabs */}
+            <div className="flex flex-wrap items-center gap-3 mb-8 border-b border-[#2d2d2d] pb-4">
+              <Tabs
+                value={activeSubCategory || "all"}
+                onValueChange={(val) => handleTabChange(val === "all" ? "" : val)}
+                className="w-full sm:w-auto"
+              >
+                <TabsList className="bg-[#1d1d1d] border border-[#2d2d2d] h-auto p-1.5 rounded-full flex flex-wrap gap-1">
+                  <TabsTrigger
+                    value="all"
+                    className="rounded-full px-6 py-2 text-sm font-medium transition-all duration-300 data-[state=active]:bg-[#8b7355] data-[state=active]:text-white text-gray-400 hover:text-white data-[state=active]:shadow-lg"
+                  >
+                    All Collection
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="Oils"
+                    className="rounded-full px-6 py-2 text-sm font-medium transition-all duration-300 data-[state=active]:bg-[#8b7355] data-[state=active]:text-white text-gray-400 hover:text-white data-[state=active]:shadow-lg"
+                  >
+                    Cooking Oils
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="skin & hair"
+                    className="rounded-full px-6 py-2 text-sm font-medium transition-all duration-300 data-[state=active]:bg-[#8b7355] data-[state=active]:text-white text-gray-400 hover:text-white data-[state=active]:shadow-lg"
+                  >
+                    Skin & Hair Care
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="broth"
+                    className="rounded-full px-6 py-2 text-sm font-medium transition-all duration-300 data-[state=active]:bg-[#8b7355] data-[state=active]:text-white text-gray-400 hover:text-white data-[state=active]:shadow-lg"
+                  >
+                    Broth
+                  </TabsTrigger>
+                </TabsList>
+              </Tabs>
+            </div>
 
             {loading ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">

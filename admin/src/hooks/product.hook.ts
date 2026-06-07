@@ -137,29 +137,32 @@ export const useProductAPI = (
   const [inActiveProducts, setInActiveProducts] = useState<number>(0);
   const [activeProducts, setActiveProducts] = useState<number>(0);
   const [isSuggestion, setIsSuggestion] = useState<boolean>(false);
+  const [searchFilters, setSearchFilters] = useState<Record<string, any>>({});
 
   const limit = 12;
 
   const getProducts = async (
     isAvailable: boolean | undefined = defaultAvailability,
     page: number = currentPage,
+    filters: Record<string, any> = searchFilters
   ): Promise<void> => {
     setLoading(true);
 
     try {
       let response;
+      const combinedFilters = { ...initialFilters, ...filters };
       if (isAdmin) {
         // Pass filter if admin
         response = await fetchProducts(
           page,
           limit,
           isAvailable,
-          initialFilters,
+          combinedFilters,
         );
         setInActiveProducts(response.inActiveProducts || 0);
         setIsSuggestion(response.isSuggestion || false);
       } else {
-        response = await fetchTallowProducts(page, limit, initialFilters?.subCategory);
+        response = await fetchTallowProducts(page, limit, combinedFilters?.subCategory);
         setInActiveProducts(
           (response.totalProducts || 0) - (response.activeProducts || 0),
         );
@@ -184,7 +187,7 @@ export const useProductAPI = (
     setLoading(true);
     try {
       await createProduct(productData);
-      await getProducts(undefined);
+      await getProducts(undefined, 1, {});
       toast.success("Product added successfully!");
       return true;
     } catch (error) {
@@ -203,7 +206,7 @@ export const useProductAPI = (
     setLoading(true);
     try {
       await updateProduct(id, productData);
-      await getProducts(undefined);
+      await getProducts(undefined, currentPage, searchFilters);
       toast.success("Product updated successfully!");
       return true;
     } catch (error) {
@@ -219,7 +222,7 @@ export const useProductAPI = (
     setLoading(true);
     try {
       await deleteProduct(id);
-      await getProducts(undefined);
+      await getProducts(undefined, currentPage, searchFilters);
       toast.success("Product deleted successfully!");
     } catch (error) {
       console.error("Error deleting product:", error);
@@ -232,22 +235,11 @@ export const useProductAPI = (
   const searchProduct = async (
     filters: Record<string, any>,
     isAvailable: boolean | undefined,
-    page: number = currentPage,
+    page: number = 1,
   ): Promise<Product[] | void> => {
-    setLoading(true);
-    try {
-      const result = await searchProducts(filters, page, limit, isAvailable);
-      setProducts(result.products || []);
-      setTotalPages(result.totalPages || 1);
-      setIsSuggestion(result.isSuggestion || false);
-
-      return result.products;
-    } catch (error) {
-      console.error("Error searching products:", error);
-      toast.error("Failed to search products.");
-    } finally {
-      setLoading(false);
-    }
+    setSearchFilters(filters);
+    setCurrentPage(page);
+    await getProducts(isAvailable, page, filters);
   };
 
   const getProductById = async (id: string): Promise<Product | null> => {
@@ -267,12 +259,14 @@ export const useProductAPI = (
   const goToPage = (page: number): void => {
     if (page >= 1 && page <= totalPages) {
       setCurrentPage(page);
-      getProducts(undefined, page);
+      getProducts(undefined, page, searchFilters);
     }
   };
 
   useEffect(() => {
-    getProducts(undefined);
+    setSearchFilters({});
+    setCurrentPage(1);
+    getProducts(undefined, 1, {});
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialFilters.subCategory, initialFilters.category]);
 
