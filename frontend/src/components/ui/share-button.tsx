@@ -52,8 +52,13 @@ export const ShareButtons: React.FC<ShareButtonsProps> = ({ url, buttonText = "S
     return (
         <div className="relative">
             {/* Primary share button (either tries native share or toggles fallback icons) */}
-            <Button variant="secondary" size={"sm"} onClick={handleNativeShare}>
-                <Share2Icon className="h-4 w-4 mr-2" />
+            <Button 
+                variant="secondary" 
+                size={buttonText ? "sm" : "icon"} 
+                className={buttonText ? "" : "rounded-full w-9 h-9"} 
+                onClick={handleNativeShare}
+            >
+                <Share2Icon color='black' className={`h-4 w-4 ${buttonText ? 'mr-2' : ''}`} />
                 {buttonText}
             </Button>
 

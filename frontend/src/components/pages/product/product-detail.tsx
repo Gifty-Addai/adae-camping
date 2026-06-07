@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { addToCart } from '@/core/store/slice/cart.slice';
+import { addToCart, setDrawerOpen } from '@/core/store/slice/cart.slice';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useProductAPI } from '@/hooks/product.hook';
@@ -109,7 +109,7 @@ const ProductDetailPage: React.FC = () => {
 
         if (product) {
             dispatch(addToCart({ product, quantity }));
-            // navigate('/cart'); // Removed
+            dispatch(setDrawerOpen(true));
         }
     };
 
@@ -140,11 +140,11 @@ const ProductDetailPage: React.FC = () => {
             key={product?._id}
             pageTitle={product ? product.name : 'Product Details'}
             renderBody={() => (
-                <div className="max-w-6xl mx-auto bg-[#2a2a2a] rounded-2xl shadow-2xl p-4 md:p-6 lg:p-12 border border-[#3d3d3d]">
-                    <div className="flex flex-col md:flex-row">
+                <div className="max-w-6xl mx-auto mb-10 bg-[#2a2a2a] rounded-none sm:rounded-2xl shadow-2xl sm:p-6 lg:p-12 border-x-0 sm:border border-[#3d3d3d]">
+                    <div className="flex flex-col md:flex-row gap-6 md:gap-0">
 
                         {/* Product Image with Zoom */}
-                        <div className="w-full md:w-1/2 flex rounded-lg flex-col gap-4">
+                        <div className="w-full md:w-1/2 flex flex-col gap-4">
                             {product && (
                                 <InnerImageZoom
                                     src={product.imageUrl}
@@ -152,105 +152,132 @@ const ProductDetailPage: React.FC = () => {
                                     zoomType="hover"
                                     zoomPreload={true}
                                     fadeDuration={150}
-                                    className="rounded-2xl object-fill w-full h-74 md:h-80 lg:h-96"
+                                    className="rounded-2xl object-cover w-full h-64 sm:h-80 md:h-96 lg:h-[450px]"
                                 />
                             )}
                         </div>
 
                         {/* Product Details */}
-                        <div className="w-full md:w-1/2 md:pl-8 lg:pl-12 mt-6 md:mt-0">
+                        <div className="w-full md:w-1/2 md:pl-8 lg:pl-12 mt-0">
                             {!loading && product ? (
                                 <div>
-                                    <h1 className="text-3xl text-center md:text-4xl font-extrabold text-gray-100 mb-3 md:mb-4">
-                                        {product?.name}
-                                    </h1>
-
-                                    {/* DESCRIPTION WITH VIEW MORE/LESS */}
-                                    {product?.description && (
-                                        <p className="text-xs text-muted-foreground mb-4 md:mb-6">
-                                            {showFullDesc ? product.description : truncatedDesc}
-
-                                            {/* If description is long AND we're not showing the full text, show "View More" */}
-                                            {!showFullDesc && product.description.length > MAX_DESC_LENGTH && (
-                                                <span
-                                                    onClick={() => setShowFullDesc(true)}
-                                                    className="ml-2 text-[#d4c5a9] cursor-pointer text-sm font-semibold hover:text-[#8b7355]"
-                                                >
-                                                    View More
-                                                </span>
-                                            )}
-
-                                            {/* If we're showing the full text AND it's long, show "View Less" */}
-                                            {showFullDesc && product.description.length > MAX_DESC_LENGTH && (
-                                                <span
-                                                    onClick={() => setShowFullDesc(false)}
-                                                    className="ml-2 text-[#d4c5a9] cursor-pointer text-sm font-semibold hover:text-[#8b7355]"
-                                                >
-                                                    View Less
-                                                </span>
-                                            )}
-                                        </p>
-                                    )}
-
-                                    <div className="flex items-center mb-4 md:mb-6">
-                                        <p className="text-2xl md:text-3xl font-bold text-[#d4c5a9] mr-3 md:mr-4">
-                                            GHS {product?.price.toLocaleString()}
-                                        </p>
-                                        <>
-                                            <p className="text-sm md:text-base text-gray-400 line-through">
-                                                GHS {0}
-                                            </p>
-                                            <span className="bg-red-500 text-white text-xs md:text-sm px-2 py-1 rounded-md ml-2 md:ml-4">
-                                                {0}% OFF
-                                            </span>
-                                        </>
+                                    {/* Product Title & Share */}
+                                    <div className="flex items-start justify-between gap-4 mb-2">
+                                        <h1 className="text-3xl text-left md:text-4xl font-extrabold text-gray-100">
+                                            {product?.name}
+                                        </h1>
+                                        <div className="flex-shrink-0 mt-1">
+                                            <ShareButtons url={shareUrl} title={productTitle} buttonText="" />
+                                        </div>
                                     </div>
 
-                                    <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-4 sm:space-y-0 sm:space-x-4 mb-4 md:mb-6">
-                                        <div className="flex items-center">
-                                            <Button
-                                                variant="secondary"
-                                                className="h-8 w-8 p-0 flex items-center justify-center"
-                                                onClick={(e) => {
-                                                    e.preventDefault();
-                                                    e.stopPropagation();
-                                                    decrementQuantity();
-                                                }}
-                                            >
-                                                <MinusIcon className="h-4 w-4" />
-                                            </Button>
-                                            <p className="mx-3 text-md font-medium text-gray-100">{quantity}</p>
-                                            <Button
-                                                className="h-8 w-8 bg-[#8b7355] hover:bg-[#6d5a44] p-0 flex items-center justify-center"
-                                                onClick={(e) => {
-                                                    e.preventDefault();
-                                                    e.stopPropagation();
-                                                    incrementQuantity();
-                                                }}
-                                            >
-                                                <PlusIcon className="h-4 w-4" />
-                                            </Button>
+                                    {/* Category, Subcategory & Stock Badges */}
+                                    <div className="flex flex-wrap items-center gap-2 mb-4">
+                                        <span className="bg-[#8b7355]/20 text-[#d4c5a9] border border-[#8b7355]/30 text-xs px-2.5 py-1 rounded-full uppercase tracking-wider font-semibold">
+                                            {product?.category}
+                                        </span>
+                                        {product?.subCategory && (
+                                            <span className="bg-[#8b7355]/20 text-[#d4c5a9] border border-[#8b7355]/30 text-xs px-2.5 py-1 rounded-full uppercase tracking-wider font-semibold">
+                                                {product?.subCategory}
+                                            </span>
+                                        )}
+                                        {product?.isAvailable ? (
+                                            <span className="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-xs px-2.5 py-1 rounded-full uppercase tracking-wider font-semibold">
+                                                In Stock
+                                            </span>
+                                        ) : (
+                                            <span className="bg-rose-500/10 text-rose-400 border border-rose-500/20 text-xs px-2.5 py-1 rounded-full uppercase tracking-wider font-semibold">
+                                                Out of Stock
+                                            </span>
+                                        )}
+                                    </div>
+
+                                    {/* Price Section */}
+                                    <div className="flex items-center mb-6">
+                                        <p className="text-3xl md:text-4xl font-bold text-[#d4c5a9] mr-4">
+                                            GHS {product?.price.toLocaleString()}
+                                        </p>
+                                    </div>
+
+                                    {/* Purchase Actions (Quantity, Add to Cart, Buy Now) */}
+                                    <div className="flex flex-col gap-4 mb-8 pb-6 border-b border-[#3d3d3d]">
+                                        {/* Quantity Selector Row */}
+                                        <div className="flex items-center gap-3">
+                                            <span className="text-sm text-gray-400 font-medium">Quantity:</span>
+                                            <div className="flex items-center justify-between border border-[#3d3d3d] rounded-xl px-2 py-1 bg-[#1d1d1d] w-32">
+                                                <Button
+                                                    variant="secondary"
+                                                    className="h-8 w-8 p-0 flex items-center justify-center bg-transparent border-none hover:bg-neutral-800"
+                                                    onClick={(e) => {
+                                                        e.preventDefault();
+                                                        e.stopPropagation();
+                                                        decrementQuantity();
+                                                    }}
+                                                >
+                                                    <MinusIcon className="h-4 w-4" />
+                                                </Button>
+                                                <p className="text-md font-medium text-gray-100 select-none min-w-[20px] text-center">{quantity}</p>
+                                                <Button
+                                                    className="h-8 w-8 bg-[#8b7355] hover:bg-[#6d5a44] p-0 flex items-center justify-center"
+                                                    onClick={(e) => {
+                                                        e.preventDefault();
+                                                        e.stopPropagation();
+                                                        incrementQuantity();
+                                                    }}
+                                                >
+                                                    <PlusIcon className="h-4 w-4" />
+                                                </Button>
+                                            </div>
                                         </div>
-                                        <div className="flex space-x-4">
-                                            <Button onClick={handleAddToCart} className="w-full sm:w-auto">
+
+                                        {/* Actions Buttons Row */}
+                                        <div className="flex gap-3 w-full">
+                                            <Button onClick={handleAddToCart} className="flex-1 py-6 text-base font-semibold bg-[#8b7355] hover:bg-[#6d5a44]">
                                                 Add to Cart
                                             </Button>
-                                            <Button variant="secondary" onClick={handleBuy} className="w-full sm:w-auto">
+                                            <Button variant="secondary" onClick={handleBuy} className="flex-1 py-6 text-base font-semibold">
                                                 Buy Now
                                             </Button>
                                         </div>
                                     </div>
 
-                                    {/* SHARE FEATURE */}
-                                    <div className="mt-4 mb-6">
-                                        <ShareButtons url={shareUrl} title={productTitle} />
-                                    </div>
+                                    {/* Description Section */}
+                                    {product?.description && (
+                                        <div className="mb-8">
+                                            <h3 className="text-lg font-semibold text-gray-100 mb-3 border-b border-[#3d3d3d] pb-2">
+                                                Description
+                                            </h3>
+                                            <div className="text-sm md:text-base text-gray-300 leading-relaxed whitespace-pre-line">
+                                                {showFullDesc ? product.description : truncatedDesc}
 
-                                    {/* Timer for Sales Countdown */}
-                                    <div className="mt-4 mb-4 md:mb-6">
-                                        <h3 className="text-md md:text-lg font-semibold text-gray-100 mb-1 md:mb-2">
-                                            Discount Sale Ends In:
-                                        </h3>
+                                                {/* If description is long AND we're not showing the full text, show "View More" */}
+                                                {!showFullDesc && product.description.length > MAX_DESC_LENGTH && (
+                                                    <button
+                                                        onClick={() => setShowFullDesc(true)}
+                                                        className="ml-2 text-[#d4c5a9] inline-flex items-center cursor-pointer text-sm font-semibold hover:text-[#8b7355] transition-colors border-none bg-transparent p-0"
+                                                    >
+                                                        View More
+                                                    </button>
+                                                )}
+
+                                                {/* If we're showing the full text AND it's long, show "View Less" */}
+                                                {showFullDesc && product.description.length > MAX_DESC_LENGTH && (
+                                                    <button
+                                                        onClick={() => setShowFullDesc(false)}
+                                                        className="ml-2 text-[#d4c5a9] inline-flex items-center cursor-pointer text-sm font-semibold hover:text-[#8b7355] transition-colors border-none bg-transparent p-0"
+                                                    >
+                                                        View Less
+                                                    </button>
+                                                )}
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {/* Countdown Timer */}
+                                    <div className="mb-8 bg-[#1d1d1d]/50 border border-[#3d3d3d] rounded-xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                                        <h4 className="text-sm font-semibold text-gray-300 uppercase tracking-wider">
+                                            ⚡ Special Discount Ends In:
+                                        </h4>
                                         <Countdown
                                             date={new Date().getTime() + 1000 * 60 * 60 * 24}
                                             renderer={renderer}
@@ -258,15 +285,14 @@ const ProductDetailPage: React.FC = () => {
                                     </div>
 
                                     {/* Delivery & Returns */}
-                                    <div className="border-t pt-4 md:pt-6 mt-4 md:mt-6">
-                                        <h3 className="text-md md:text-lg font-semibold text-gray-100 mb-3">
+                                    <div className="border-t border-[#3d3d3d] pt-6 mb-6">
+                                        <h3 className="text-lg font-semibold text-gray-100 mb-4">
                                             Delivery &amp; Returns
                                         </h3>
-                                        {/* Delivery breakdown */}
-                                        <div className="mb-3">
-                                            <p className="text-sm md:text-base font-medium text-[#d4c5a9] mb-2">🚚 Delivery</p>
-                                            <div className="ml-2 space-y-2">
-                                                <div className="flex items-start gap-2 text-sm md:text-base text-gray-300">
+                                        <div className="mb-4">
+                                            <p className="text-sm font-semibold text-[#d4c5a9] mb-3">🚚 Delivery Coverage</p>
+                                            <div className="ml-2 space-y-3">
+                                                <div className="flex items-start gap-2.5 text-sm md:text-base text-gray-300">
                                                     <span className="text-green-400 mt-0.5">📍</span>
                                                     <div>
                                                         <span className="font-semibold text-gray-100">Accra</span>
@@ -274,42 +300,26 @@ const ProductDetailPage: React.FC = () => {
                                                         <span>Same day delivery</span>
                                                     </div>
                                                 </div>
-                                                <div className="flex items-start gap-2 text-sm md:text-base text-gray-300">
+                                                <div className="flex items-start gap-2.5 text-sm md:text-base text-gray-300">
                                                     <span className="text-yellow-400 mt-0.5">🗺️</span>
                                                     <div>
                                                         <span className="font-semibold text-gray-100">Outside Accra</span>
                                                         <span className="mx-2 text-gray-500">→</span>
-                                                        <span>Next day delivery <span className="text-gray-400 text-xs">(orders placed before 12pm)</span></span>
+                                                        <span>Next day delivery <span className="text-gray-400 text-xs font-normal">(orders placed before 12pm)</span></span>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                        {/* Returns */}
-                                        <div className="flex items-start gap-2 text-sm md:text-base text-gray-300">
+                                        <div className="flex items-start gap-2.5 text-sm md:text-base text-gray-300 mt-3">
                                             <span className="mt-0.5">↩️</span>
                                             <div>
-                                                <span className="font-semibold text-gray-100">Returns</span>
+                                                <span className="font-semibold text-gray-100">Returns Policy</span>
                                                 <span className="mx-2 text-gray-500">→</span>
                                                 <span>Item is not refundable</span>
                                             </div>
                                         </div>
                                     </div>
 
-                                    {/* Product Details */}
-                                    <div className="border-t pt-4 md:pt-6 mt-4 md:mt-6">
-                                        <h3 className="text-md md:text-lg font-semibold text-gray-100 mb-2">
-                                            Product Details
-                                        </h3>
-                                        <ul className="list-disc list-inside text-sm md:text-base text-gray-300">
-                                            <li className="text-gray-300">Category: {product?.category}</li>
-                                            {product?.subCategory && (
-                                                <li className="text-gray-300">Sub-category: {product?.subCategory}</li>
-                                            )}
-                                            <li className="text-gray-300">
-                                                Available: {product?.isAvailable ? 'Yes' : 'No'}
-                                            </li>
-                                        </ul>
-                                    </div>
                                 </div>
                             ) : (
                                 <div className="space-y-4">
