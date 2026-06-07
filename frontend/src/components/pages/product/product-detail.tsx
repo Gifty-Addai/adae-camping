@@ -22,6 +22,7 @@ const ProductDetailPage: React.FC = () => {
     const [product, setProduct] = useState<Product | null>(null);
     const [products, setProducts] = useState<Product[]>();
     const [quantity, setQuantity] = useState(1);
+    const [isImageOpen, setIsImageOpen] = useState(false);
     const { loading, searchProduct, getProductById, trackClick } = useProductAPI();
 
 
@@ -146,14 +147,26 @@ const ProductDetailPage: React.FC = () => {
                         {/* Product Image with Zoom */}
                         <div className="w-full md:w-1/2 flex flex-col gap-4">
                             {product && (
-                                <InnerImageZoom
-                                    src={product.imageUrl}
-                                    zoomSrc={product.imageUrl}
-                                    zoomType="hover"
-                                    zoomPreload={true}
-                                    fadeDuration={150}
-                                    className="rounded-2xl object-cover w-full h-64 sm:h-80 md:h-96 lg:h-[450px]"
-                                />
+                                <div 
+                                    className="cursor-pointer group/img relative overflow-hidden rounded-2xl bg-[#1d1d1d] flex items-center justify-center w-full h-64 sm:h-80 md:h-96 lg:h-[450px] border border-[#3d3d3d]"
+                                    onClick={() => setIsImageOpen(true)}
+                                >
+                                    <InnerImageZoom
+                                        src={product.imageUrl}
+                                        zoomSrc={product.imageUrl}
+                                        zoomType="hover"
+                                        zoomPreload={true}
+                                        fadeDuration={150}
+                                        className="w-full h-full [&_img]:object-contain [&_img]:w-full [&_img]:h-full [&_img]:rounded-2xl"
+                                    />
+                                    
+                                    {/* Expand Indicator on Hover */}
+                                    <div className="absolute bottom-4 right-4 bg-black/60 hover:bg-black/80 text-white p-2.5 rounded-full text-xs font-semibold backdrop-blur-sm transition-all duration-300 opacity-0 group-hover/img:opacity-100 border border-white/10 flex items-center justify-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 3.75v4.5m0-4.5h4.5m-4.5 0L9 9M3.75 20.25v-4.5m0 4.5h4.5m-4.5 0L9 15M20.25 3.75v4.5m0-4.5h-4.5m4.5 0L15 9m5.25 11.25v-4.5m0 4.5h-4.5m4.5 0L15 15" />
+                                        </svg>
+                                    </div>
+                                </div>
                             )}
                         </div>
 
@@ -347,6 +360,28 @@ const ProductDetailPage: React.FC = () => {
                                         <ProductCard product={relatedProduct} onOpenModal={() => { }} />
                                     </div>
                                 ))}
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Full Size Image Lightbox Modal */}
+                    {isImageOpen && (
+                        <div 
+                            className="fixed inset-0 bg-black/95 backdrop-blur-sm z-[9999] flex items-center justify-center p-4 cursor-pointer transition-opacity duration-300"
+                            onClick={() => setIsImageOpen(false)}
+                        >
+                            <div className="relative max-w-full max-h-full" onClick={(e) => e.stopPropagation()}>
+                                <button 
+                                    onClick={() => setIsImageOpen(false)}
+                                    className="absolute top-4 right-4 text-white hover:text-gray-300 text-3xl font-light focus:outline-none z-50 bg-black/40 rounded-full w-10 h-10 flex items-center justify-center border border-white/10"
+                                >
+                                    ✕
+                                </button>
+                                <img 
+                                    src={product?.imageUrl} 
+                                    alt={product?.name} 
+                                    className="max-w-[95vw] max-h-[90vh] object-contain rounded-lg shadow-2xl animate-in zoom-in-95 duration-200"
+                                />
                             </div>
                         </div>
                     )}
