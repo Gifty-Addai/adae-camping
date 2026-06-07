@@ -51,7 +51,7 @@ const StorePage: React.FC = () => {
         pageTitle='Products'
 
         renderBody={() => (
-          <div className="">
+          <div className="px-4 md:px-0">
             {/* Product Grid */}
             <h2 className="text-2xl font-bold mt-0 text-gray-900 mb-4 font-serif">
               Explore Our Products!
