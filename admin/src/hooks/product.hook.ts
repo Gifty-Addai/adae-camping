@@ -41,6 +41,7 @@ export const fetchProducts = async (
 export const fetchTallowProducts = async (
   page: number,
   limit: number,
+  subCategory?: string,
 ): Promise<{
   products: Product[];
   totalPages: number;
@@ -48,6 +49,9 @@ export const fetchTallowProducts = async (
   totalProducts: number;
   activeProducts: number;
 }> => {
+  const url = `/api/product/getTallowProducts?page=${page}&limit=${limit}${
+    subCategory ? `&subCategory=${encodeURIComponent(subCategory)}` : ""
+  }`;
   const data = await getRequest<{
     products: Product[];
     totalPages: number;
@@ -55,7 +59,7 @@ export const fetchTallowProducts = async (
     totalProducts: number;
     activeProducts: number;
     inActiveProducts?: number;
-  }>(`/api/product/getTallowProducts?page=${page}&limit=${limit}`);
+  }>(url);
   return data;
 };
 
@@ -155,7 +159,7 @@ export const useProductAPI = (
         setInActiveProducts(response.inActiveProducts || 0);
         setIsSuggestion(response.isSuggestion || false);
       } else {
-        response = await fetchTallowProducts(page, limit);
+        response = await fetchTallowProducts(page, limit, initialFilters?.subCategory);
         setInActiveProducts(
           (response.totalProducts || 0) - (response.activeProducts || 0),
         );
@@ -270,7 +274,7 @@ export const useProductAPI = (
   useEffect(() => {
     getProducts(undefined);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [initialFilters.subCategory, initialFilters.category]);
 
   return {
     products,

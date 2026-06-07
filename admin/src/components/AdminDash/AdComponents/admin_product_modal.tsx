@@ -29,6 +29,7 @@ const productSchema = z.object({
         return Number(val);
     }, z.number().positive("Price must be greater than 0")),
     category: z.string().min(1, "Category is required"),
+    subCategory: z.string().optional(),
     stock: z.number().min(0, "Stock must be greater than or equal to 0"),
     image: z.string().url("Image URL must be a valid URL").optional(),
     isAvailable: z.boolean(),
@@ -52,11 +53,14 @@ const AdminProductModal: React.FC<AdminProductModalProps> = ({ product, onOpen, 
             description: "",
             price: undefined,
             category: defaultCategory || "accessories", // Use defaultCategory if provided
+            subCategory: "",
             stock: 0,
             image: "",
             isAvailable: false,
         },
     });
+
+    const selectedCategory = form.watch("category");
 
     const [showConfirmDialog, setShowConfirmDialog] = useState(false);
     const [uploading, setUploading] = useState(false);
@@ -102,6 +106,7 @@ const AdminProductModal: React.FC<AdminProductModalProps> = ({ product, onOpen, 
                 description: product.description,
                 price: product.price,
                 category: product.category || "accessories",
+                subCategory: product.subCategory || "",
                 stock: product.stock,
                 image: product.imageUrl || "",
                 isAvailable: product.isAvailable,
@@ -113,6 +118,7 @@ const AdminProductModal: React.FC<AdminProductModalProps> = ({ product, onOpen, 
                 description: "",
                 price: undefined,
                 category: defaultCategory || "accessories",
+                subCategory: "",
                 stock: 0,
                 image: "",
                 isAvailable: false,
@@ -255,6 +261,28 @@ const AdminProductModal: React.FC<AdminProductModalProps> = ({ product, onOpen, 
                                 <FormMessage />
                             </FormItem>
                         )} />
+
+                        {/* Sub-category (Conditional on category === 'tallow') */}
+                        {selectedCategory === "tallow" && (
+                            <FormField control={form.control} name="subCategory" render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel className="text-gray-300">Sub-category</FormLabel>
+                                    <Select
+                                        onValueChange={field.onChange}
+                                        value={field.value}
+                                    >
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="Select sub-category" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="Oils">Oils</SelectItem>
+                                            <SelectItem value="skin & hair">skin & hair</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                    <FormMessage />
+                                </FormItem>
+                            )} />
+                        )}
 
                         {/* Image Selection with Tabs */}
                         <div className="space-y-3">

@@ -32,7 +32,14 @@ const AdminProductCard: React.FC<AdminProductCardProps> = ({ product, onEdit }) 
       <CardContent className="px-4 flex flex-col justify-between flex-grow">
         {/* Title and Description */}
         <CardHeader className="px-0 py-2">
-          <CardTitle className="text-base font-semibold text-gray-100">{product.name}</CardTitle>
+          <div className="flex items-center justify-between gap-2 mb-1">
+            <CardTitle className="text-base font-semibold text-gray-100 line-clamp-1 flex-1">{product.name}</CardTitle>
+            {product.subCategory && (
+              <span className="text-[10px] bg-[#8b7355]/20 text-[#d4c5a9] border border-[#8b7355]/30 px-2 py-0.5 rounded-full whitespace-nowrap">
+                {product.subCategory}
+              </span>
+            )}
+          </div>
           <CardDescription className="text-sm line-clamp-2 text-gray-400">{product.description}</CardDescription>
         </CardHeader>
       </CardContent>

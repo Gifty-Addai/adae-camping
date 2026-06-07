@@ -428,6 +428,7 @@ export interface ProductFormData {
   price: number;
   image: string,
   category: string;
+  subCategory?: string;
   stock: number;
   isAvailable: boolean;
 }
@@ -618,6 +619,7 @@ export interface Product {
   _id: string;
   name: string;
   category: string;
+  subCategory?: string;
   imageUrl: string;
   price: number;
   oldPrice?: number;
