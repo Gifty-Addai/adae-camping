@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import ProductModal from '@/components/ui/product.modal';
@@ -18,6 +18,19 @@ const StorePage: React.FC = () => {
 
   const [searchParams, setSearchParams] = useSearchParams();
   const activeSubCategory = searchParams.get('subCategory') || '';
+  const tabsListRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (tabsListRef.current) {
+        const activeEl = tabsListRef.current.querySelector('[data-state="active"]') as HTMLElement;
+        if (activeEl) {
+          activeEl.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        }
+      }
+    }, 100);
+    return () => clearTimeout(timer);
+  }, [activeSubCategory]);
 
   const { products, loading, isSuggestion, totalPages, currentPage, goToPage } = useProductAPI(
     true,
@@ -64,7 +77,7 @@ const StorePage: React.FC = () => {
                 onValueChange={(val) => handleTabChange(val === "all" ? "" : val)}
                 className="w-full"
               >
-                <TabsList className="bg-[#1d1d1d] border border-[#2d2d2d] h-auto p-1.5 rounded-full flex flex-nowrap gap-1 overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden w-full max-w-full justify-start">
+                <TabsList ref={tabsListRef} className="bg-[#1d1d1d] border border-[#2d2d2d] h-auto p-1.5 rounded-full flex flex-nowrap gap-1 overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden w-full max-w-full justify-start">
                   <TabsTrigger
                     value="all"
                     className="rounded-full px-6 py-2 text-sm font-medium transition-all duration-300 data-[state=active]:bg-[#8b7355] data-[state=active]:text-white text-gray-400 hover:text-white data-[state=active]:shadow-lg whitespace-nowrap"
