@@ -16,7 +16,7 @@ const fallbackSettings: Settings = {
   whatsappNumber: import.meta.env.VITE_WHATSAPP_NUMBER || "233247413964",
   supportEmail: import.meta.env.VITE_SUPPORT_EMAIL || "info@ancestraltallow.gh",
   supportPhone: import.meta.env.VITE_SUPPORT_PHONE || "+233 24 741 3964",
-  promoMessage: import.meta.env.VITE_PROMO_MESSAGE || 'VALENTINE\'S DAY OFFER 💝 - FLAT 25% OFF - USE CODE "SELFLOVE25"',
+  promoMessage: import.meta.env.VITE_PROMO_MESSAGE || '',
   promoEnabled: import.meta.env.VITE_PROMO_ENABLED !== undefined ? import.meta.env.VITE_PROMO_ENABLED === 'true' : true,
   instagramLink: import.meta.env.VITE_INSTAGRAM_LINK || "https://www.instagram.com/outdoorscamps?igsh=MnF5YmRlbjA2YWd3",
   linkedinLink: import.meta.env.VITE_LINKEDIN_LINK || "https://linkedin.com",
