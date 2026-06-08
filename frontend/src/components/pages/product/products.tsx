@@ -116,7 +116,7 @@ const StorePage: React.FC = () => {
             ) : products.length === 0 && !isSuggestion ? (
               <div className="flex flex-col items-center justify-center py-20 text-center">
                 <div className="bg-black p-6 rounded-full border border-gray-200 mb-6 shadow-xl">
-                  <ShoppingCart color='#8b7355' className="w-16 h-16 opacity-50" />
+                  <ShoppingCart color='white' className="w-16 h-16 opacity-50" />
                 </div>
                 <h3 className="text-3xl font-serif text-gray-900 mb-3 font-bold">
                   No Products Found
