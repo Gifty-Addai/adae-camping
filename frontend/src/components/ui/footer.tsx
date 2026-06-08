@@ -124,7 +124,7 @@ const Footer = () => {
         <div className="flex flex-col items-center justify-center gap-2 mb-6">
           <span className="text-xs text-gray-500 uppercase tracking-widest">Designed & Developed with ❤️ by</span>
           <a
-            href="https://schriftflow.vercel.app"
+            href="https://www.schriftflow.com"
             target="_blank"
             rel="noopener noreferrer"
             className="hover:scale-105 transition-transform duration-300 decoration-0"
