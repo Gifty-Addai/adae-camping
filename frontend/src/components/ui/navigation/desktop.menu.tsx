@@ -28,6 +28,9 @@ const DesktopMenu: React.FC = () => {
             <Link to="/contact" className="text-gray-300 hover:text-white font-medium transition-colors">
               Contact Us
             </Link>
+            <Link to="/faq" className="text-gray-300 hover:text-white font-medium transition-colors">
+              FAQ
+            </Link>
           </nav>
 
           {/* Centered Logo */}

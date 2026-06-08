@@ -154,6 +154,13 @@ const Footer = () => {
             className="text-gray-300 hover:text-white transition-colors mx-1 underline"
           >
             Privacy Policy
+          </Link>{" "}
+          |{" "}
+          <Link
+            to="/faq"
+            className="text-gray-300 hover:text-white transition-colors mx-1 underline"
+          >
+            FAQ
           </Link>
         </p>
       </div>

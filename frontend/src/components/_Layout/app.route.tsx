@@ -20,6 +20,7 @@ import ContactPage from "../pages/contact.page";
 import RefundPolicyPage from "../pages/refund-policy.page";
 import ShippingPolicyPage from "../pages/shipping-policy.page";
 import PrivacyPolicyPage from "../pages/privacy-policy.page";
+import FAQPage from "../pages/faq.page";
 import { useAppDispatch } from "@/core/constants";
 import { fetchUserProfile } from "@/core/store/slice/user_slice";
 
@@ -78,6 +79,9 @@ export const AppRoute = () => {
 
         {/* Privacy Policy */}
         <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
+
+        {/* FAQ Page */}
+        <Route path="/faq" element={<FAQPage />} />
 
         {/* Catch-All 404 */}
         <Route path="*" element={<PageNotFound />} />
