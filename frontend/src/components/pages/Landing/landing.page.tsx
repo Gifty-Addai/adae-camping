@@ -8,6 +8,7 @@ import { Product } from '@/core/interfaces';
 import ProductCard from '../product/product.card';
 import ProductModal from '@/components/ui/product.modal';
 import { useProductAPI } from '@/hooks/product.hook';
+import { Helmet } from 'react-helmet';
 
 const LandingPage = () => {
     // Use the hook at the top level correctly
@@ -41,6 +42,17 @@ const LandingPage = () => {
 
     return (
         <div className="flex flex-col min-h-screen bg-background text-foreground font-sans">
+            <Helmet>
+                <title>Ancestral Tallow | Pure Grass-Fed & Finished Tallow & Ghee in Ghana</title>
+                <meta name="description" content="Experience the nourishment our ancestors knew. Pure beef, goat, and sheep tallow rendered traditionally for cooking, baking, and skincare. Ethically sourced from locally raised grass-fed cattle in Ghana." />
+                <meta name="keywords" content="tallow cooking oil, grass-fed beef tallow, goat tallow, sheep tallow, cooking ghee, ancestral skincare, healthy cooking fat, Ghana, local Ghanaian farm sourcing" />
+                <link rel="canonical" href="https://ancestraltallow.gh/" />
+                <meta property="og:title" content="Ancestral Tallow | Pure Grass-Fed & Finished Tallow & Ghee" />
+                <meta property="og:description" content="Pure beef, goat, and sheep tallow rendered traditionally for cooking, baking, and skincare in Ghana." />
+                <meta property="og:type" content="website" />
+                <meta property="og:url" content="https://ancestraltallow.gh/" />
+                <meta property="og:image" content="/main_logo.jpg" />
+            </Helmet>
             {/* ---------------------------------------HERO SECTION--------------------------------------- */}
 
 

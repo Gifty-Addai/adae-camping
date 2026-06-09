@@ -6,6 +6,8 @@ const RefundPolicyPage = () => {
     return (
         <Page
             pageTitle="Refund Policy"
+            seoDescription="Review the Refund Policy for The Ancestral Tallow. Learn about our quality commitment, no-refund terms for perishable goods, and guidelines for damaged transit items."
+            seoKeywords="tallow refund policy, return policy ghana, ancestral tallow terms"
             renderBody={() => (
                 <div className="bg-[#2a2a2a] min-h-screen">
                     {/* Hero Section */}

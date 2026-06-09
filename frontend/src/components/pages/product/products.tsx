@@ -59,10 +59,9 @@ const StorePage: React.FC = () => {
   return (
     <>
       <Page
-
-
         pageTitle='Products'
-
+        seoDescription="Shop our premium selection of traditional tallow and ghee products. Browse our cooking oils (beef, goat, sheep tallow) and nourishing skin and hair care balms."
+        seoKeywords="shop beef tallow, buy goat tallow ghana, purchase pure ghee, grass fed tallow products, organic skincare balms"
         renderBody={() => (
           <div className="px-4 md:px-0">
             {/* Product Grid */}

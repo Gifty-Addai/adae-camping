@@ -44,6 +44,8 @@ const ContactPage = () => {
     return (
         <Page
             pageTitle="Contact Us"
+            seoDescription="Get in touch with The Ancestral Tallow team. Send us a message or find our contact information for support, inquiries, and consultations about our tallow products."
+            seoKeywords="contact ancestral tallow, ancestral tallow support, tallow questions ghana, tallow customer service"
             renderBody={() => (
                 <div className="bg-[#2a2a2a] min-h-screen">
                     {/* Hero Section */}

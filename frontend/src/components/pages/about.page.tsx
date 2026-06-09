@@ -5,6 +5,8 @@ const AboutPage = () => {
     return (
         <Page
             pageTitle="About Us"
+            seoDescription="Discover the story and values behind The Ancestral Tallow. We honor traditional West African wisdom by ethical, grass-fed local farm sourcing and rendering pure tallow in small batches."
+            seoKeywords="ancestral tallow story, grass-fed tallow ghana, traditional tallow rendering, local ghanaian farms, pure tallow values"
             renderBody={() => (
                 <div className="bg-[#2a2a2a] min-h-screen">
                     {/* Hero Section */}

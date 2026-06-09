@@ -4,6 +4,8 @@ const PrivacyPolicyPage = () => {
     return (
         <Page
             pageTitle="Privacy Policy"
+            seoDescription="Read our Privacy Policy to understand how The Ancestral Tallow protects and manages your personal information, order data, and delivery coordinates in Ghana."
+            seoKeywords="tallow privacy policy, data safety ghana, ancestral tallow privacy"
             renderBody={() => (
                 <div className="bg-[#2a2a2a] min-h-screen">
                     {/* Hero Section */}

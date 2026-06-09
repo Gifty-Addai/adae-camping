@@ -6,6 +6,8 @@ const ShippingPolicyPage = () => {
     return (
         <Page
             pageTitle="Shipping Policy"
+            seoDescription="Learn about the shipping and delivery policy for The Ancestral Tallow. Read about local Accra dispatch timelines (same-day/next-day via Uber & Yango) and the importance of pinning GPS map coordinates."
+            seoKeywords="tallow shipping ghana, tallow delivery accra, uber yango dispatch, domestic shipping"
             renderBody={() => (
                 <div className="bg-[#2a2a2a] min-h-screen">
                     {/* Hero Section */}

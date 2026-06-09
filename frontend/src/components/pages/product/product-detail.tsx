@@ -140,6 +140,10 @@ const ProductDetailPage: React.FC = () => {
         <Page
             key={product?._id}
             pageTitle={product ? product.name : 'Product Details'}
+            seoDescription={product ? `${product.name} - Buy traditionally rendered, pure grass-fed ${product.subCategory || 'tallow'} in Ghana for GHS ${product.price}.` : undefined}
+            seoKeywords={product ? `${product.name}, ${product.category}, grass-fed ${product.subCategory || 'tallow'}, buy tallow ghana` : undefined}
+            ogImage={product?.imageUrl}
+            ogType="product"
             renderBody={() => (
                 <div className="px-4 sm:px-0 w-full">
                     <div className="max-w-6xl mx-auto mb-10 bg-[#2a2a2a] rounded-2xl shadow-2xl p-4 sm:p-6 lg:p-12 border border-[#3d3d3d]">

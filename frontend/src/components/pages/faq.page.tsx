@@ -132,6 +132,8 @@ const FAQPage = () => {
   return (
     <Page
       pageTitle="FAQ"
+      seoDescription="Find answers to frequently asked questions about beef tallow, goat tallow, sheep tallow, and ghee. Learn about cooking uses, smoking points, refrigeration, and storage guidelines."
+      seoKeywords="tallow questions, beef tallow vs lard, how to store tallow, does tallow spoil, grass fed tallow questions"
       renderBody={() => (
         <div className="bg-[#2a2a2a] min-h-screen pb-16">
           {/* Custom style for mobile scrollbars */}

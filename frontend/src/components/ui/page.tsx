@@ -6,6 +6,7 @@ import { Button } from "./button";
 import { setAppLoading } from "@/core/store/slice/app.slice";
 import { RootState } from "@/core/store/store";
 import { Input } from "./input";
+import { Helmet } from "react-helmet";
 
 type IPageProp = {
   goBack: () => void
@@ -27,7 +28,14 @@ type IProps = {
   pageTitle?: string;
   scrollable?: boolean;
   isLoading?: boolean;
+  // Advanced SEO fields
+  seoDescription?: string;
+  seoKeywords?: string;
+  canonicalPath?: string;
+  ogImage?: string;
+  ogType?: 'website' | 'article' | 'product';
 }
+
 export const Page = ({
   renderBody,
   renderFooter,
@@ -36,19 +44,19 @@ export const Page = ({
   scrollable = false,
   isLoading = false,
   searchProp,
+  seoDescription,
+  seoKeywords,
+  canonicalPath,
+  ogImage,
+  ogType = 'website',
 }: IProps) => {
   const dispatch = useDispatch();
-
   const appState = useSelector((state: RootState) => state.appSlice);
 
   useEffect(() => {
-    console.log("Page is loading", isLoading)
+    console.log("Page is loading", isLoading);
     dispatch(setAppLoading(isLoading));
   }, [isLoading]);
-
-  useEffect(() => {
-    document.title = `${appState?.appName} :: ${pageTitle}`;
-  }, [pageTitle]);
 
   const goBack = () => {
     if (backInfo && backInfo.length >= 1) {
@@ -61,8 +69,46 @@ export const Page = ({
     goBack,
   };
 
+  const appName = appState?.appName || 'The Ancestral Tallow';
+  const computedTitle = pageTitle 
+    ? `${pageTitle} | ${appName}`
+    : `${appName} | Pure Grass-Fed & Finished Tallow & Ghee`;
+
+  const defaultDescription = "Pure, ancestral tallow and ghee products crafted traditionally in Ghana. Sourced from locally raised grass-fed cattle, sheep, and goats.";
+  const defaultKeywords = "tallow, ghee, beef tallow, goat tallow, sheep tallow, grass-fed tallow, ancestral tallow, healthy cooking oils, skincare, Ghana, Accra";
+
+  const origin = typeof window !== 'undefined' ? window.location.origin : 'https://ancestraltallow.gh';
+  const path = typeof window !== 'undefined' ? window.location.pathname : '';
+  const canonicalUrl = `${origin}${canonicalPath || path}`;
+
   return (
     <>
+      <Helmet>
+        {/* Dynamic Page Title */}
+        <title>{computedTitle}</title>
+
+        {/* Dynamic Meta Description */}
+        <meta name="description" content={seoDescription || defaultDescription} />
+
+        {/* Dynamic Meta Keywords */}
+        <meta name="keywords" content={seoKeywords || defaultKeywords} />
+
+        {/* Dynamic Canonical URL */}
+        <link rel="canonical" href={canonicalUrl} />
+
+        {/* Open Graph Tags */}
+        <meta property="og:title" content={computedTitle} />
+        <meta property="og:description" content={seoDescription || defaultDescription} />
+        <meta property="og:type" content={ogType} />
+        <meta property="og:url" content={canonicalUrl} />
+        {ogImage && <meta property="og:image" content={ogImage.startsWith('http') ? ogImage : `${origin}${ogImage}`} />}
+
+        {/* Twitter Card Tags */}
+        <meta name="twitter:title" content={computedTitle} />
+        <meta name="twitter:description" content={seoDescription || defaultDescription} />
+        {ogImage && <meta name="twitter:image" content={ogImage.startsWith('http') ? ogImage : `${origin}${ogImage}`} />}
+      </Helmet>
+
       <div
         className={cn(
           "flex-1 overflow-y-auto mt-0 px-0 py-0 relative mx-auto",
@@ -110,5 +156,3 @@ export const Page = ({
     </>
   );
 };
-
-
