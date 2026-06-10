@@ -29,7 +29,20 @@
     <link rel="apple-touch-icon" href="/main_logo.jpg" />
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <!-- Fallback content for search engine crawlers before JavaScript loads -->
+      <div style="opacity: 0; position: absolute; width: 0; height: 0; overflow: hidden; pointer-events: none;">
+        <h1>Ancestral Tallow</h1>
+        <p>Pure, ancestral grass-fed beef tallow, goat tallow, sheep tallow, and ghee traditionally rendered in Ghana. Sourced from locally raised grass-fed livestock for healthy cooking and premium skincare.</p>
+        <nav>
+          <a href="/">Home</a>
+          <a href="/products">Shop Products</a>
+          <a href="/about">About Us</a>
+          <a href="/contact">Contact Us</a>
+          <a href="/faq">Frequently Asked Questions</a>
+        </nav>
+      </div>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
     <!-- <script src="https://js.paystack.co/v1/inline.js"></script> -->
   </body>
